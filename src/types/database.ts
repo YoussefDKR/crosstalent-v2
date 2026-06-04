@@ -1,0 +1,286 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          role: "candidate" | "employer";
+          full_name: string | null;
+          email: string | null;
+          avatar_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          role: "candidate" | "employer";
+          full_name?: string | null;
+          email?: string | null;
+          avatar_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          role?: "candidate" | "employer";
+          full_name?: string | null;
+          email?: string | null;
+          avatar_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      candidate_profiles: {
+        Row: {
+          user_id: string;
+          headline: string | null;
+          bio: string | null;
+          location: string | null;
+          country_code: string | null;
+          phone: string | null;
+          cv_path: string | null;
+          cv_file_name: string | null;
+          cv_uploaded_at: string | null;
+          linkedin_url: string | null;
+          portfolio_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          headline?: string | null;
+          bio?: string | null;
+          location?: string | null;
+          country_code?: string | null;
+          phone?: string | null;
+          cv_path?: string | null;
+          cv_file_name?: string | null;
+          cv_uploaded_at?: string | null;
+          linkedin_url?: string | null;
+          portfolio_url?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["candidate_profiles"]["Insert"]>;
+        Relationships: [];
+      };
+      candidate_skills: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          level: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          name: string;
+          level?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["candidate_skills"]["Insert"]>;
+        Relationships: [];
+      };
+      candidate_languages: {
+        Row: {
+          id: string;
+          user_id: string;
+          language: string;
+          proficiency: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          language: string;
+          proficiency: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["candidate_languages"]["Insert"]>;
+        Relationships: [];
+      };
+      candidate_experiences: {
+        Row: {
+          id: string;
+          user_id: string;
+          company: string;
+          title: string;
+          location: string | null;
+          start_date: string;
+          end_date: string | null;
+          is_current: boolean;
+          description: string | null;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          company: string;
+          title: string;
+          location?: string | null;
+          start_date: string;
+          end_date?: string | null;
+          is_current?: boolean;
+          description?: string | null;
+          sort_order?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["candidate_experiences"]["Insert"]>;
+        Relationships: [];
+      };
+      company_profiles: {
+        Row: {
+          user_id: string;
+          company_name: string | null;
+          tagline: string | null;
+          description: string | null;
+          website: string | null;
+          logo_url: string | null;
+          industry: string | null;
+          company_size: string | null;
+          headquarters_city: string | null;
+          headquarters_country: string | null;
+          hiring_in_regions: string | null;
+          linkedin_url: string | null;
+          contact_email: string | null;
+          contact_phone: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          company_name?: string | null;
+          tagline?: string | null;
+          description?: string | null;
+          website?: string | null;
+          logo_url?: string | null;
+          industry?: string | null;
+          company_size?: string | null;
+          headquarters_city?: string | null;
+          headquarters_country?: string | null;
+          hiring_in_regions?: string | null;
+          linkedin_url?: string | null;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["company_profiles"]["Insert"]>;
+        Relationships: [];
+      };
+      jobs: {
+        Row: {
+          id: string;
+          employer_id: string;
+          title: string;
+          description: string;
+          requirements: string | null;
+          employment_type: string;
+          experience_level: string;
+          remote_type: string;
+          location_city: string | null;
+          location_country: string | null;
+          salary_min: number | null;
+          salary_max: number | null;
+          salary_currency: string | null;
+          skills: string[];
+          languages: string[];
+          status: string;
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          employer_id: string;
+          title: string;
+          description: string;
+          requirements?: string | null;
+          employment_type?: string;
+          experience_level?: string;
+          remote_type?: string;
+          location_city?: string | null;
+          location_country?: string | null;
+          salary_min?: number | null;
+          salary_max?: number | null;
+          salary_currency?: string | null;
+          skills?: string[];
+          languages?: string[];
+          status?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["jobs"]["Insert"]>;
+        Relationships: [];
+      };
+      conversations: {
+        Row: {
+          id: string;
+          employer_id: string;
+          candidate_id: string;
+          job_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          employer_id: string;
+          candidate_id: string;
+          job_id?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["conversations"]["Insert"]>;
+        Relationships: [];
+      };
+      messages: {
+        Row: {
+          id: string;
+          conversation_id: string;
+          sender_id: string;
+          body: string;
+          created_at: string;
+        };
+        Insert: {
+          conversation_id: string;
+          sender_id: string;
+          body: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["messages"]["Insert"]>;
+        Relationships: [];
+      };
+      employer_subscriptions: {
+        Row: {
+          user_id: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          plan_id: string;
+          status: string;
+          current_period_end: string | null;
+          cancel_at_period_end: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          plan_id?: string;
+          status?: string;
+          current_period_end?: string | null;
+          cancel_at_period_end?: boolean;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["employer_subscriptions"]["Insert"]
+        >;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: {
+      ensure_user_profile: {
+        Args: Record<string, never>;
+        Returns: Database["public"]["Tables"]["profiles"]["Row"];
+      };
+    };
+    Enums: {
+      user_role: "candidate" | "employer";
+    };
+  };
+};

@@ -1,0 +1,8 @@
+import { COMMON_LANGUAGES, MENA_COUNTRIES } from "@/config/candidate";
+import { COMMON_JOB_SKILLS } from "@/config/jobs";
+
+export const CANDIDATE_SEARCH_COUNTRIES = MENA_COUNTRIES;
+
+export const CANDIDATE_SEARCH_SKILLS = COMMON_JOB_SKILLS;
+
+export const CANDIDATE_SEARCH_LANGUAGES = COMMON_LANGUAGES;
