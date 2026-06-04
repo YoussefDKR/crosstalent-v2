@@ -2,22 +2,21 @@
 
 import { useActionState } from "react";
 import {
-  updateAccountInfo,
-  type ActionResult,
-} from "@/app/candidate/actions";
+  updateAccountName,
+  type AccountActionResult,
+} from "@/lib/auth/account-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const initial: ActionResult = {};
+const initial: AccountActionResult = {};
 
 type AccountInfoFormProps = {
   fullName: string | null;
-  email: string | null;
 };
 
-export function AccountInfoForm({ fullName, email }: AccountInfoFormProps) {
-  const [state, action, pending] = useActionState(updateAccountInfo, initial);
+export function AccountInfoForm({ fullName }: AccountInfoFormProps) {
+  const [state, action, pending] = useActionState(updateAccountName, initial);
 
   return (
     <form key={fullName ?? "account"} action={action} className="space-y-4">
@@ -41,19 +40,12 @@ export function AccountInfoForm({ fullName, email }: AccountInfoFormProps) {
           disabled={pending}
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" value={email ?? ""} disabled className="bg-muted" />
-        <p className="text-xs text-muted-foreground">
-          Email is managed through your account settings.
-        </p>
-      </div>
       <Button
         type="submit"
         disabled={pending}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
-        {pending ? "Saving…" : "Save account"}
+        {pending ? "Saving…" : "Save name"}
       </Button>
     </form>
   );

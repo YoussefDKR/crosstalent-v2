@@ -9,7 +9,7 @@ export const AUTH_ROUTES = {
 
 export const DASHBOARD_ROUTES: Record<UserRole, string> = {
   candidate: "/",
-  employer: "/",
+  employer: "/employer/dashboard",
 };
 
 export const PUBLIC_PATH_PREFIXES = [
@@ -18,6 +18,9 @@ export const PUBLIC_PATH_PREFIXES = [
   "/signup",
   "/auth/callback",
   "/pricing",
+  "/why-crosstalent",
+  "/for-employers",
+  "/for-candidates",
   "/jobs",
   "/about",
   "/contact",

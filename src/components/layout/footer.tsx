@@ -4,20 +4,21 @@ import { siteConfig } from "@/config/site";
 
 const footerLinks = {
   Product: [
-    { label: "How it works", href: "#how-it-works" },
+    { label: "Why CrossTalent", href: siteConfig.links.whyCrossTalent },
     { label: "Job board", href: siteConfig.links.jobs },
     { label: "Pricing", href: siteConfig.links.pricing },
   ],
   "For talent": [
+    { label: "For job seekers", href: siteConfig.links.forCandidates },
     { label: "Sign up free", href: siteConfig.links.candidateSignup },
     { label: "Browse jobs", href: siteConfig.links.jobs },
   ],
   "For employers": [
-    { label: "Post a role", href: siteConfig.links.employerSignup },
-    { label: "Find candidates", href: siteConfig.links.employerCandidates },
+    { label: "For employers", href: siteConfig.links.forEmployers },
+    { label: "Create account", href: siteConfig.links.employerSignup },
+    { label: "Pricing", href: siteConfig.links.pricing },
   ],
   Company: [
-    { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
     { label: "Privacy", href: "/privacy" },
   ],

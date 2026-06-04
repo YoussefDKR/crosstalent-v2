@@ -268,6 +268,42 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["messages"]["Insert"]>;
         Relationships: [];
       };
+      conversation_reads: {
+        Row: {
+          conversation_id: string;
+          user_id: string;
+          last_read_at: string;
+        };
+        Insert: {
+          conversation_id: string;
+          user_id: string;
+          last_read_at?: string;
+        };
+        Update: {
+          conversation_id?: string;
+          user_id?: string;
+          last_read_at?: string;
+        };
+        Relationships: [];
+      };
+      application_views: {
+        Row: {
+          application_id: string;
+          employer_id: string;
+          viewed_at: string;
+        };
+        Insert: {
+          application_id: string;
+          employer_id: string;
+          viewed_at?: string;
+        };
+        Update: {
+          application_id?: string;
+          employer_id?: string;
+          viewed_at?: string;
+        };
+        Relationships: [];
+      };
       employer_subscriptions: {
         Row: {
           user_id: string;
@@ -300,6 +336,14 @@ export type Database = {
       ensure_user_profile: {
         Args: Record<string, never>;
         Returns: Database["public"]["Tables"]["profiles"]["Row"];
+      };
+      create_oauth_signup_intent: {
+        Args: { p_role: Database["public"]["Enums"]["user_role"] };
+        Returns: string;
+      };
+      apply_oauth_signup_role: {
+        Args: { p_intent_id: string };
+        Returns: undefined;
       };
     };
     Enums: {

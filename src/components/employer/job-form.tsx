@@ -12,13 +12,13 @@ import {
   EMPLOYMENT_TYPES,
   EXPERIENCE_LEVELS,
   JOB_LOCATION_COUNTRIES,
-  JOB_STATUSES,
   REMOTE_TYPES,
 } from "@/config/jobs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { statusLabel } from "@/lib/jobs/labels";
 import type { JobRow } from "@/types/jobs";
 
 const initial: JobActionResult = {};
@@ -41,6 +41,7 @@ export function JobForm({ job, mode }: JobFormProps) {
 
   const skillsValue = job?.skills?.join(", ") ?? "";
   const languagesValue = job?.languages?.join(", ") ?? "";
+  const currentStatus = job?.status ?? "draft";
 
   return (
     <form
@@ -56,6 +57,15 @@ export function JobForm({ job, mode }: JobFormProps) {
       {state.success && (
         <p className="rounded-lg bg-[#10B981]/10 px-3 py-2 text-sm text-[#047857]">
           {state.success}
+        </p>
+      )}
+
+      {mode === "edit" && job && (
+        <p className="rounded-lg border border-border/80 bg-slate-50 px-4 py-3 text-sm text-muted-foreground">
+          Current state:{" "}
+          <span className="font-medium text-[#0F172A]">
+            {statusLabel(job.status)}
+          </span>
         </p>
       )}
 
@@ -240,43 +250,141 @@ export function JobForm({ job, mode }: JobFormProps) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="status">Status</Label>
-        <select
-          id="status"
-          name="status"
-          defaultValue={job?.status ?? "draft"}
-          className={selectClassName}
-          disabled={pending}
-        >
-          {JOB_STATUSES.map((s) => (
-            <option key={s.value} value={s.value}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-        <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          <strong>Draft</strong> jobs are only visible to you. Choose{" "}
-          <strong>Published</strong> and click Save (or use Publish on the list)
-          so candidates see this role on{" "}
-          <Link href="/jobs" className="font-medium underline">
-            /jobs
-          </Link>
-          .
+      <div className="rounded-xl border border-border/80 bg-slate-50/80 p-5">
+        <p className="text-sm font-medium text-[#0F172A]">What should we do?</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {mode === "create"
+            ? "Save as draft to finish later, or post to publish on the job board."
+            : currentStatus === "draft"
+              ? "Save your edits, post to go live, or keep as draft."
+              : currentStatus === "published"
+                ? "Save changes, close hiring, or move back to draft."
+                : "Save changes or reopen the job on the board."}
         </p>
-      </div>
 
-      <Button
-        type="submit"
-        disabled={pending}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-      >
-        {pending
-          ? "Saving…"
-          : mode === "create"
-            ? "Create job"
-            : "Save job"}
-      </Button>
+        <div className="mt-4 flex flex-wrap gap-3">
+          {mode === "create" && (
+            <>
+              <Button
+                type="submit"
+                name="intent"
+                value="draft"
+                variant="outline"
+                disabled={pending}
+                className="min-w-[140px]"
+              >
+                {pending ? "Saving…" : "Save as draft"}
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="publish"
+                disabled={pending}
+                className="min-w-[140px] bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+              >
+                {pending ? "Posting…" : "Post job"}
+              </Button>
+            </>
+          )}
+
+          {mode === "edit" && currentStatus === "draft" && (
+            <>
+              <Button
+                type="submit"
+                name="intent"
+                value="draft"
+                variant="outline"
+                disabled={pending}
+              >
+                {pending ? "Saving…" : "Save as draft"}
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="publish"
+                disabled={pending}
+                className="bg-[#10B981] text-white hover:bg-[#059669]"
+              >
+                {pending ? "Posting…" : "Post job"}
+              </Button>
+            </>
+          )}
+
+          {mode === "edit" && currentStatus === "published" && (
+            <>
+              <Button
+                type="submit"
+                name="intent"
+                value="save"
+                disabled={pending}
+                className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+              >
+                {pending ? "Saving…" : "Save changes"}
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="draft"
+                variant="outline"
+                disabled={pending}
+              >
+                Move to draft
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="close"
+                variant="outline"
+                disabled={pending}
+              >
+                Mark as closed
+              </Button>
+            </>
+          )}
+
+          {mode === "edit" && currentStatus === "closed" && (
+            <>
+              <Button
+                type="submit"
+                name="intent"
+                value="save"
+                variant="outline"
+                disabled={pending}
+              >
+                {pending ? "Saving…" : "Save changes"}
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="reopen"
+                disabled={pending}
+                className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+              >
+                Reopen & post
+              </Button>
+              <Button
+                type="submit"
+                name="intent"
+                value="draft"
+                variant="outline"
+                disabled={pending}
+              >
+                Move to draft
+              </Button>
+            </>
+          )}
+        </div>
+
+        {mode === "create" && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Drafts are only visible to you. Posted jobs appear on{" "}
+            <Link href="/jobs" className="font-medium text-[#2563EB] hover:underline">
+              /jobs
+            </Link>
+            .
+          </p>
+        )}
+      </div>
     </form>
   );
 }

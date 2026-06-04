@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   const authError =
     error === "auth_callback_failed"
-      ? "Email confirmation failed. Please try signing in again."
+      ? "Google or email sign-in could not be completed. Please try again."
       : undefined;
 
   return (

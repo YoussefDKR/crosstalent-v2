@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { EmployerJobsList } from "@/components/employer/employer-jobs-list";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -25,8 +24,6 @@ export default async function EmployerJobsPage() {
       title="Job posts"
       description="Create and manage roles visible on the public job board when published."
     >
-      <EmployerNav />
-
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
           {jobs.length} {jobs.length === 1 ? "post" : "posts"}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ConversationList } from "@/components/messaging/conversation-list";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { listConversationsForUser } from "@/lib/messaging/queries";
@@ -22,7 +21,6 @@ export default async function EmployerMessagesPage() {
       title="Messages"
       description="Chat with candidates in real time."
     >
-      <EmployerNav />
       <ConversationList conversations={conversations} role="employer" />
     </DashboardShell>
   );

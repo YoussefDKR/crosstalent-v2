@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CandidateCard } from "@/components/employer/candidate-card";
 import { CandidateFilters } from "@/components/employer/candidate-filters";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
@@ -41,8 +40,6 @@ export default async function EmployerCandidatesPage({
       title="Find talent"
       description="Search North African candidates by country, skills, languages, and profile strength."
     >
-      <EmployerNav />
-
       <Suspense fallback={<div className="mb-6 h-40 rounded-lg bg-white" />}>
         <CandidateFilters />
       </Suspense>

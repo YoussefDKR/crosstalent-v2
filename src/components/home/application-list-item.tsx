@@ -1,18 +1,12 @@
 import Link from "next/link";
 import { Briefcase, ChevronRight } from "lucide-react";
-import { applicationStatusLabel } from "@/lib/applications/labels";
+import { applicationDisplayStatus } from "@/lib/applications/display";
+import { applicationStatusBadgeClass } from "@/lib/applications/display";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { EmployerApplicationListItem } from "@/types/applications";
+import { cn } from "@/lib/utils";
 
-function statusVariant(
-  status: EmployerApplicationListItem["status"]
-): "default" | "secondary" | "outline" {
-  if (status === "accepted") return "default";
-  if (status === "rejected") return "outline";
-  return "secondary";
-}
 
 type ApplicationListItemProps = {
   application: EmployerApplicationListItem;
@@ -34,9 +28,14 @@ export function ApplicationListItem({ application }: ApplicationListItemProps) {
                 <p className="font-semibold text-[#0F172A]">
                   {application.candidateName}
                 </p>
-                <Badge variant={statusVariant(application.status)}>
-                  {applicationStatusLabel(application.status)}
-                </Badge>
+                <span
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-xs font-medium",
+                    applicationStatusBadgeClass(application.status)
+                  )}
+                >
+                  {applicationDisplayStatus(application.status)}
+                </span>
               </div>
               {application.candidateHeadline && (
                 <p className="mt-0.5 text-sm text-muted-foreground line-clamp-1">

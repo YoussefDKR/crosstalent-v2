@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { StartConversationButton } from "@/components/employer/start-conversation-button";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -69,8 +68,6 @@ export default async function EmployerCandidateDetailPage({
       title={displayName}
       description={candidate.headline ?? "Candidate profile"}
     >
-      <EmployerNav />
-
       <Link
         href="/employer/candidates"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"

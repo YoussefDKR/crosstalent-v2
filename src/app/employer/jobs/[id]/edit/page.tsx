@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { JobForm } from "@/components/employer/job-form";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { EmployerSectionCard } from "@/components/employer/section-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -44,8 +43,6 @@ export default async function EditJobPage({
       title="Edit job post"
       description={job.title}
     >
-      <EmployerNav />
-
       {justCreated && (
         <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
           Job saved as <strong>Draft</strong>. Set status to <strong>Published</strong> below

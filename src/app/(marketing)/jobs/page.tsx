@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { JobBoardPanel } from "@/components/jobs/job-board-panel";
 import { JobCard } from "@/components/jobs/job-card";
 import { JobFilters } from "@/components/jobs/job-filters";
 import { siteConfig } from "@/config/site";
+import { getCurrentProfile } from "@/lib/auth/session";
 import { listPublishedJobs, parseJobFilters } from "@/lib/jobs/queries";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +23,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const params = await searchParams;
   const filters = parseJobFilters(params);
   const { jobs, error: listError } = await listPublishedJobs(filters);
+  const profile = await getCurrentProfile();
+
   const hasActiveFilters = Boolean(
     filters.q ||
       filters.country ||
@@ -30,6 +34,17 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       filters.skill ||
       filters.salaryMin
   );
+
+  if (profile?.role === "candidate") {
+    return (
+      <JobBoardPanel
+        jobs={jobs}
+        listError={listError}
+        hasActiveFilters={hasActiveFilters}
+        basePath="/jobs"
+      />
+    );
+  }
 
   return (
     <div className="bg-slate-50/50 py-12 sm:py-16">
@@ -58,13 +73,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
         <p className="mt-6 text-sm text-muted-foreground">
           {jobs.length} {jobs.length === 1 ? "role" : "roles"} found
-          {!hasActiveFilters && jobs.length === 0 && !listError && (
-            <span className="block mt-1 text-[#0F172A]/70">
-              Only jobs with status <strong>Published</strong> appear here. If
-              you posted as an employer, edit the job and set status to
-              Published, then save.
-            </span>
-          )}
         </p>
 
         {jobs.length > 0 ? (
@@ -79,11 +87,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               {hasActiveFilters
                 ? "No jobs match your filters"
                 : "No published jobs yet"}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {hasActiveFilters
-                ? "Try adjusting filters or clear them to see all open roles."
-                : "Employers must set a job to Published (not Draft) for it to show here."}
             </p>
             <Link
               href={siteConfig.links.candidateSignup}

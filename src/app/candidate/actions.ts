@@ -11,7 +11,11 @@ export type ActionResult = {
   success?: string;
 };
 
-const CANDIDATE_PATHS = ["/candidate/dashboard", "/candidate/profile"];
+const CANDIDATE_PATHS = [
+  "/candidate/dashboard",
+  "/candidate/profile",
+  "/candidate/settings",
+];
 
 function revalidateCandidate() {
   CANDIDATE_PATHS.forEach((path) => revalidatePath(path));
@@ -24,33 +28,6 @@ async function requireCandidateId(): Promise<string> {
   }
   await ensureCandidateProfileRow(profile.id);
   return profile.id;
-}
-
-export async function updateAccountInfo(
-  _prev: ActionResult,
-  formData: FormData
-): Promise<ActionResult> {
-  try {
-    const userId = await requireCandidateId();
-    const fullName = String(formData.get("fullName") ?? "").trim();
-
-    if (!fullName) {
-      return { error: "Full name is required." };
-    }
-
-    const supabase = await createClient();
-    const { error } = await supabase
-      .from("profiles")
-      .update({ full_name: fullName })
-      .eq("id", userId);
-
-    if (error) return { error: error.message };
-
-    revalidateCandidate();
-    return { success: "Account details saved." };
-  } catch {
-    return { error: "Something went wrong." };
-  }
 }
 
 export async function updateCandidateDetails(

@@ -27,6 +27,8 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 11. `migrations/20250609100000_fix_profile_images_rls.sql` — **run if upload fails with RLS error**
 12. `migrations/20250609200000_messaging_profile_access.sql` — messaging shows correct names (not "User")
 13. `migrations/20250610000000_job_applications.sql` — candidates apply to jobs; employer inbox on home
+14. `migrations/20250611000000_notification_reads.sql` — notification read state
+15. `migrations/20250612000000_google_oauth.sql` — Google OAuth signup role intents
 
 If you already signed up before step 1, run step 3 (or all three) and sign in again.
 
@@ -44,7 +46,23 @@ In **Authentication → URL configuration**, set:
 - **Site URL:** `http://localhost:3001` (matches `NEXT_PUBLIC_APP_URL` in `.env.local`)
 - **Redirect URLs:** `http://localhost:3001/auth/callback`
 
+Add production URLs when you deploy, for example:
+
+- `https://crosstalent.io/auth/callback`
+- `https://www.crosstalent.io/auth/callback`
+
 For local development without email confirmation, disable **Confirm email** under **Authentication → Providers → Email** (optional).
+
+### Google sign-in
+
+1. Run migration `migrations/20250612000000_google_oauth.sql` (OAuth signup role intents).
+2. In [Google Cloud Console](https://console.cloud.google.com/), create an OAuth client (Web application).
+   - **Authorized JavaScript origins:** your Site URL (e.g. `http://localhost:3001`, `https://crosstalent.io`)
+   - **Authorized redirect URI:** your Supabase callback, e.g. `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
+3. In Supabase → **Authentication → Providers → Google**, enable Google and paste the **Client ID** and **Client secret**.
+4. Confirm **Redirect URLs** (step 3 above) include every domain users sign in from.
+
+Users can **Sign in with Google** on `/login` or **Sign up with Google** on `/signup` (after choosing candidate or employer).
 
 ## 4. What the migration creates
 

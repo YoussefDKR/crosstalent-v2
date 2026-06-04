@@ -15,8 +15,8 @@ export async function EmployerHome({ profile }: EmployerHomeProps) {
   const pendingCount = applications.filter((a) => a.status === "pending").length;
 
   return (
-    <div className="bg-slate-50/50 py-8 sm:py-10">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#F8FAFC] py-10 sm:py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-[#0F172A] sm:text-3xl">

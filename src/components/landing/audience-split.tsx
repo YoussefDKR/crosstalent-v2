@@ -15,16 +15,16 @@ type AudienceSplitProps = {
 export function AudienceSplit({ profile = null }: AudienceSplitProps) {
   const candidateHref = profile?.role === "candidate"
     ? siteConfig.links.jobs
-    : siteConfig.links.candidateSignup;
+    : siteConfig.links.forCandidates;
   const candidateLabel = profile?.role === "candidate"
     ? "Browse job board"
-    : "Create free profile";
+    : "Learn more";
   const employerHref = profile?.role === "employer"
     ? siteConfig.links.employerJobs
-    : siteConfig.links.employerSignup;
+    : siteConfig.links.forEmployers;
   const employerLabel = profile?.role === "employer"
     ? "Manage job posts"
-    : "Explore employer plans";
+    : "Learn more";
   return (
     <section className="py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -72,10 +72,11 @@ export function AudienceSplit({ profile = null }: AudienceSplitProps) {
           </motion.div>
 
           <motion.div
+            id="for-employers"
             initial={{ opacity: 0, x: 16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-lg border border-[#0F172A]/10 bg-[#0F172A] p-8 text-white shadow-sm lg:p-10"
+            className="scroll-mt-24 rounded-lg border border-[#0F172A]/10 bg-[#0F172A] p-8 text-white shadow-sm lg:p-10"
           >
             <div className="flex size-12 items-center justify-center rounded-lg bg-white/10">
               <Building2 className="size-6" />

@@ -1,118 +1,172 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { NotificationMenu } from "@/components/layout/notification-menu";
+import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
-import { getDashboardPath } from "@/lib/auth/routes";
+import {
+  marketingNav,
+  navForRole,
+  isNavActive,
+} from "@/config/navigation";
 import { siteConfig } from "@/config/site";
+import { getDashboardPath } from "@/lib/auth/routes";
 import { cn } from "@/lib/utils";
+import type { AppNotification } from "@/types/notifications";
 import type { Profile } from "@/types";
-
-const navLinks = [
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#testimonials", label: "Stories" },
-  { href: siteConfig.links.pricing, label: "Pricing" },
-  { href: siteConfig.links.jobs, label: "Jobs" },
-];
 
 type HeaderProps = {
   profile?: Profile | null;
+  notifications?: AppNotification[];
 };
 
-export function Header({ profile = null }: HeaderProps) {
+export function Header({
+  profile = null,
+  notifications = [],
+}: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const dashboardHref = profile ? getDashboardPath(profile.role) : null;
+  const pathname = usePathname();
+  const isLoggedIn = Boolean(profile);
+  const isMarketingGuest = !profile;
+  const navLinks = profile ? navForRole(profile.role) : marketingNav;
+
+  const authActions = isLoggedIn && profile ? (
+    <>
+      <NotificationMenu notifications={notifications} role={profile.role} />
+      <div className="flex items-center gap-3 border-l border-border/60 pl-3">
+        <ProfileAvatar
+          pathOrUrl={profile.avatarUrl}
+          name={profile.fullName}
+          size="sm"
+        />
+        <span className="max-w-[140px] truncate text-sm font-medium text-[#0F172A]">
+          {profile.fullName ?? profile.email}
+        </span>
+      </div>
+      <Link href={getDashboardPath(profile.role)}>
+        <Button
+          size="sm"
+          className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        >
+          Dashboard
+        </Button>
+      </Link>
+      <SignOutButton />
+    </>
+  ) : (
+    <>
+      <Link href={siteConfig.links.login}>
+        <Button
+          variant="ghost"
+          size="lg"
+          className="h-11 px-6 text-base font-semibold text-[#0F172A] hover:bg-slate-100"
+        >
+          Log in
+        </Button>
+      </Link>
+      <Link href={siteConfig.links.signup}>
+        <Button
+          size="lg"
+          className="h-11 rounded-lg bg-[#2563EB] px-7 text-base font-semibold text-white shadow-sm hover:bg-[#1d4ed8]"
+        >
+          Sign up
+        </Button>
+      </Link>
+    </>
+  );
+
+  const nav = (
+    <nav
+      className={cn(
+        "hidden items-center gap-6 whitespace-nowrap md:flex lg:gap-8",
+        isMarketingGuest ? "justify-self-center" : "ml-8 lg:ml-10"
+      )}
+      aria-label="Main"
+    >
+      {navLinks.map((link) => {
+        const active = isNavActive(pathname, link.href, link.matchHome);
+        return (
+          <Link
+            key={link.href + link.label}
+            href={link.href}
+            className={cn(
+              "text-sm font-medium transition-colors",
+              active
+                ? "text-[#2563EB]"
+                : "text-[#0F172A]/70 hover:text-[#0F172A]"
+            )}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+
+  const headerPadding =
+    "px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo />
-
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-[#0F172A]"
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-white/95 backdrop-blur-md">
+      {isMarketingGuest ? (
+        <>
+          <div
+            className={cn(
+              "flex h-[4.25rem] w-full items-center md:hidden",
+              headerPadding
+            )}
+          >
+            <Logo className="shrink-0" />
+            <button
+              type="button"
+              className="ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-lg border border-border"
+              onClick={() => setMobileOpen((o) => !o)}
+              aria-expanded={mobileOpen}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 md:flex">
-          {profile && dashboardHref ? (
-            <>
-              <span className="max-w-[140px] truncate text-sm text-muted-foreground">
-                {profile.fullName ?? profile.email}
-              </span>
-              {profile.role === "candidate" && (
-                <Link href={siteConfig.links.jobs}>
-                  <Button
-                    size="sm"
-                    className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-                  >
-                    Job board
-                  </Button>
-                </Link>
-              )}
-              {profile.role === "employer" && (
-                <>
-                  <Link href={siteConfig.links.employerCandidates}>
-                    <Button variant="ghost" size="sm">
-                      Find talent
-                    </Button>
-                  </Link>
-                  <Link href={siteConfig.links.employerJobs}>
-                    <Button
-                      size="sm"
-                      className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-                    >
-                      Job posts
-                    </Button>
-                  </Link>
-                </>
-              )}
-              <Link href={dashboardHref}>
-                <Button variant="ghost" size="sm">
-                  Dashboard
-                </Button>
-              </Link>
-              <SignOutButton />
-            </>
-          ) : (
-            <>
-              <Link href={siteConfig.links.login}>
-                <Button variant="ghost" size="sm">
-                  Log in
-                </Button>
-              </Link>
-              <Link href={siteConfig.links.signup}>
-                <Button
-                  size="sm"
-                  className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-                >
-                  Get started
-                </Button>
-              </Link>
-            </>
+              {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
+          <div
+            className={cn(
+              "hidden h-[4.25rem] w-full grid-cols-[1fr_auto_1fr] items-center md:grid",
+              headerPadding
+            )}
+          >
+            <Logo className="justify-self-start" />
+            {nav}
+            <div className="flex shrink-0 items-center justify-self-end gap-3">
+              {authActions}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div
+          className={cn(
+            "flex h-[4.25rem] w-full items-center",
+            headerPadding
           )}
-        </div>
-
-        <button
-          type="button"
-          className="inline-flex size-10 items-center justify-center rounded-lg border border-border md:hidden"
-          onClick={() => setMobileOpen((o) => !o)}
-          aria-expanded={mobileOpen}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
-          {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
-      </div>
+          <Logo className="shrink-0" />
+          {nav}
+          <div className="ml-auto hidden items-center gap-3 md:flex">{authActions}</div>
+          <button
+            type="button"
+            className="ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-lg border border-border md:hidden"
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-expanded={mobileOpen}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
+      )}
 
       <AnimatePresence>
         {mobileOpen && (
@@ -125,7 +179,7 @@ export function Header({ profile = null }: HeaderProps) {
             <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile">
               {navLinks.map((link) => (
                 <Link
-                  key={link.href}
+                  key={link.href + link.label}
                   href={link.href}
                   className={cn(
                     "rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-[#0F172A]"
@@ -136,30 +190,17 @@ export function Header({ profile = null }: HeaderProps) {
                 </Link>
               ))}
               <div className="mt-3 flex flex-col gap-2 border-t border-border pt-4">
-                {profile && dashboardHref ? (
+                {isLoggedIn && profile ? (
                   <>
-                    {profile.role === "candidate" && (
-                      <Link
-                        href={siteConfig.links.jobs}
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                          Job board
-                        </Button>
-                      </Link>
-                    )}
-                    {profile.role === "employer" && (
-                      <Link
-                        href={siteConfig.links.employerJobs}
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                          Job posts
-                        </Button>
-                      </Link>
-                    )}
-                    <Link href={dashboardHref} onClick={() => setMobileOpen(false)}>
-                      <Button variant="outline" className="w-full">
+                    <NotificationMenu
+                      notifications={notifications}
+                      role={profile.role}
+                    />
+                    <Link
+                      href={getDashboardPath(profile.role)}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
                         Dashboard
                       </Button>
                     </Link>
@@ -168,13 +209,20 @@ export function Header({ profile = null }: HeaderProps) {
                 ) : (
                   <>
                     <Link href={siteConfig.links.login}>
-                      <Button variant="outline" className="w-full">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="h-12 w-full text-base font-semibold"
+                      >
                         Log in
                       </Button>
                     </Link>
                     <Link href={siteConfig.links.signup}>
-                      <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                        Get started
+                      <Button
+                        size="lg"
+                        className="h-12 w-full bg-[#2563EB] text-base font-semibold text-white hover:bg-[#1d4ed8]"
+                      >
+                        Sign up
                       </Button>
                     </Link>
                   </>

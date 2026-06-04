@@ -70,15 +70,22 @@ export function ProfileCompletionCard({
         )}
 
         {percent < 100 && (
-          <Link href="/candidate/profile">
-            <Button
-              variant="outline"
-              className="mt-2 w-full gap-2 border-[#2563EB]/30 text-[#2563EB] hover:bg-[#2563EB]/5 sm:w-auto"
-            >
-              Complete profile
-              <ArrowRight className="size-4" />
-            </Button>
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/candidate/profile">
+              <Button
+                variant="outline"
+                className="gap-2 border-[#2563EB]/30 text-[#2563EB] hover:bg-[#2563EB]/5"
+              >
+                Career profile
+                <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+            <Link href="/candidate/settings">
+              <Button variant="outline" className="text-muted-foreground">
+                Account settings
+              </Button>
+            </Link>
+          </div>
         )}
       </CardContent>
     </Card>

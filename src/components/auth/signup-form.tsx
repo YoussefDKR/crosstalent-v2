@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signUp, type AuthActionState } from "@/app/(auth)/actions";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { RoleSelector } from "@/components/auth/role-selector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,18 +20,41 @@ type SignupFormProps = {
 
 export function SignupForm({ defaultRole = "candidate" }: SignupFormProps) {
   const [role, setRole] = useState<UserRole>(defaultRole);
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const [state, formAction, pending] = useActionState(signUp, initialState);
 
+  const displayError = oauthError ?? state.error;
+  const formDisabled = pending || !!state.success;
+
   return (
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <Label>I am signing up as</Label>
+        <RoleSelector
+          value={role}
+          onChange={setRole}
+          disabled={formDisabled}
+        />
+      </div>
+
+      <GoogleSignInButton
+        label="Sign up with Google"
+        signupRole={role}
+        disabled={formDisabled}
+        onError={setOauthError}
+      />
+
+      <AuthDivider />
+
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="role" value={role} />
 
-      {state.error && (
+      {displayError && (
         <div
           role="alert"
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
-          {state.error}
+          {displayError}
         </div>
       )}
 
@@ -41,15 +66,6 @@ export function SignupForm({ defaultRole = "candidate" }: SignupFormProps) {
           {state.success}
         </div>
       )}
-
-      <div className="space-y-2">
-        <Label>I am signing up as</Label>
-        <RoleSelector
-          value={role}
-          onChange={setRole}
-          disabled={pending || !!state.success}
-        />
-      </div>
 
       <div className="space-y-2">
         <Label htmlFor="fullName">Full name</Label>
@@ -113,5 +129,6 @@ export function SignupForm({ defaultRole = "candidate" }: SignupFormProps) {
         </Link>
       </p>
     </form>
+    </div>
   );
 }

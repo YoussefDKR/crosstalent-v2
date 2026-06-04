@@ -6,7 +6,6 @@ import { CheckoutButton } from "@/components/billing/checkout-button";
 import { ManageBillingButton } from "@/components/billing/manage-billing-button";
 import { PricingPlans } from "@/components/billing/pricing-plans";
 import { StripeSetupBanner } from "@/components/billing/stripe-setup-banner";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -45,8 +44,6 @@ export default async function EmployerBillingPage({
       title="Billing"
       description="Manage your CrossTalent employer subscription."
     >
-      <EmployerNav />
-
       <StripeSetupBanner />
 
       {params.success === "1" && (

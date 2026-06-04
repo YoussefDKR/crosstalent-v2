@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { CandidateNav } from "@/components/candidate/candidate-nav";
 import { ConversationList } from "@/components/messaging/conversation-list";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -22,7 +21,6 @@ export default async function CandidateMessagesPage() {
       title="Messages"
       description="Reply to employers interested in your profile."
     >
-      <CandidateNav />
       <ConversationList conversations={conversations} role="candidate" />
     </DashboardShell>
   );

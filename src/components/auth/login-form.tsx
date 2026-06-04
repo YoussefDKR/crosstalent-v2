@@ -6,6 +6,8 @@ import {
   getPostLoginPath,
   signInWithEmail,
 } from "@/lib/auth/client-auth";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +46,17 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <div className="space-y-5">
+      <GoogleSignInButton
+        label="Sign in with Google"
+        redirectTo={redirectTo}
+        disabled={pending}
+        onError={setError}
+      />
+
+      <AuthDivider />
+
+      <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <div
           role="alert"
@@ -99,5 +111,6 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
         </Link>
       </p>
     </form>
+    </div>
   );
 }

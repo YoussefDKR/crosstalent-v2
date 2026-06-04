@@ -2,31 +2,24 @@
 
 import { useActionState } from "react";
 import {
-  updateEmployerAccount,
-  type EmployerActionResult,
-} from "@/app/employer/actions";
+  updateAccountEmail,
+  type AccountActionResult,
+} from "@/lib/auth/account-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const initial: EmployerActionResult = {};
+const initial: AccountActionResult = {};
 
-type EmployerAccountFormProps = {
-  fullName: string | null;
+type EmailUpdateFormProps = {
   email: string | null;
 };
 
-export function EmployerAccountForm({
-  fullName,
-  email,
-}: EmployerAccountFormProps) {
-  const [state, action, pending] = useActionState(
-    updateEmployerAccount,
-    initial
-  );
+export function EmailUpdateForm({ email }: EmailUpdateFormProps) {
+  const [state, action, pending] = useActionState(updateAccountEmail, initial);
 
   return (
-    <form key={fullName ?? "account"} action={action} className="space-y-4">
+    <form key={email ?? "email"} action={action} className="space-y-4">
       {state.error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
           {state.error}
@@ -38,25 +31,27 @@ export function EmployerAccountForm({
         </p>
       )}
       <div className="space-y-2">
-        <Label htmlFor="fullName">Your name (hiring contact)</Label>
+        <Label htmlFor="email">Email address</Label>
         <Input
-          id="fullName"
-          name="fullName"
-          defaultValue={fullName ?? ""}
+          id="email"
+          name="email"
+          type="email"
+          defaultValue={email ?? ""}
           required
           disabled={pending}
+          autoComplete="email"
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" value={email ?? ""} disabled className="bg-muted" />
+        <p className="text-xs text-muted-foreground">
+          Changing your email may require confirmation via a link we send to the
+          new address.
+        </p>
       </div>
       <Button
         type="submit"
         disabled={pending}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
-        {pending ? "Saving…" : "Save account"}
+        {pending ? "Saving…" : "Update email"}
       </Button>
     </form>
   );

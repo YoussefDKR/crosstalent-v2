@@ -17,13 +17,13 @@ const CHECKS: {
 }[] = [
   {
     key: "name",
-    label: "Full name",
+    label: "Full name (Settings)",
     weight: 8,
     test: (d) => Boolean(d.profile.fullName?.trim()),
   },
   {
     key: "photo",
-    label: "Profile photo",
+    label: "Profile photo (Settings)",
     weight: 7,
     test: (d) => Boolean(d.profile.avatarUrl?.trim()),
   },

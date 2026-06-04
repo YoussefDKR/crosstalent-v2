@@ -5,7 +5,7 @@ import { AudienceSplit } from "@/components/landing/audience-split";
 import { Testimonials } from "@/components/landing/testimonials";
 import { CtaSection } from "@/components/landing/cta-section";
 import { CandidateHome } from "@/components/home/candidate-home";
-import { EmployerHome } from "@/components/home/employer-home";
+import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/auth/session";
 
 type LandingPageProps = {
@@ -21,7 +21,7 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
   }
 
   if (profile?.role === "employer") {
-    return <EmployerHome profile={profile} />;
+    redirect("/employer/dashboard");
   }
 
   return (

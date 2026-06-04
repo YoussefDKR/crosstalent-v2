@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, Briefcase, MapPin } from "lucide-react";
 import { ApplicationActions } from "@/components/employer/application-actions";
-import { EmployerNav } from "@/components/employer/employer-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { applicationStatusLabel } from "@/lib/applications/labels";
 import { getEmployerApplication } from "@/lib/applications/queries";
+import { markApplicationViewed } from "@/lib/applications/views";
 import { countryLabel } from "@/lib/employer/candidate-search";
 
 type ApplicationDetailPageProps = {
@@ -43,14 +43,14 @@ export default async function EmployerApplicationDetailPage({
   const application = await getEmployerApplication(profile.id, id);
   if (!application) notFound();
 
+  await markApplicationViewed(id, profile.id);
+
   return (
     <DashboardShell
       profile={profile}
       title={application.candidateName}
       description={`Applied to ${application.jobTitle}`}
     >
-      <EmployerNav />
-
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"

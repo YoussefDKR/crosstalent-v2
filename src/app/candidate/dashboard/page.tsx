@@ -10,7 +10,6 @@ import {
   Wrench,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { CandidateNav } from "@/components/candidate/candidate-nav";
 import { ProfileCompletionCard } from "@/components/candidate/profile-completion";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -43,9 +42,7 @@ export default async function CandidateDashboardPage() {
       title={`Welcome back, ${firstName}`}
       description="Track your profile strength and get ready for European opportunities."
     >
-      <CandidateNav />
-
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <ProfileCompletionCard completion={completion} />
         </div>
@@ -77,7 +74,7 @@ export default async function CandidateDashboardPage() {
         </Card>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {[
           {
             href: siteConfig.links.jobs,

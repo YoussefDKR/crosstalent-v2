@@ -13,6 +13,13 @@ export type JobActionResult = {
   success?: string;
 };
 
+export type JobFormIntent =
+  | "draft"
+  | "publish"
+  | "save"
+  | "close"
+  | "reopen";
+
 const EMPLOYER_JOB_PATHS = ["/employer/jobs", "/employer/dashboard", "/jobs"];
 
 function revalidateJobPaths() {
@@ -28,23 +35,54 @@ async function requireEmployerId(): Promise<string> {
   return profile.id;
 }
 
-function jobPayloadWithPublishTime(
-  payload: ReturnType<typeof parseJobForm>
-): ReturnType<typeof parseJobForm> & { published_at?: string | null } {
-  if (payload.status === "published") {
-    return { ...payload, published_at: new Date().toISOString() };
+function resolveJobStatus(
+  intent: JobFormIntent,
+  currentStatus: JobStatus
+): JobStatus {
+  switch (intent) {
+    case "publish":
+    case "reopen":
+      return "published";
+    case "draft":
+      return "draft";
+    case "close":
+      return "closed";
+    case "save":
+    default:
+      return currentStatus;
   }
-  if (payload.status === "draft") {
-    return { ...payload, published_at: null };
-  }
-  return payload;
 }
 
-function parseJobForm(formData: FormData) {
-  const status = String(formData.get("status") ?? "draft") as JobStatus;
-  const validStatuses: JobStatus[] = ["draft", "published", "closed"];
+function applyPublishTimestamps(
+  status: JobStatus,
+  existingPublishedAt: string | null
+): { status: JobStatus; published_at: string | null } {
+  if (status === "published") {
+    return {
+      status,
+      published_at: existingPublishedAt ?? new Date().toISOString(),
+    };
+  }
+  if (status === "draft") {
+    return { status, published_at: null };
+  }
+  return { status, published_at: existingPublishedAt };
+}
+
+function parseJobForm(formData: FormData, currentStatus: JobStatus = "draft") {
+  const intent = String(formData.get("intent") ?? "draft") as JobFormIntent;
+  const validIntents: JobFormIntent[] = [
+    "draft",
+    "publish",
+    "save",
+    "close",
+    "reopen",
+  ];
+  const resolvedIntent = validIntents.includes(intent) ? intent : "draft";
+  const status = resolveJobStatus(resolvedIntent, currentStatus);
 
   return {
+    intent: resolvedIntent,
     title: String(formData.get("title") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     requirements: String(formData.get("requirements") ?? "").trim() || null,
@@ -63,7 +101,7 @@ function parseJobForm(formData: FormData) {
     salary_currency: String(formData.get("salaryCurrency") ?? "EUR").trim(),
     skills: parseSkillsParam(String(formData.get("skills") ?? "")),
     languages: parseSkillsParam(String(formData.get("languages") ?? "")),
-    status: validStatuses.includes(status) ? status : "draft",
+    status,
   };
 }
 
@@ -73,16 +111,37 @@ export async function createJob(
 ): Promise<JobActionResult> {
   try {
     const employerId = await requireEmployerId();
-    const payload = jobPayloadWithPublishTime(parseJobForm(formData));
+    const parsed = parseJobForm(formData, "draft");
 
-    if (!payload.title || !payload.description) {
+    if (!parsed.title || !parsed.description) {
       return { error: "Title and description are required." };
     }
+
+    const status =
+      parsed.intent === "publish" ? "published" : "draft";
+    const { published_at } = applyPublishTimestamps(status, null);
 
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("jobs")
-      .insert({ ...payload, employer_id: employerId })
+      .insert({
+        employer_id: employerId,
+        title: parsed.title,
+        description: parsed.description,
+        requirements: parsed.requirements,
+        employment_type: parsed.employment_type,
+        experience_level: parsed.experience_level,
+        remote_type: parsed.remote_type,
+        location_city: parsed.location_city,
+        location_country: parsed.location_country,
+        salary_min: parsed.salary_min,
+        salary_max: parsed.salary_max,
+        salary_currency: parsed.salary_currency,
+        skills: parsed.skills,
+        languages: parsed.languages,
+        status,
+        published_at,
+      })
       .select("id")
       .single();
 
@@ -103,38 +162,51 @@ export async function updateJob(
 ): Promise<JobActionResult> {
   try {
     const employerId = await requireEmployerId();
-    const payload = jobPayloadWithPublishTime(parseJobForm(formData));
+    const supabase = await createClient();
 
-    if (!payload.title || !payload.description) {
+    const { data: existing, error: fetchError } = await supabase
+      .from("jobs")
+      .select("status, published_at")
+      .eq("id", jobId)
+      .eq("employer_id", employerId)
+      .maybeSingle();
+
+    if (fetchError || !existing) {
+      return { error: "Job not found." };
+    }
+
+    const parsed = parseJobForm(
+      formData,
+      existing.status as JobStatus
+    );
+
+    if (!parsed.title || !parsed.description) {
       return { error: "Title and description are required." };
     }
 
-    const supabase = await createClient();
-    const { error } = await supabase
-      .from("jobs")
-      .update(payload)
-      .eq("id", jobId)
-      .eq("employer_id", employerId);
-
-    if (error) return { error: error.message };
-
-    revalidateJobPaths();
-    return { success: "Job saved." };
-  } catch {
-    return { error: "Something went wrong." };
-  }
-}
-
-export async function publishJob(jobId: string): Promise<JobActionResult> {
-  try {
-    const employerId = await requireEmployerId();
-    const supabase = await createClient();
+    const { published_at } = applyPublishTimestamps(
+      parsed.status,
+      existing.published_at
+    );
 
     const { error } = await supabase
       .from("jobs")
       .update({
-        status: "published",
-        published_at: new Date().toISOString(),
+        title: parsed.title,
+        description: parsed.description,
+        requirements: parsed.requirements,
+        employment_type: parsed.employment_type,
+        experience_level: parsed.experience_level,
+        remote_type: parsed.remote_type,
+        location_city: parsed.location_city,
+        location_country: parsed.location_country,
+        salary_min: parsed.salary_min,
+        salary_max: parsed.salary_max,
+        salary_currency: parsed.salary_currency,
+        skills: parsed.skills,
+        languages: parsed.languages,
+        status: parsed.status,
+        published_at,
       })
       .eq("id", jobId)
       .eq("employer_id", employerId);
@@ -142,10 +214,75 @@ export async function publishJob(jobId: string): Promise<JobActionResult> {
     if (error) return { error: error.message };
 
     revalidateJobPaths();
-    return { success: "Job is now live on the job board." };
+
+    if (parsed.intent === "publish" || parsed.intent === "reopen") {
+      return { success: "Job is live on the job board." };
+    }
+    if (parsed.intent === "close") {
+      return { success: "Job marked as closed." };
+    }
+    if (parsed.intent === "draft") {
+      return { success: "Job moved to draft." };
+    }
+    return { success: "Job saved." };
   } catch {
     return { error: "Something went wrong." };
   }
+}
+
+async function setJobStatus(
+  jobId: string,
+  status: JobStatus
+): Promise<JobActionResult> {
+  try {
+    const employerId = await requireEmployerId();
+    const supabase = await createClient();
+
+    const { data: existing } = await supabase
+      .from("jobs")
+      .select("published_at")
+      .eq("id", jobId)
+      .eq("employer_id", employerId)
+      .maybeSingle();
+
+    if (!existing) return { error: "Job not found." };
+
+    const { published_at } = applyPublishTimestamps(
+      status,
+      existing.published_at
+    );
+
+    const { error } = await supabase
+      .from("jobs")
+      .update({ status, published_at })
+      .eq("id", jobId)
+      .eq("employer_id", employerId);
+
+    if (error) return { error: error.message };
+
+    revalidateJobPaths();
+    return { success: "Job updated." };
+  } catch {
+    return { error: "Something went wrong." };
+  }
+}
+
+export async function publishJob(jobId: string): Promise<JobActionResult> {
+  const result = await setJobStatus(jobId, "published");
+  if (result.success) return { success: "Job is now live on the job board." };
+  return result;
+}
+
+export async function closeJob(jobId: string): Promise<JobActionResult> {
+  const result = await setJobStatus(jobId, "closed");
+  if (result.success) return { success: "Job closed." };
+  return result;
+}
+
+export async function moveJobToDraft(jobId: string): Promise<JobActionResult> {
+  const result = await setJobStatus(jobId, "draft");
+  if (result.success) return { success: "Job moved to draft." };
+  return result;
 }
 
 export async function deleteJob(jobId: string): Promise<JobActionResult> {

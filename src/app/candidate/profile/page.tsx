@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { AccountInfoForm } from "@/components/candidate/account-info-form";
-import { ImageUpload } from "@/components/shared/image-upload";
-import { CandidateNav } from "@/components/candidate/candidate-nav";
 import { CvUpload } from "@/components/candidate/cv-upload";
 import { ExperienceSection } from "@/components/candidate/experience-section";
 import { LanguagesSection } from "@/components/candidate/languages-section";
+import { ProfilePageHeader } from "@/components/candidate/profile-page-header";
 import { ProfileCompletionCard } from "@/components/candidate/profile-completion";
 import { ProfileDetailsForm } from "@/components/candidate/profile-details-form";
 import { SectionCard } from "@/components/candidate/section-card";
@@ -33,40 +31,15 @@ export default async function CandidateProfilePage() {
     : null;
 
   return (
-    <DashboardShell
-      profile={profile}
-      title="My profile"
-      description="Build a complete profile so European employers can discover and trust you."
-    >
-      <CandidateNav />
+    <DashboardShell profile={profile}>
+      <ProfilePageHeader data={data} />
 
-      <div className="mb-8">
-        <ProfileCompletionCard completion={completion} compact />
-      </div>
-
-      <div className="space-y-8">
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_280px]">
+        <div className="space-y-8">
         <SectionCard
-          title="Account"
-          description="Your photo and name appear when employers view your profile."
-        >
-          <ImageUpload
-            kind="avatar"
-            uploadUrl="/api/upload/avatar"
-            pathOrUrl={data.profile.avatarUrl}
-            displayName={data.profile.fullName}
-            label="Profile photo"
-          />
-          <div className="mt-6 border-t border-border pt-6">
-            <AccountInfoForm
-              fullName={data.profile.fullName}
-              email={data.profile.email}
-            />
-          </div>
-        </SectionCard>
-
-        <SectionCard
-          title="Professional details"
-          description="Headline, bio, and links help you stand out."
+          id="about"
+          title="Professional summary"
+          description="Headline, bio, location, and links employers see on your profile."
         >
           <ProfileDetailsForm details={data.details} />
         </SectionCard>
@@ -107,6 +80,11 @@ export default async function CandidateProfilePage() {
         >
           <ExperienceSection experiences={data.experiences} />
         </SectionCard>
+        </div>
+
+        <aside className="h-fit">
+          <ProfileCompletionCard completion={completion} />
+        </aside>
       </div>
     </DashboardShell>
   );

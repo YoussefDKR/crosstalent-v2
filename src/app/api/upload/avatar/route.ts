@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const profile = await getCurrentProfile();
-  if (!profile || profile.role !== "candidate") {
+  if (!profile || (profile.role !== "candidate" && profile.role !== "employer")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -65,7 +65,10 @@ export async function POST(request: Request) {
     }
 
     revalidatePath("/candidate/profile");
+    revalidatePath("/candidate/settings");
     revalidatePath("/candidate/dashboard");
+    revalidatePath("/employer/settings");
+    revalidatePath("/employer/dashboard");
     revalidatePath("/employer/candidates", "layout");
 
     return NextResponse.json({
@@ -82,7 +85,7 @@ export async function POST(request: Request) {
 
 export async function DELETE() {
   const profile = await getCurrentProfile();
-  if (!profile || profile.role !== "candidate") {
+  if (!profile || (profile.role !== "candidate" && profile.role !== "employer")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -99,7 +102,10 @@ export async function DELETE() {
   }
 
   revalidatePath("/candidate/profile");
+  revalidatePath("/candidate/settings");
   revalidatePath("/candidate/dashboard");
+  revalidatePath("/employer/settings");
+  revalidatePath("/employer/dashboard");
 
   return NextResponse.json({ success: true });
 }

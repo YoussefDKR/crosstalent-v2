@@ -15,15 +15,12 @@ export function HowItWorks() {
     <section id="how-it-works" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
-            How it works
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            Hire and get hired across borders — in three steps
+          <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
+            How CrossTalent works
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            A streamlined experience built for candidates in MENA and employers
-            across Europe.
+            Three simple steps from profile to your next role with a European
+            company.
           </p>
         </div>
 
@@ -39,11 +36,8 @@ export function HowItWorks() {
                 transition={{ delay: index * 0.1, duration: 0.45 }}
                 className="relative rounded-lg border border-border bg-white p-8 shadow-sm transition-shadow hover:shadow-md"
               >
-                <span className="text-xs font-bold tracking-widest text-[#2563EB]">
-                  STEP {step.step}
-                </span>
-                <div className="mt-6 flex size-12 items-center justify-center rounded-lg bg-[#0F172A] text-white">
-                  <Icon className="size-6" strokeWidth={1.75} />
+                <div className="flex size-14 items-center justify-center rounded-full border-2 border-[#2563EB]/20 bg-[#2563EB]/5 text-[#2563EB]">
+                  <Icon className="size-7" strokeWidth={1.75} />
                 </div>
                 <h3 className="mt-6 text-xl font-semibold text-[#0F172A]">
                   {step.title}

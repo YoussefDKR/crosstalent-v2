@@ -10,7 +10,11 @@ export type EmployerActionResult = {
   success?: string;
 };
 
-const EMPLOYER_PATHS = ["/employer/dashboard", "/employer/company"];
+const EMPLOYER_PATHS = [
+  "/employer/dashboard",
+  "/employer/company",
+  "/employer/settings",
+];
 
 function revalidateEmployer() {
   EMPLOYER_PATHS.forEach((path) => revalidatePath(path));
@@ -23,33 +27,6 @@ async function requireEmployerId(): Promise<string> {
   }
   await ensureCompanyProfileRow(profile.id);
   return profile.id;
-}
-
-export async function updateEmployerAccount(
-  _prev: EmployerActionResult,
-  formData: FormData
-): Promise<EmployerActionResult> {
-  try {
-    const userId = await requireEmployerId();
-    const fullName = String(formData.get("fullName") ?? "").trim();
-
-    if (!fullName) {
-      return { error: "Full name is required." };
-    }
-
-    const supabase = await createClient();
-    const { error } = await supabase
-      .from("profiles")
-      .update({ full_name: fullName })
-      .eq("id", userId);
-
-    if (error) return { error: error.message };
-
-    revalidateEmployer();
-    return { success: "Account details saved." };
-  } catch {
-    return { error: "Something went wrong." };
-  }
 }
 
 export async function updateCompanyProfile(

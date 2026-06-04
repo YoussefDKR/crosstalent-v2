@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { ExternalLink, Pencil } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { locationLabel, statusLabel } from "@/lib/jobs/labels";
 import type { JobRow } from "@/types/jobs";
-import { DeleteJobButton } from "./delete-job-button";
-import { PublishJobButton } from "./publish-job-button";
+import { JobStatusButtons } from "./job-status-buttons";
 
 type EmployerJobsListProps = {
   jobs: JobRow[];
@@ -25,7 +24,7 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
       <div className="rounded-lg border border-dashed border-border bg-white p-10 text-center">
         <p className="font-medium text-[#0F172A]">No job posts yet</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Create your first role and publish it to appear on the public job board.
+          Create your first role and post it to appear on the public job board.
         </p>
         <Link href="/employer/jobs/new" className="mt-6 inline-block">
           <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
@@ -54,9 +53,8 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
               {locationLabel(job.location_city, job.location_country)}
             </p>
             {job.status === "draft" && (
-              <p className="mt-2 text-xs text-amber-800 bg-amber-50 rounded-md px-2 py-1.5 inline-block">
-                Not on the public job board — publish or set status to Published
-                and save.
+              <p className="mt-2 inline-block rounded-md bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
+                Not on the job board — use Post job when you are ready.
               </p>
             )}
             {job.status === "published" && (
@@ -69,16 +67,11 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
               </Link>
             )}
           </div>
-          <div className="flex shrink-0 flex-wrap gap-2">
-            {job.status === "draft" && <PublishJobButton jobId={job.id} />}
-            <Link href={`/employer/jobs/${job.id}/edit`}>
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <Pencil className="size-3.5" />
-                Edit
-              </Button>
-            </Link>
-            <DeleteJobButton jobId={job.id} jobTitle={job.title} />
-          </div>
+          <JobStatusButtons
+            jobId={job.id}
+            jobTitle={job.title}
+            status={job.status}
+          />
         </li>
       ))}
     </ul>
