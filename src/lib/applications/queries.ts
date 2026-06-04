@@ -4,7 +4,6 @@ import type {
   CandidateApplicationStatus,
   EmployerApplicationDetail,
   EmployerApplicationListItem,
-  JobApplicationRow,
 } from "@/types/applications";
 
 export async function getCandidateApplicationForJob(

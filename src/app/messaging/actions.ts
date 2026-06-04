@@ -6,8 +6,6 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { findConversationWithCandidate } from "@/lib/messaging/queries";
 import { createClient } from "@/lib/supabase/server";
-import { messagesBasePath } from "@/lib/messaging/paths";
-
 export type MessageActionResult = {
   error?: string;
 };

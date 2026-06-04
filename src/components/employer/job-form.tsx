@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import {
   createJob,
@@ -258,9 +259,9 @@ export function JobForm({ job, mode }: JobFormProps) {
           <strong>Draft</strong> jobs are only visible to you. Choose{" "}
           <strong>Published</strong> and click Save (or use Publish on the list)
           so candidates see this role on{" "}
-          <a href="/jobs" className="font-medium underline">
+          <Link href="/jobs" className="font-medium underline">
             /jobs
-          </a>
+          </Link>
           .
         </p>
       </div>

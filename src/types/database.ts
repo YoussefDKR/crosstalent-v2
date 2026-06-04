@@ -208,8 +208,31 @@ export type Database = {
           skills?: string[];
           languages?: string[];
           status?: string;
+          published_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["jobs"]["Insert"]>;
+        Relationships: [];
+      };
+      job_applications: {
+        Row: {
+          id: string;
+          job_id: string;
+          candidate_id: string;
+          status: Database["public"]["Enums"]["application_status"];
+          note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          job_id: string;
+          candidate_id: string;
+          status?: Database["public"]["Enums"]["application_status"];
+          note?: string | null;
+        };
+        Update: {
+          status?: Database["public"]["Enums"]["application_status"];
+          note?: string | null;
+        };
         Relationships: [];
       };
       conversations: {
@@ -281,6 +304,7 @@ export type Database = {
     };
     Enums: {
       user_role: "candidate" | "employer";
+      application_status: "pending" | "accepted" | "rejected";
     };
   };
 };

@@ -120,7 +120,7 @@ export async function listPublishedJobs(
 
   if (!data) return { jobs: [] };
 
-  let jobs = data as JobRow[];
+  const jobs = data as JobRow[];
 
   if (filters.q) {
     const q = filters.q.toLowerCase();

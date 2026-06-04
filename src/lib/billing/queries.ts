@@ -12,8 +12,7 @@ import type {
 } from "@/types/billing";
 
 function mapBillingState(
-  row: EmployerSubscriptionRow | null,
-  userId: string
+  row: EmployerSubscriptionRow | null
 ): EmployerBillingState {
   const billingEnforced = isStripeConfigured();
   const status: SubscriptionStatus = row?.status ?? "inactive";
@@ -49,7 +48,7 @@ export async function getEmployerBillingState(
     .eq("user_id", employerId)
     .maybeSingle();
 
-  return mapBillingState((data as EmployerSubscriptionRow | null) ?? null, employerId);
+  return mapBillingState((data as EmployerSubscriptionRow | null) ?? null);
 }
 
 export function planDisplayName(planId: string): string {

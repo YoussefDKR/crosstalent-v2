@@ -44,9 +44,17 @@ export async function upsertSubscriptionFromStripe(
       ? subscription.customer
       : subscription.customer.id;
 
-  const periodEnd = subscription.current_period_end
-    ? new Date(subscription.current_period_end * 1000).toISOString()
-    : null;
+  const periodEndUnix =
+    subscription.items?.data?.[0] &&
+    "current_period_end" in subscription.items.data[0] &&
+    typeof subscription.items.data[0].current_period_end === "number"
+      ? subscription.items.data[0].current_period_end
+      : (subscription as Stripe.Subscription & { current_period_end?: number })
+          .current_period_end;
+  const periodEnd =
+    typeof periodEndUnix === "number"
+      ? new Date(periodEndUnix * 1000).toISOString()
+      : null;
 
   const { error } = await admin.from("employer_subscriptions").upsert(
     {

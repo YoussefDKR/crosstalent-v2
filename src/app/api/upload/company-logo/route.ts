@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import {
-  COMPANY_LOGO_PATH,
-  IMAGE_UPLOAD_MAX_BYTES,
-  PROFILE_IMAGES_BUCKET,
-} from "@/config/images";
+import { COMPANY_LOGO_PATH, IMAGE_UPLOAD_MAX_BYTES } from "@/config/images";
 import { compressCompanyLogo } from "@/lib/images/compress";
 import { removeStorageImageIfOwned } from "@/lib/images/storage";
 import { uploadProfileImage } from "@/lib/images/upload-storage";
