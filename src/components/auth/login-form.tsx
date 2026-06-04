@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   getPostLoginPath,
@@ -18,7 +17,6 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ redirectTo, authError }: LoginFormProps) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(authError ?? null);
   const [pending, setPending] = useState(false);
 
@@ -41,8 +39,8 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
     }
 
     const path = getPostLoginPath(result.role, redirectTo);
-    router.refresh();
-    router.push(path);
+    // Full navigation so the marketing layout header picks up the new session.
+    window.location.href = path;
   }
 
   return (
