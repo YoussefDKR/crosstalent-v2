@@ -1,4 +1,4 @@
-import { isBrandedGoogleOAuthConfigured } from "@/config/google-auth";
+import { isBrandedGoogleOAuthEnabled } from "@/config/google-auth";
 import { createClient } from "@/lib/supabase/client";
 import { AUTH_ROUTES } from "@/lib/auth/routes";
 import { getSiteUrl } from "@/lib/site-url";
@@ -49,7 +49,7 @@ export function getBrandedGoogleAuthPath(
 export async function signInWithGoogle(
   options: GoogleSignInOptions = {}
 ): Promise<{ error: string } | void> {
-  if (isBrandedGoogleOAuthConfigured()) {
+  if (isBrandedGoogleOAuthEnabled()) {
     window.location.assign(getBrandedGoogleAuthPath(options));
     return;
   }

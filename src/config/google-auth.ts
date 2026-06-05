@@ -8,7 +8,12 @@ export function getGoogleClientSecret(): string | null {
   return secret || null;
 }
 
-/** Branded Google sign-in (shows CrossTalent on Google's screen, not *.supabase.co). */
+/** Client-side: only the public client ID is available in the browser. */
+export function isBrandedGoogleOAuthEnabled(): boolean {
+  return Boolean(getGoogleClientId());
+}
+
+/** Server-side: needs the secret to exchange the auth code. */
 export function isBrandedGoogleOAuthConfigured(): boolean {
   return Boolean(getGoogleClientId() && getGoogleClientSecret());
 }
