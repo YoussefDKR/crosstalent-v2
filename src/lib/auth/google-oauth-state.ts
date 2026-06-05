@@ -6,6 +6,7 @@ export type GoogleOAuthState = {
   nonce: string;
   intentId?: string;
   next: string;
+  redirectUri: string;
 };
 
 type SignedStatePayload = GoogleOAuthState & { exp: number };
@@ -65,6 +66,7 @@ export function verifyGoogleOAuthState(
     if (
       !body.nonce ||
       !body.next ||
+      !body.redirectUri ||
       !Number.isFinite(body.exp) ||
       Date.now() > body.exp
     ) {
@@ -75,10 +77,18 @@ export function verifyGoogleOAuthState(
       return null;
     }
 
+    if (
+      !body.redirectUri.startsWith("https://") &&
+      !body.redirectUri.startsWith("http://localhost")
+    ) {
+      return null;
+    }
+
     return {
       nonce: body.nonce,
       intentId: body.intentId,
       next: body.next,
+      redirectUri: body.redirectUri,
     };
   } catch {
     return null;

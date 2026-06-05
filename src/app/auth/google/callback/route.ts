@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
-import {
-  exchangeGoogleAuthCode,
-  getGoogleOAuthRedirectUri,
-} from "@/lib/auth/google-oauth";
+import { exchangeGoogleAuthCode } from "@/lib/auth/google-oauth";
 import { verifyGoogleOAuthState } from "@/lib/auth/google-oauth-state";
 import { getPostLoginPath } from "@/lib/auth/post-login";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
-import { getSiteUrl } from "@/lib/site-url";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -35,8 +31,10 @@ export async function GET(request: Request) {
     return NextResponse.redirect(url);
   }
 
-  const redirectUri = getGoogleOAuthRedirectUri(getSiteUrl());
-  const tokenResult = await exchangeGoogleAuthCode(code, redirectUri);
+  const tokenResult = await exchangeGoogleAuthCode(
+    code,
+    parsed.redirectUri
+  );
 
   if (!tokenResult.ok) {
     const url = new URL(`${origin}/login`);

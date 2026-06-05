@@ -1,13 +1,10 @@
 import { NextResponse } from "next/server";
 import { isBrandedGoogleOAuthConfigured } from "@/config/google-auth";
 import { generateGoogleNonce } from "@/lib/auth/google-nonce";
-import {
-  buildGoogleAuthUrl,
-  getGoogleOAuthRedirectUri,
-} from "@/lib/auth/google-oauth";
+import { buildGoogleAuthUrl } from "@/lib/auth/google-oauth";
 import { createGoogleOAuthState } from "@/lib/auth/google-oauth-state";
+import { resolveGoogleOAuthRedirectUri } from "@/lib/auth/google-redirect-uri";
 import { parseSignupRole } from "@/lib/auth/routes";
-import { getSiteUrl } from "@/lib/site-url";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -42,11 +39,13 @@ export async function GET(request: Request) {
     intentId = data as string;
   }
 
+  const redirectUri = resolveGoogleOAuthRedirectUri(request);
   const [nonce, hashedNonce] = generateGoogleNonce();
   const state = createGoogleOAuthState({
     nonce,
     intentId,
     next: safeNext,
+    redirectUri,
   });
 
   if (!state) {
@@ -55,8 +54,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(url);
   }
 
-  const siteUrl = getSiteUrl();
-  const redirectUri = getGoogleOAuthRedirectUri(siteUrl);
   const authUrl = buildGoogleAuthUrl({
     redirectUri,
     state,
