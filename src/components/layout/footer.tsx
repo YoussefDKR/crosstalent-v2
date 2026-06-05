@@ -20,7 +20,7 @@ const footerLinks = {
   ],
   Company: [
     { label: "Contact", href: siteConfig.links.contact },
-    { label: "Privacy", href: "/privacy" },
+    { label: "Privacy", href: siteConfig.links.privacy },
   ],
 };
 
