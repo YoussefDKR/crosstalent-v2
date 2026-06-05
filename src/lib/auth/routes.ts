@@ -18,6 +18,7 @@ export const PUBLIC_PATH_PREFIXES = [
   "/login",
   "/signup",
   "/auth/callback",
+  "/auth/google",
   "/pricing",
   "/why-crosstalent",
   "/for-employers",

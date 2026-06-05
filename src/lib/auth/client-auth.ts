@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/client";
-import { getDashboardPath } from "@/lib/auth/routes";
+import { getPostLoginPath } from "@/lib/auth/post-login";
 import type { UserRole } from "@/types";
+
+export { getPostLoginPath };
 
 export async function resolveUserRoleClient(
   userId: string
@@ -61,23 +63,6 @@ export async function signInWithEmail(
   }
 
   return { role };
-}
-
-function rolePathPrefix(role: UserRole): string {
-  if (role === "admin") return "/admin";
-  if (role === "employer") return "/employer";
-  return "/candidate";
-}
-
-export function getPostLoginPath(
-  role: UserRole,
-  redirectTo?: string
-): string {
-  const prefix = rolePathPrefix(role);
-  if (redirectTo && redirectTo.startsWith(prefix)) {
-    return redirectTo;
-  }
-  return getDashboardPath(role);
 }
 
 export async function signOutClient(): Promise<void> {

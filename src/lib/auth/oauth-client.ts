@@ -1,3 +1,4 @@
+import { isBrandedGoogleOAuthConfigured } from "@/config/google-auth";
 import { createClient } from "@/lib/supabase/client";
 import { AUTH_ROUTES } from "@/lib/auth/routes";
 import { getSiteUrl } from "@/lib/site-url";
@@ -35,9 +36,24 @@ export async function createOAuthSignupIntent(
   return { intentId: data as string };
 }
 
+export function getBrandedGoogleAuthPath(
+  options: GoogleSignInOptions = {}
+): string {
+  const params = new URLSearchParams();
+  if (options.signupRole) params.set("role", options.signupRole);
+  if (options.redirectTo) params.set("next", options.redirectTo);
+  const query = params.toString();
+  return `/auth/google${query ? `?${query}` : ""}`;
+}
+
 export async function signInWithGoogle(
   options: GoogleSignInOptions = {}
 ): Promise<{ error: string } | void> {
+  if (isBrandedGoogleOAuthConfigured()) {
+    window.location.assign(getBrandedGoogleAuthPath(options));
+    return;
+  }
+
   const supabase = createClient();
   let intentId: string | undefined;
 
