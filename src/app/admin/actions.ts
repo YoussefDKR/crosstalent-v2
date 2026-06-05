@@ -15,6 +15,8 @@ const ADMIN_PATHS = [
   "/admin/users",
   "/admin/jobs",
   "/admin/applications",
+  "/admin/subscriptions",
+  "/admin/settings",
   "/jobs",
 ];
 

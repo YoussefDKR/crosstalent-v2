@@ -1,11 +1,26 @@
+import { EMPLOYER_PLANS, STARTER_PLAN } from "@/config/billing";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isStripeConfigured } from "@/lib/stripe/config";
 import type {
   AdminApplicationRow,
   AdminJobRow,
+  AdminRevenueStats,
   AdminStats,
+  AdminSubscriptionRow,
   AdminUserRow,
 } from "@/lib/admin/types";
+import type { SubscriptionStatus } from "@/types/billing";
 import type { UserRole } from "@/types";
+
+function planMonthlyValue(planId: string): number {
+  if (planId === STARTER_PLAN.id) return 0;
+  const plan = EMPLOYER_PLANS.find((p) => p.id === planId);
+  return plan?.monthlyPrice ?? 0;
+}
+
+function countsTowardMrr(status: SubscriptionStatus): boolean {
+  return status === "active" || status === "trialing";
+}
 
 function startOfTodayUtc(): string {
   const d = new Date();
@@ -110,7 +125,121 @@ export async function getAdminStats(): Promise<AdminStats> {
     applicationsToday: applicationsToday ?? 0,
     totalApplications: totalApplications ?? 0,
     pendingApplications: pendingApplications ?? 0,
+    ...(await getAdminRevenueSummary()),
   };
+}
+
+async function getAdminRevenueSummary(): Promise<{
+  activeSubscriptions: number;
+  estimatedMrr: number;
+}> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("employer_subscriptions")
+    .select("plan_id, status");
+
+  let activeSubscriptions = 0;
+  let estimatedMrr = 0;
+
+  for (const row of data ?? []) {
+    const status = row.status as SubscriptionStatus;
+    if (!countsTowardMrr(status)) continue;
+    activeSubscriptions += 1;
+    estimatedMrr += planMonthlyValue(row.plan_id);
+  }
+
+  return { activeSubscriptions, estimatedMrr };
+}
+
+export async function getAdminRevenueStats(): Promise<AdminRevenueStats> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("employer_subscriptions")
+    .select("plan_id, status");
+
+  const stats: AdminRevenueStats = {
+    activeSubscriptions: 0,
+    trialingSubscriptions: 0,
+    inactiveSubscriptions: 0,
+    pastDueSubscriptions: 0,
+    canceledSubscriptions: 0,
+    unpaidSubscriptions: 0,
+    growthSubscribers: 0,
+    scaleSubscribers: 0,
+    starterAccounts: 0,
+    estimatedMrr: 0,
+    stripeConfigured: isStripeConfigured(),
+  };
+
+  for (const row of data ?? []) {
+    const status = row.status as SubscriptionStatus;
+    if (status === "active") stats.activeSubscriptions += 1;
+    else if (status === "trialing") stats.trialingSubscriptions += 1;
+    else if (status === "inactive") stats.inactiveSubscriptions += 1;
+    else if (status === "past_due") stats.pastDueSubscriptions += 1;
+    else if (status === "canceled") stats.canceledSubscriptions += 1;
+    else if (status === "unpaid") stats.unpaidSubscriptions += 1;
+
+    if (row.plan_id === "growth") stats.growthSubscribers += 1;
+    else if (row.plan_id === "scale") stats.scaleSubscribers += 1;
+    else stats.starterAccounts += 1;
+
+    if (countsTowardMrr(status)) {
+      stats.estimatedMrr += planMonthlyValue(row.plan_id);
+    }
+  }
+
+  return stats;
+}
+
+export async function listAdminSubscriptions(): Promise<AdminSubscriptionRow[]> {
+  const supabase = createAdminClient();
+
+  const [{ data: employers, error: employerError }, { data: subs, error }] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("id, full_name, email, created_at")
+        .eq("role", "employer")
+        .order("created_at", { ascending: false }),
+      supabase.from("employer_subscriptions").select("*"),
+    ]);
+
+  if (employerError) throw new Error(employerError.message);
+  if (error) throw new Error(error.message);
+  if (!employers?.length) return [];
+
+  const userIds = employers.map((e) => e.id);
+  const { data: companies } = await supabase
+    .from("company_profiles")
+    .select("user_id, company_name")
+    .in("user_id", userIds);
+
+  const subByUser = new Map((subs ?? []).map((s) => [s.user_id, s]));
+  const companyByUser = new Map(
+    (companies ?? []).map((c) => [c.user_id, c.company_name as string | null])
+  );
+
+  return employers.map((employer) => {
+    const sub = subByUser.get(employer.id);
+    const status = (sub?.status ?? "inactive") as SubscriptionStatus;
+    const planId = sub?.plan_id ?? STARTER_PLAN.id;
+
+    return {
+      user_id: employer.id,
+      employer_name: employer.full_name,
+      employer_email: employer.email,
+      company_name: companyByUser.get(employer.id) ?? null,
+      plan_id: planId,
+      status,
+      stripe_customer_id: sub?.stripe_customer_id ?? null,
+      stripe_subscription_id: sub?.stripe_subscription_id ?? null,
+      current_period_end: sub?.current_period_end ?? null,
+      cancel_at_period_end: sub?.cancel_at_period_end ?? false,
+      monthly_value: countsTowardMrr(status) ? planMonthlyValue(planId) : 0,
+      created_at: sub?.created_at ?? employer.created_at,
+    };
+  });
 }
 
 export async function listAdminUsers(options?: {

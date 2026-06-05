@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import {
   Briefcase,
   ClipboardList,
+  CreditCard,
   LayoutDashboard,
+  Settings,
   Shield,
   Users,
 } from "lucide-react";
@@ -21,6 +23,12 @@ const links = [
     label: "Applications",
     icon: ClipboardList,
   },
+  {
+    href: "/admin/subscriptions",
+    label: "Subscriptions",
+    icon: CreditCard,
+  },
+  { href: "/admin/settings", label: "Profile", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {

@@ -11,17 +11,23 @@ function StatCard({
   value,
   hint,
   href,
+  format,
 }: {
   label: string;
   value: number;
   hint?: string;
   href?: string;
+  format?: "currency";
 }) {
+  const display =
+    format === "currency"
+      ? `€${value.toLocaleString("en-EU")}`
+      : value.toLocaleString("en-EU");
   const content = (
     <div className="rounded-2xl border border-border/80 bg-white p-5 shadow-sm">
       <p className="text-sm text-muted-foreground">{label}</p>
       <p className="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-[#0F172A]">
-        {value}
+        {display}
       </p>
       {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
       {href && (
@@ -94,6 +100,27 @@ export function AdminStats({ stats }: AdminStatsProps) {
             value={stats.jobsRss}
             hint={`${stats.jobsPlatform} employer posts`}
             href="/admin/jobs?source=rss"
+          />
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Revenue
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <StatCard
+            label="Active subscriptions"
+            value={stats.activeSubscriptions}
+            hint="Growth + Scale (active or trial)"
+            href="/admin/subscriptions"
+          />
+          <StatCard
+            label="Estimated MRR"
+            value={stats.estimatedMrr}
+            format="currency"
+            hint="Based on plan list prices"
+            href="/admin/subscriptions"
           />
         </div>
       </section>

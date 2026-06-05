@@ -1,3 +1,4 @@
+import type { SubscriptionStatus } from "@/types/billing";
 import type { JobStatus } from "@/types/jobs";
 import type { UserRole } from "@/types";
 
@@ -16,6 +17,37 @@ export type AdminStats = {
   applicationsToday: number;
   totalApplications: number;
   pendingApplications: number;
+  activeSubscriptions: number;
+  estimatedMrr: number;
+};
+
+export type AdminRevenueStats = {
+  activeSubscriptions: number;
+  trialingSubscriptions: number;
+  inactiveSubscriptions: number;
+  pastDueSubscriptions: number;
+  canceledSubscriptions: number;
+  unpaidSubscriptions: number;
+  growthSubscribers: number;
+  scaleSubscribers: number;
+  starterAccounts: number;
+  estimatedMrr: number;
+  stripeConfigured: boolean;
+};
+
+export type AdminSubscriptionRow = {
+  user_id: string;
+  employer_name: string | null;
+  employer_email: string | null;
+  company_name: string | null;
+  plan_id: string;
+  status: SubscriptionStatus;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+  monthly_value: number;
+  created_at: string;
 };
 
 export type AdminUserRow = {
