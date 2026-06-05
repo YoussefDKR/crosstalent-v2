@@ -10,6 +10,7 @@ import {
   remoteLabel,
 } from "@/lib/jobs/labels";
 import { formatSalaryRange } from "@/lib/jobs/queries";
+import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
 import type { JobWithCompany } from "@/types/jobs";
 
 type JobCardProps = {
@@ -19,6 +20,8 @@ type JobCardProps = {
 export function JobCard({ job }: JobCardProps) {
   const salary = formatSalaryRange(job);
   const logoUrl = resolveImageUrl(job.company_logo_url);
+  const curated = isRssJob(job);
+  const feedLabel = rssSourceLabel(job.external_source);
 
   return (
     <Link href={`/jobs/${job.id}`}>
@@ -48,6 +51,11 @@ export function JobCard({ job }: JobCardProps) {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
+            {curated && feedLabel && (
+              <Badge variant="outline" className="border-[#2563EB]/30 text-[#2563EB]">
+                Curated · {feedLabel}
+              </Badge>
+            )}
             <Badge variant="secondary">{remoteLabel(job.remote_type)}</Badge>
             <Badge variant="secondary">
               {employmentLabel(job.employment_type)}

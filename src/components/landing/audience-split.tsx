@@ -53,7 +53,7 @@ export function AudienceSplit({ profile = null }: AudienceSplitProps) {
               </li>
               <li className="flex items-center gap-2">
                 <Shield className="size-4 text-[#10B981]" />
-                Verified employers only
+                Curated remote & hybrid roles
               </li>
             </ul>
             <Link href={candidateHref} className="mt-8 inline-block">

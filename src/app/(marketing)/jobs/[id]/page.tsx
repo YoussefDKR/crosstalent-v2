@@ -15,6 +15,7 @@ import { formatSalaryRange, getPublishedJob } from "@/lib/jobs/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";
+import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
 
 type JobDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -154,6 +155,8 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             <JobApplySection
               jobId={id}
               isCandidate={profile?.role === "candidate"}
+              externalUrl={isRssJob(job) ? job.external_url : null}
+              externalSourceLabel={rssSourceLabel(job.external_source)}
               application={application}
             />
           </CardContent>

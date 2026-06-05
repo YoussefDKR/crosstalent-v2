@@ -87,6 +87,8 @@ export function ApplyToJobButton({
 type JobApplySectionProps = {
   jobId: string;
   isCandidate: boolean;
+  externalUrl?: string | null;
+  externalSourceLabel?: string | null;
   application: {
     applied: boolean;
     status: ApplicationStatus | null;
@@ -96,8 +98,33 @@ type JobApplySectionProps = {
 export function JobApplySection({
   jobId,
   isCandidate,
+  externalUrl,
+  externalSourceLabel,
   application,
 }: JobApplySectionProps) {
+  if (externalUrl) {
+    return (
+      <div className="mt-10 rounded-lg border border-amber-200/80 bg-amber-50/80 p-6">
+        <p className="text-sm font-medium text-[#0F172A]">Curated listing</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          This role is aggregated from{" "}
+          {externalSourceLabel ?? "a partner job board"}. Apply on the original
+          site — CrossTalent profiles are for direct employer posts as we grow.
+        </p>
+        <a
+          href={externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block"
+        >
+          <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+            View & apply externally
+          </Button>
+        </a>
+      </div>
+    );
+  }
+
   if (isCandidate) {
     return (
       <div className="mt-10 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-6">

@@ -29,6 +29,15 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 13. `migrations/20250610000000_job_applications.sql` — candidates apply to jobs; employer inbox on home
 14. `migrations/20250611000000_notification_reads.sql` — notification read state
 15. `migrations/20250612000000_google_oauth.sql` — Google OAuth signup role intents
+16. `migrations/20250613000000_rss_jobs.sql` — curated remote jobs from RSS feeds
+
+After step 16, set `CRON_SECRET` in Vercel and run a one-time job sync:
+
+```bash
+curl -X POST "https://www.crosstalent.io/api/jobs/sync-rss" -H "Authorization: Bearer YOUR_CRON_SECRET"
+```
+
+Feeds: We Work Remotely, Remotive, Himalayas (see `src/lib/jobs/rss-feeds.ts`).
 
 If you already signed up before step 1, run step 3 (or all three) and sign in again.
 
@@ -46,10 +55,10 @@ In **Authentication → URL configuration**, set:
 - **Site URL:** `http://localhost:3001` (matches `NEXT_PUBLIC_APP_URL` in `.env.local`)
 - **Redirect URLs:** `http://localhost:3001/auth/callback`
 
-Add production URLs when you deploy, for example:
+Production (canonical host is **www**):
 
-- `https://crosstalent.io/auth/callback`
-- `https://www.crosstalent.io/auth/callback`
+- **Site URL:** `https://www.crosstalent.io`
+- **Redirect URLs:** `https://www.crosstalent.io/auth/callback` (keep apex callback too if users land on bare domain before redirect)
 
 For local development without email confirmation, disable **Confirm email** under **Authentication → Providers → Email** (optional).
 
@@ -57,7 +66,7 @@ For local development without email confirmation, disable **Confirm email** unde
 
 1. Run migration `migrations/20250612000000_google_oauth.sql` (OAuth signup role intents).
 2. In [Google Cloud Console](https://console.cloud.google.com/), create an OAuth client (Web application).
-   - **Authorized JavaScript origins:** your Site URL (e.g. `http://localhost:3001`, `https://crosstalent.io`)
+   - **Authorized JavaScript origins:** `http://localhost:3001`, `https://www.crosstalent.io`, `https://crosstalent.io`
    - **Authorized redirect URI:** your Supabase callback, e.g. `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
 3. In Supabase → **Authentication → Providers → Google**, enable Google and paste the **Client ID** and **Client secret**.
 4. Confirm **Redirect URLs** (step 3 above) include every domain users sign in from.

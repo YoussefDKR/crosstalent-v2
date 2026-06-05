@@ -10,7 +10,7 @@ import {
 import { PricingPlans } from "@/components/billing/pricing-plans";
 import { StripeSetupBanner } from "@/components/billing/stripe-setup-banner";
 import { MarketingCtaBand } from "@/components/landing/marketing-cta-band";
-import { Stats } from "@/components/landing/stats";
+import { BetaBanner } from "@/components/landing/beta-banner";
 import { Button } from "@/components/ui/button";
 import {
   employerBenefits,
@@ -107,7 +107,7 @@ export function ForEmployersPage({
         </div>
       </section>
 
-      <Stats />
+      <BetaBanner />
 
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { MarketingCtaBand } from "@/components/landing/marketing-cta-band";
-import { Stats } from "@/components/landing/stats";
+import { BetaBanner } from "@/components/landing/beta-banner";
 import { Button } from "@/components/ui/button";
 import {
   candidateBenefits,
@@ -95,7 +95,7 @@ export function ForCandidatesPage() {
         </div>
       </section>
 
-      <Stats />
+      <BetaBanner />
 
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

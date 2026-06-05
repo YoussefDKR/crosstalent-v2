@@ -28,14 +28,6 @@ export const siteConfig = {
   },
 } as const;
 
-export const stats = [
-  { value: "150,000+", label: "Professionals", icon: "users" as const },
-  { value: "5,000+", label: "Open opportunities", icon: "briefcase" as const },
-  { value: "1,200+", label: "European companies", icon: "building" as const },
-  { value: "8", label: "Countries connected", icon: "globe" as const },
-  { value: "3", label: "Time zones close to Europe", icon: "clock" as const },
-] as const;
-
 export const heroBenefits = [
   {
     title: "Better opportunities",
@@ -75,35 +67,5 @@ export const howItWorksSteps = [
     description:
       "Join great companies and build your future.",
     icon: "message" as const,
-  },
-] as const;
-
-export const testimonials = [
-  {
-    quote:
-      "CrossTalent helped us hire three senior engineers in Berlin within six weeks. The quality of North African talent is exceptional.",
-    author: "Sophie Laurent",
-    role: "Head of Engineering",
-    company: "NordScale GmbH",
-    country: "Germany",
-    initials: "SL",
-  },
-  {
-    quote:
-      "I landed my dream role in Paris without leaving Casablanca for interviews until the final round. The platform feels premium and trustworthy.",
-    author: "Youssef Benali",
-    role: "Product Designer",
-    company: "Hired at PayFlow",
-    country: "Morocco",
-    initials: "YB",
-  },
-  {
-    quote:
-      "Finally a platform that understands cross-border hiring. Our Barcelona team grew 40% with talent from Tunisia and Egypt.",
-    author: "Marco Rossi",
-    role: "Talent Director",
-    company: "VeloTech",
-    country: "Spain",
-    initials: "MR",
   },
 ] as const;

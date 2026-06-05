@@ -3,9 +3,16 @@ export type EmploymentType = "full_time" | "part_time" | "contract" | "internshi
 export type RemoteType = "onsite" | "hybrid" | "remote";
 export type ExperienceLevel = "junior" | "mid" | "senior" | "lead";
 
+export type JobSourceType = "platform" | "rss";
+
 export type JobRow = {
   id: string;
-  employer_id: string;
+  employer_id: string | null;
+  source_type: JobSourceType;
+  external_url: string | null;
+  external_source: string | null;
+  external_guid: string | null;
+  rss_company_name: string | null;
   title: string;
   description: string;
   requirements: string | null;

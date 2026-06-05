@@ -47,22 +47,31 @@ async function attachCompanies(jobs: JobRow[]): Promise<JobWithCompany[]> {
   if (jobs.length === 0) return [];
 
   const supabase = await createClient();
-  const employerIds = [...new Set(jobs.map((j) => j.employer_id))];
+  const employerIds = [
+    ...new Set(
+      jobs.map((j) => j.employer_id).filter((id): id is string => Boolean(id))
+    ),
+  ];
 
-  const { data: companies } = await supabase
-    .from("company_profiles")
-    .select("user_id, company_name, logo_url, headquarters_country")
-    .in("user_id", employerIds);
+  const { data: companies } =
+    employerIds.length > 0
+      ? await supabase
+          .from("company_profiles")
+          .select("user_id, company_name, logo_url, headquarters_country")
+          .in("user_id", employerIds)
+      : { data: [] as CompanySnippet[] };
 
   const byEmployer = new Map(
     (companies ?? []).map((c) => [c.user_id, c as CompanySnippet])
   );
 
   return jobs.map((job) => {
-    const company = byEmployer.get(job.employer_id);
+    const company = job.employer_id
+      ? byEmployer.get(job.employer_id)
+      : undefined;
     return {
       ...job,
-      company_name: company?.company_name ?? null,
+      company_name: job.rss_company_name ?? company?.company_name ?? null,
       company_logo_url: company?.logo_url ?? null,
       headquarters_country: company?.headquarters_country ?? null,
     };

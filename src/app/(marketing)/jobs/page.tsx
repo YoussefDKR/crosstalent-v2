@@ -54,8 +54,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             Job board
           </h1>
           <p className="mt-3 text-muted-foreground">
-            European opportunities for North African talent — filter by role,
-            location, skills, and salary.
+            Remote roles curated from trusted feeds, plus direct employer posts
+            as our beta grows. Filter by role, location, skills, and salary.
           </p>
         </div>
 
@@ -86,8 +86,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             <p className="font-medium text-[#0F172A]">
               {hasActiveFilters
                 ? "No jobs match your filters"
-                : "No published jobs yet"}
+                : "No jobs listed yet"}
             </p>
+            {!hasActiveFilters && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                Curated listings sync from We Work Remotely, Remotive, and
+                Himalayas every few hours after the RSS migration is enabled.
+              </p>
+            )}
             <Link
               href={siteConfig.links.candidateSignup}
               className="mt-6 inline-block text-sm font-medium text-[#2563EB] hover:underline"

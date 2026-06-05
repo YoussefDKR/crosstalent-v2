@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { HeroVisual } from "@/components/landing/hero-visual";
-import { ProfileAvatar } from "@/components/shared/profile-avatar";
+import { Sparkles } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { getDashboardPath } from "@/lib/auth/routes";
 import type { Profile } from "@/types";
@@ -104,31 +104,15 @@ export function Hero({ profile = null }: HeroProps) {
             </motion.div>
 
             {isGuest && (
-              <motion.div
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.28 }}
-                className="mt-8 flex items-center gap-3"
+                className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground"
               >
-                <div className="flex -space-x-2">
-                  {["YB", "SL", "MR"].map((initials, i) => (
-                    <ProfileAvatar
-                      key={initials}
-                      pathOrUrl={null}
-                      name={initials}
-                      size="sm"
-                      className={`ring-2 ring-[#F8FAFC] ${i === 0 ? "z-30" : i === 1 ? "z-20" : "z-10"}`}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Join{" "}
-                  <span className="font-semibold text-[#0F172A]">
-                    150,000+
-                  </span>{" "}
-                  professionals already building their future
-                </p>
-              </motion.div>
+                <Sparkles className="size-4 text-[#2563EB]" aria-hidden />
+                Early access beta — help us build the future of cross-border hiring
+              </motion.p>
             )}
           </div>
 

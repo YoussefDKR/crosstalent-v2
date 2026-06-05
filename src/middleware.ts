@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { redirectApexToWww } from "@/lib/canonical-host";
 import { updateSession } from "@/lib/supabase/middleware";
 import {
   AUTH_ROUTES,
@@ -20,6 +21,9 @@ function redirectWithSession(url: URL, sessionResponse: NextResponse) {
 
 export async function middleware(request: NextRequest) {
   try {
+    const wwwRedirect = redirectApexToWww(request);
+    if (wwwRedirect) return wwwRedirect;
+
     const { supabaseResponse, user, supabase } = await updateSession(request);
     const { pathname } = request.nextUrl;
 

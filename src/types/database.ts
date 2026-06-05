@@ -173,7 +173,12 @@ export type Database = {
       jobs: {
         Row: {
           id: string;
-          employer_id: string;
+          employer_id: string | null;
+          source_type: string;
+          external_url: string | null;
+          external_source: string | null;
+          external_guid: string | null;
+          rss_company_name: string | null;
           title: string;
           description: string;
           requirements: string | null;
@@ -193,7 +198,12 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
-          employer_id: string;
+          employer_id?: string | null;
+          source_type?: string;
+          external_url?: string | null;
+          external_source?: string | null;
+          external_guid?: string | null;
+          rss_company_name?: string | null;
           title: string;
           description: string;
           requirements?: string | null;
