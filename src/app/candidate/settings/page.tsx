@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountInfoForm } from "@/components/candidate/account-info-form";
 import { ChangePasswordForm } from "@/components/candidate/change-password-form";
+import { DeleteAccountSection } from "@/components/settings/delete-account-section";
 import { EmailUpdateForm } from "@/components/candidate/email-update-form";
 import { ImageUpload } from "@/components/shared/image-upload";
 import { SectionCard } from "@/components/candidate/section-card";
@@ -69,6 +70,14 @@ export default async function CandidateSettingsPage() {
             className="sm:col-span-2"
           >
             <ChangePasswordForm />
+          </SectionCard>
+
+          <SectionCard
+            title="Delete account"
+            description="Permanently remove your account after email confirmation."
+            className="sm:col-span-2 border-red-200/80"
+          >
+            <DeleteAccountSection email={profile.email} />
           </SectionCard>
         </div>
       </div>

@@ -1,11 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createDeletionToken } from "@/lib/auth/deletion-token";
 import { validatePasswordForSubmit } from "@/lib/auth/password-strength";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { siteConfig } from "@/config/site";
+import { sendAccountDeletionEmail } from "@/lib/email/send-account-deletion";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/types";
 import type { UserRole } from "@/types";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type AccountActionResult = {
   error?: string;
@@ -19,13 +24,17 @@ function revalidateForRole(role: UserRole) {
       "/candidate/profile",
       "/candidate/settings",
     ].forEach((path) => revalidatePath(path));
-  } else {
+  } else if (role === "employer") {
     [
       "/employer/dashboard",
       "/employer/company",
       "/employer/settings",
       "/employer/applications",
     ].forEach((path) => revalidatePath(path));
+  } else {
+    ["/admin/dashboard", "/admin/settings"].forEach((path) =>
+      revalidatePath(path)
+    );
   }
 }
 
@@ -128,6 +137,53 @@ export async function updateAccountPassword(
     if (error) return { error: error.message };
 
     return { success: "Password updated successfully." };
+  } catch {
+    return { error: "Something went wrong." };
+  }
+}
+
+export async function requestAccountDeletion(
+  _prev: AccountActionResult,
+  formData: FormData
+): Promise<AccountActionResult> {
+  try {
+    const profile = await requireProfile();
+    const email = String(formData.get("email") ?? "").trim().toLowerCase();
+
+    if (!email || !EMAIL_RE.test(email)) {
+      return { error: "Enter a valid email address." };
+    }
+
+    const supabase = await createClient();
+    const { data: userData } = await supabase.auth.getUser();
+    const accountEmail = userData.user?.email?.trim().toLowerCase();
+
+    if (!accountEmail) {
+      return { error: "Could not verify your account email." };
+    }
+
+    if (email !== accountEmail) {
+      return {
+        error: "That email does not match your account. Enter the email you use to sign in.",
+      };
+    }
+
+    const token = createDeletionToken(profile.id, accountEmail);
+    if (!token) {
+      return { error: "Account deletion is not configured." };
+    }
+
+    const confirmUrl = `${siteConfig.url}/account/delete/confirm?token=${encodeURIComponent(token)}`;
+    const result = await sendAccountDeletionEmail(accountEmail, confirmUrl);
+
+    if (!result.ok) {
+      return { error: result.error };
+    }
+
+    return {
+      success:
+        "Confirmation email sent. Open the link in that message within 24 hours to permanently delete your account.",
+    };
   } catch {
     return { error: "Something went wrong." };
   }

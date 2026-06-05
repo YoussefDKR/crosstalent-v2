@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountInfoForm } from "@/components/candidate/account-info-form";
 import { ChangePasswordForm } from "@/components/candidate/change-password-form";
+import { DeleteAccountSection } from "@/components/settings/delete-account-section";
 import { EmailUpdateForm } from "@/components/candidate/email-update-form";
 import { EmployerSectionCard } from "@/components/employer/section-card";
 import { ImageUpload } from "@/components/shared/image-upload";
@@ -70,6 +71,14 @@ export default async function EmployerSettingsPage() {
             className="sm:col-span-2"
           >
             <ChangePasswordForm />
+          </EmployerSectionCard>
+
+          <EmployerSectionCard
+            title="Delete account"
+            description="Permanently remove your account after email confirmation."
+            className="sm:col-span-2 border-red-200/80"
+          >
+            <DeleteAccountSection email={profile.email} />
           </EmployerSectionCard>
         </div>
       </div>

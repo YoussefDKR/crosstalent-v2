@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AccountInfoForm } from "@/components/candidate/account-info-form";
 import { ChangePasswordForm } from "@/components/candidate/change-password-form";
+import { DeleteAccountSection } from "@/components/settings/delete-account-section";
 import { EmailUpdateForm } from "@/components/candidate/email-update-form";
 import { AdminAppShell } from "@/components/admin/admin-app-shell";
 import { EmployerSectionCard } from "@/components/employer/section-card";
@@ -63,6 +64,14 @@ export default async function AdminSettingsPage() {
             className="sm:col-span-2"
           >
             <ChangePasswordForm />
+          </EmployerSectionCard>
+
+          <EmployerSectionCard
+            title="Delete account"
+            description="Permanently remove your admin account after email confirmation."
+            className="sm:col-span-2 border-red-200/80"
+          >
+            <DeleteAccountSection email={profile.email} />
           </EmployerSectionCard>
         </div>
       </div>
