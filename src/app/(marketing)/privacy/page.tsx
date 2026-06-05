@@ -63,27 +63,26 @@ export default function PrivacyPage() {
           <Section title="Information we collect">
             <p>
               <strong className="text-[#0F172A]">Account data:</strong> name,
-              email, password (stored securely by our auth provider), role
-              (candidate or employer), and profile photo if you upload one.
+              email, login credentials, account type, and profile photo if you
+              upload one.
             </p>
             <p>
-              <strong className="text-[#0F172A]">Candidate profiles:</strong> CV,
+              <strong className="text-[#0F172A]">Profile data:</strong> CV,
               skills, languages, work history, location, and other details you
-              choose to add.
+              choose to add to your profile.
             </p>
             <p>
               <strong className="text-[#0F172A]">Employer data:</strong> company
-              name, logo, job posts, billing status, and messages with
-              candidates.
+              name, logo, job posts, and messages with other users.
             </p>
             <p>
               <strong className="text-[#0F172A]">Usage data:</strong> basic
-              technical logs (IP address, browser type, pages visited) collected
-              by our hosting provider to keep the service secure and running.
+              technical information such as IP address, browser type, and pages
+              visited, used to keep the service secure and running.
             </p>
             <p>
-              <strong className="text-[#0F172A]">Contact form:</strong> the email
-              and message you send via our contact page.
+              <strong className="text-[#0F172A]">Communications:</strong> emails
+              and messages you send us through our contact or support channels.
             </p>
           </Section>
 
@@ -93,7 +92,7 @@ export default function PrivacyPage() {
               <li>Show job listings and candidate profiles to the right users</li>
               <li>Let employers and candidates message each other</li>
               <li>Process job applications</li>
-              <li>Handle subscriptions and trials (employers)</li>
+              <li>Manage paid plans and account access</li>
               <li>Respond to support and contact requests</li>
               <li>Improve security and prevent abuse</li>
             </ul>
@@ -101,41 +100,32 @@ export default function PrivacyPage() {
           </Section>
 
           <Section title="Third-party services">
-            <p>We use trusted providers to run CrossTalent:</p>
+            <p>
+              We work with trusted service providers who help us operate the
+              platform. Depending on how you use CrossTalent, your data may be
+              processed by partners that provide:
+            </p>
             <ul className="list-disc space-y-2 pl-5">
-              <li>
-                <strong className="text-[#0F172A]">Supabase</strong> — accounts,
-                database, and file storage
-              </li>
-              <li>
-                <strong className="text-[#0F172A]">Vercel</strong> — website
-                hosting
-              </li>
-              <li>
-                <strong className="text-[#0F172A]">Google</strong> — optional
-                sign-in (only if you choose it)
-              </li>
-              <li>
-                <strong className="text-[#0F172A]">Stripe</strong> — employer
-                payments (when enabled)
-              </li>
-              <li>
-                <strong className="text-[#0F172A]">Resend</strong> — contact
-                form emails
-              </li>
+              <li>Website hosting and infrastructure</li>
+              <li>Account sign-in and authentication</li>
+              <li>Secure payment processing</li>
+              <li>Email and notification delivery</li>
+              <li>File storage for uploads such as CVs and logos</li>
             </ul>
             <p>
-              Each provider processes data under their own privacy policies and
-              our instructions.
+              These partners only receive the information needed to perform
+              their services and are required to protect it. They may have their
+              own privacy policies, which we encourage you to review.
             </p>
           </Section>
 
-          <Section title="What employers and candidates can see">
+          <Section title="Who can see your information">
             <p>
-              Published job posts are visible on our public job board. Employer
-              company profiles are shown on listings. Candidate profiles are
-              visible to employers with an active trial or subscription.
-              Messages are only visible to the people in the conversation.
+              Job listings and company profiles you publish may be visible on
+              our public job board. Profile information is shared with other
+              users only as needed for the platform to work — for example, when
+              employers browse talent or candidates apply to roles. Private
+              messages are only visible to the people in that conversation.
             </p>
           </Section>
 
@@ -171,8 +161,7 @@ export default function PrivacyPage() {
           <Section title="Cookies">
             <p>
               We use essential cookies to keep you signed in and to protect the
-              service. We do not use advertising cookies. Session cookies are
-              managed through our authentication system.
+              service. We do not use advertising cookies.
             </p>
           </Section>
 
