@@ -323,6 +323,7 @@ export type Database = {
           status: string;
           current_period_end: string | null;
           cancel_at_period_end: boolean;
+          trial_ends_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -334,6 +335,7 @@ export type Database = {
           status?: string;
           current_period_end?: string | null;
           cancel_at_period_end?: boolean;
+          trial_ends_at?: string | null;
         };
         Update: Partial<
           Database["public"]["Tables"]["employer_subscriptions"]["Insert"]
@@ -346,6 +348,10 @@ export type Database = {
       ensure_user_profile: {
         Args: Record<string, never>;
         Returns: Database["public"]["Tables"]["profiles"]["Row"];
+      };
+      ensure_employer_subscription: {
+        Args: Record<string, never>;
+        Returns: Database["public"]["Tables"]["employer_subscriptions"]["Row"];
       };
       create_oauth_signup_intent: {
         Args: { p_role: Database["public"]["Enums"]["user_role"] };

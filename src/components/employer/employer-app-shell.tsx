@@ -4,6 +4,7 @@ import { EmployerSidebar } from "@/components/employer/employer-sidebar";
 import { EmployerMobileNav } from "@/components/employer/employer-mobile-nav";
 import { AppShellHeader } from "@/components/layout/app-shell-header";
 import { Button } from "@/components/ui/button";
+import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCompanyProfileData } from "@/lib/employer/queries";
 import { listAppNotifications } from "@/lib/notifications/queries";
 import type { Profile } from "@/types";
@@ -17,9 +18,10 @@ export async function EmployerAppShell({
   profile,
   children,
 }: EmployerAppShellProps) {
-  const [companyData, notifications] = await Promise.all([
+  const [companyData, notifications, featureAccess] = await Promise.all([
     getCompanyProfileData(profile),
     listAppNotifications(profile),
+    getEmployerFeatureAccess(profile.id),
   ]);
 
   const messageCount = notifications.filter((n) => n.type === "message").length;
@@ -36,6 +38,7 @@ export async function EmployerAppShell({
         companyLogoUrl={companyData.company?.logo_url ?? null}
         messageCount={messageCount}
         pendingApplications={pendingApplications}
+        showCandidates={featureAccess.canViewCandidates}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">

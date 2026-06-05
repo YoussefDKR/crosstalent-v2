@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { EmployerUpgradeGate } from "@/components/billing/employer-upgrade-gate";
 import { CandidateCard } from "@/components/employer/candidate-card";
 import { CandidateFilters } from "@/components/employer/candidate-filters";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
   parseCandidateFilters,
@@ -21,6 +23,25 @@ export default async function EmployerCandidatesPage({
 }) {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
+
+  const access = await getEmployerFeatureAccess(profile.id);
+
+  if (!access.canViewCandidates) {
+    return (
+      <DashboardShell
+        profile={profile}
+        title="Find talent"
+        description="Search North African candidates when your trial or subscription is active."
+      >
+        <EmployerUpgradeGate
+          variant="candidates"
+          access={access}
+          title="Candidate search is a premium feature"
+          description="Subscribe or use your free 30-day trial to browse talent, filter by skills, and message candidates."
+        />
+      </DashboardShell>
+    );
+  }
 
   const params = await searchParams;
   const filters = parseCandidateFilters(params);
@@ -40,6 +61,14 @@ export default async function EmployerCandidatesPage({
       title="Find talent"
       description="Search North African candidates by country, skills, languages, and profile strength."
     >
+      {access.isTrialActive && access.trialDaysRemaining != null && (
+        <p className="mb-4 rounded-lg bg-[#EFF6FF] px-4 py-3 text-sm text-[#1d4ed8]">
+          Free trial · {access.trialDaysRemaining} day
+          {access.trialDaysRemaining === 1 ? "" : "s"} left · includes candidate
+          search and {access.publishedJobLimit} published job
+        </p>
+      )}
+
       <Suspense fallback={<div className="mb-6 h-40 rounded-lg bg-white" />}>
         <CandidateFilters />
       </Suspense>

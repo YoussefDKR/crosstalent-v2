@@ -9,11 +9,13 @@ import { StripeSetupBanner } from "@/components/billing/stripe-setup-banner";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import {
   getEmployerBillingState,
   planDisplayName,
   statusLabel,
 } from "@/lib/billing/queries";
+import { TRIAL_DURATION_DAYS, TRIAL_PUBLISHED_JOB_LIMIT } from "@/config/billing";
 import {
   isPlanCheckoutReady,
   isStripeConfigured,
@@ -34,7 +36,10 @@ export default async function EmployerBillingPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
-  const billing = await getEmployerBillingState(profile.id);
+  const [billing, access] = await Promise.all([
+    getEmployerBillingState(profile.id),
+    getEmployerFeatureAccess(profile.id),
+  ]);
   const params = await searchParams;
   const stripeReady = isStripeConfigured();
 
@@ -45,6 +50,43 @@ export default async function EmployerBillingPage({
       description="Manage your CrossTalent employer subscription."
     >
       <StripeSetupBanner />
+
+      {billing.isTrialActive && (
+        <div className="mb-6 rounded-xl border border-[#2563EB]/20 bg-[#EFF6FF] px-5 py-4">
+          <p className="font-semibold text-[#0F172A]">
+            Free {TRIAL_DURATION_DAYS}-day trial active
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Includes candidate search and {TRIAL_PUBLISHED_JOB_LIMIT} published
+            job on the board
+            {access.trialDaysRemaining != null && (
+              <>
+                {" "}
+                · {access.trialDaysRemaining} day
+                {access.trialDaysRemaining === 1 ? "" : "s"} remaining
+              </>
+            )}
+            {access.publishedJobCount > 0 && (
+              <>
+                {" "}
+                · {access.publishedJobCount}/{access.publishedJobLimit}{" "}
+                job live
+              </>
+            )}
+          </p>
+        </div>
+      )}
+
+      {!billing.isTrialActive && !billing.hasPaidSubscription && (
+        <div className="mb-6 rounded-xl border border-dashed border-border bg-white px-5 py-4">
+          <p className="font-semibold text-[#0F172A]">No active trial</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            New employers receive a {TRIAL_DURATION_DAYS}-day trial automatically.
+            Subscribe to Growth or Scale for ongoing candidate access and more job
+            posts.
+          </p>
+        </div>
+      )}
 
       {params.success === "1" && (
         <p className="mb-6 rounded-lg bg-[#10B981]/10 px-4 py-3 text-sm text-[#047857]">
@@ -80,9 +122,10 @@ export default async function EmployerBillingPage({
                 )}
                 {billing.cancelAtPeriodEnd && " · Cancels at period end"}
               </p>
-              {!billing.billingEnforced && (
+              {billing.trialEndsAt && billing.isTrialActive && (
                 <p className="mt-2 text-xs text-[#2563EB]">
-                  Stripe not active — full platform access for testing.
+                  Trial ends{" "}
+                  {new Date(billing.trialEndsAt).toLocaleDateString()}
                 </p>
               )}
             </div>

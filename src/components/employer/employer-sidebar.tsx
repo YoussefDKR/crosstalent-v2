@@ -44,6 +44,7 @@ type EmployerSidebarProps = {
   companyLogoUrl: string | null;
   messageCount: number;
   pendingApplications: number;
+  showCandidates?: boolean;
 };
 
 function isActive(pathname: string, href: string) {
@@ -55,10 +56,14 @@ export function EmployerSidebar({
   companyLogoUrl,
   messageCount,
   pendingApplications,
+  showCandidates = true,
 }: EmployerSidebarProps) {
   const pathname = usePathname();
   const logoUrl = resolveImageUrl(companyLogoUrl);
   const initials = companyInitials(companyName);
+  const navLinks = showCandidates
+    ? links
+    : links.filter((l) => l.href !== siteConfig.links.employerCandidates);
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border/60 bg-[#F8FAFC] lg:flex">
@@ -94,7 +99,7 @@ export function EmployerSidebar({
         aria-label="Employer"
       >
         <div className="flex flex-col gap-1 pb-4">
-        {links.map((item) => {
+        {navLinks.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = item.icon;
           const badge =

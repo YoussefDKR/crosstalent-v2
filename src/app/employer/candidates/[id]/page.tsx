@@ -14,6 +14,8 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { EmployerUpgradeGate } from "@/components/billing/employer-upgrade-gate";
+import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
   countryLabel,
@@ -55,6 +57,20 @@ export default async function EmployerCandidateDetailPage({
 }: CandidateDetailPageProps) {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
+
+  const access = await getEmployerFeatureAccess(profile.id);
+  if (!access.canViewCandidates) {
+    return (
+      <DashboardShell profile={profile} title="Candidate profile">
+        <EmployerUpgradeGate
+          variant="candidates"
+          access={access}
+          title="Candidate profiles require a trial or subscription"
+          description="Upgrade to view full candidate profiles and start conversations."
+        />
+      </DashboardShell>
+    );
+  }
 
   const { id } = await params;
   const candidate = await getCandidateForEmployer(id);

@@ -54,14 +54,27 @@ export const EMPLOYER_PLANS: EmployerPlan[] = [
 export const STARTER_PLAN = {
   id: "starter" as const,
   name: "Starter",
-  description: "Explore the platform before upgrading.",
+  description: "Company profile and draft jobs. Start a free trial for hiring tools.",
   monthlyPrice: 0,
   features: [
-    "1 draft job post",
-    "Browse candidate profiles",
     "Company profile setup",
+    "Draft job posts",
+    "30-day free trial: 1 live job + candidate search",
   ],
 };
+
+/** Max published jobs on the board per plan (null = unlimited). */
+export const PUBLISHED_JOB_LIMITS: Record<
+  EmployerPlanId | "starter",
+  number | null
+> = {
+  starter: 0,
+  growth: 5,
+  scale: null,
+};
+
+export const TRIAL_PUBLISHED_JOB_LIMIT = 1;
+export const TRIAL_DURATION_DAYS = 30;
 
 export const ACTIVE_SUBSCRIPTION_STATUSES = [
   "trialing",

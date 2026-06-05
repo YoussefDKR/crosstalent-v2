@@ -3,6 +3,7 @@ import { Briefcase, Users } from "lucide-react";
 import { ApplicationListItem } from "@/components/home/application-list-item";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { listEmployerApplications } from "@/lib/applications/queries";
 import type { Profile } from "@/types";
 
@@ -11,7 +12,10 @@ type EmployerHomeProps = {
 };
 
 export async function EmployerHome({ profile }: EmployerHomeProps) {
-  const applications = await listEmployerApplications(profile.id);
+  const [applications, access] = await Promise.all([
+    listEmployerApplications(profile.id),
+    getEmployerFeatureAccess(profile.id),
+  ]);
   const pendingCount = applications.filter((a) => a.status === "pending").length;
 
   return (
@@ -38,12 +42,14 @@ export async function EmployerHome({ profile }: EmployerHomeProps) {
                 Job posts
               </Button>
             </Link>
-            <Link href="/employer/candidates">
-              <Button variant="outline" className="gap-2">
-                <Users className="size-4" />
-                Find talent
-              </Button>
-            </Link>
+            {access.canViewCandidates && (
+              <Link href="/employer/candidates">
+                <Button variant="outline" className="gap-2">
+                  <Users className="size-4" />
+                  Find talent
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 

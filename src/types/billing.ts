@@ -16,6 +16,7 @@ export type EmployerSubscriptionRow = {
   status: SubscriptionStatus;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  trial_ends_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -26,8 +27,21 @@ export type EmployerBillingState = {
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
   stripeCustomerId: string | null;
+  trialEndsAt: string | null;
   hasPaidSubscription: boolean;
-  /** All features unlocked while Stripe keys are not set (dev / pre-launch). */
+  isTrialActive: boolean;
   billingEnforced: boolean;
   hasAccess: boolean;
+};
+
+export type EmployerFeatureAccess = {
+  canViewCandidates: boolean;
+  canPublishJobs: boolean;
+  publishedJobCount: number;
+  publishedJobLimit: number | null;
+  isTrialActive: boolean;
+  trialEndsAt: string | null;
+  trialDaysRemaining: number | null;
+  hasPaidSubscription: boolean;
+  needsUpgrade: boolean;
 };

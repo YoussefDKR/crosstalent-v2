@@ -1,8 +1,4 @@
-import {
-  ACTIVE_SUBSCRIPTION_STATUSES,
-  STARTER_PLAN,
-  type EmployerPlanId,
-} from "@/config/billing";
+import { STARTER_PLAN, type EmployerPlanId } from "@/config/billing";
 import { isStripeConfigured } from "@/lib/stripe/config";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -11,20 +7,22 @@ import type {
   SubscriptionStatus,
 } from "@/types/billing";
 
+function isTrialActive(row: EmployerSubscriptionRow | null): boolean {
+  if (!row || row.status !== "trialing") return false;
+  const endsAt = row.trial_ends_at ?? row.current_period_end;
+  if (!endsAt) return true;
+  return new Date(endsAt).getTime() > Date.now();
+}
+
 function mapBillingState(
   row: EmployerSubscriptionRow | null
 ): EmployerBillingState {
   const billingEnforced = isStripeConfigured();
   const status: SubscriptionStatus = row?.status ?? "inactive";
   const planId = (row?.plan_id ?? STARTER_PLAN.id) as EmployerPlanId | string;
-  const hasPaidSubscription = ACTIVE_SUBSCRIPTION_STATUSES.includes(
-    status as (typeof ACTIVE_SUBSCRIPTION_STATUSES)[number]
-  );
-
-  const hasAccess =
-    !billingEnforced ||
-    hasPaidSubscription ||
-    planId === STARTER_PLAN.id;
+  const hasPaidSubscription = status === "active";
+  const trialActive = isTrialActive(row);
+  const hasAccess = hasPaidSubscription || trialActive;
 
   return {
     planId,
@@ -32,7 +30,9 @@ function mapBillingState(
     currentPeriodEnd: row?.current_period_end ?? null,
     cancelAtPeriodEnd: row?.cancel_at_period_end ?? false,
     stripeCustomerId: row?.stripe_customer_id ?? null,
+    trialEndsAt: row?.trial_ends_at ?? null,
     hasPaidSubscription,
+    isTrialActive: trialActive,
     billingEnforced,
     hasAccess,
   };
@@ -42,6 +42,8 @@ export async function getEmployerBillingState(
   employerId: string
 ): Promise<EmployerBillingState> {
   const supabase = await createClient();
+  await supabase.rpc("ensure_employer_subscription");
+
   const { data } = await supabase
     .from("employer_subscriptions")
     .select("*")
@@ -60,7 +62,7 @@ export function planDisplayName(planId: string): string {
 export function statusLabel(status: SubscriptionStatus): string {
   const labels: Record<SubscriptionStatus, string> = {
     inactive: "Not subscribed",
-    trialing: "Trial",
+    trialing: "Free trial",
     active: "Active",
     past_due: "Past due",
     canceled: "Canceled",

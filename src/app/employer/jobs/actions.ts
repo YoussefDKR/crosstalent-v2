@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
+import {
+  getEmployerFeatureAccess,
+  publishBlockedMessage,
+} from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { parseSkillsParam } from "@/lib/jobs/queries";
 import { createClient } from "@/lib/supabase/server";
@@ -33,6 +37,21 @@ async function requireEmployerId(): Promise<string> {
     throw new Error("Unauthorized");
   }
   return profile.id;
+}
+
+async function publishGuard(
+  employerId: string,
+  nextStatus: JobStatus,
+  currentStatus?: JobStatus
+): Promise<JobActionResult | null> {
+  if (nextStatus !== "published" || currentStatus === "published") {
+    return null;
+  }
+  const access = await getEmployerFeatureAccess(employerId);
+  if (!access.canPublishJobs) {
+    return { error: publishBlockedMessage(access) };
+  }
+  return null;
 }
 
 function resolveJobStatus(
@@ -119,6 +138,9 @@ export async function createJob(
 
     const status =
       parsed.intent === "publish" ? "published" : "draft";
+    const blocked = await publishGuard(employerId, status);
+    if (blocked) return blocked;
+
     const { published_at } = applyPublishTimestamps(status, null);
 
     const supabase = await createClient();
@@ -184,6 +206,13 @@ export async function updateJob(
       return { error: "Title and description are required." };
     }
 
+    const blocked = await publishGuard(
+      employerId,
+      parsed.status,
+      existing.status as JobStatus
+    );
+    if (blocked) return blocked;
+
     const { published_at } = applyPublishTimestamps(
       parsed.status,
       existing.published_at
@@ -240,12 +269,19 @@ async function setJobStatus(
 
     const { data: existing } = await supabase
       .from("jobs")
-      .select("published_at")
+      .select("published_at, status")
       .eq("id", jobId)
       .eq("employer_id", employerId)
       .maybeSingle();
 
     if (!existing) return { error: "Job not found." };
+
+    const blocked = await publishGuard(
+      employerId,
+      status,
+      existing.status as JobStatus
+    );
+    if (blocked) return blocked;
 
     const { published_at } = applyPublishTimestamps(
       status,

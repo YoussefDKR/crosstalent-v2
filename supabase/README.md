@@ -32,6 +32,7 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 16. `migrations/20250613000000_rss_jobs.sql` — curated remote jobs from RSS feeds
 17. `migrations/20250614000000_admin_role_enum.sql` — add `admin` to `user_role` (**run alone first**)
 18. `migrations/20250614100000_admin_role_functions.sql` — admin helpers + triggers (**run second**)
+19. `migrations/20250615000000_employer_trial.sql` — 30-day employer trial + candidate/job gating
 
 > **Supabase SQL Editor:** PostgreSQL cannot use a new enum value in the same transaction that adds it. Run step 17, wait for success, then run step 18 in a **new** query tab.
 
