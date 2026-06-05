@@ -39,7 +39,7 @@ export default async function PricingPage() {
 
         <p className="mt-12 text-center text-sm text-muted-foreground">
           Questions?{" "}
-          <Link href="/contact" className="font-medium text-[#2563EB] hover:underline">
+          <Link href={siteConfig.links.contact} className="font-medium text-[#2563EB] hover:underline">
             Contact us
           </Link>
           {isEmployer && (

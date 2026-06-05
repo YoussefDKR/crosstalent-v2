@@ -202,7 +202,7 @@ export function ForEmployersPage({
           </div>
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Need a custom plan?{" "}
-            <Link href="/contact" className="font-medium text-[#2563EB] hover:underline">
+            <Link href={siteConfig.links.contact} className="font-medium text-[#2563EB] hover:underline">
               Contact us
             </Link>
           </p>
