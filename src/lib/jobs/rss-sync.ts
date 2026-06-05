@@ -47,17 +47,78 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
         rss_company_name: job.company,
       }));
 
-      const { error } = await supabase.from("jobs").upsert(rows, {
-        onConflict: "external_source,external_guid",
-        ignoreDuplicates: false,
-      });
+      const guids = rows.map((row) => row.external_guid).filter(Boolean);
+      const { data: existing, error: lookupError } = await supabase
+        .from("jobs")
+        .select("id, external_guid")
+        .eq("source_type", "rss")
+        .eq("external_source", feed.id)
+        .in("external_guid", guids);
 
-      if (error) {
+      if (lookupError) {
         results.push({
           source: feed.id,
           fetched: jobs.length,
           upserted: 0,
-          error: error.message,
+          error: lookupError.message,
+        });
+        continue;
+      }
+
+      const existingByGuid = new Map(
+        (existing ?? []).map((row) => [row.external_guid, row.id])
+      );
+
+      const toInsert = rows.filter((row) => !existingByGuid.has(row.external_guid));
+      let upserted = 0;
+
+      if (toInsert.length > 0) {
+        const { error: insertError } = await supabase.from("jobs").insert(toInsert);
+        if (insertError) {
+          results.push({
+            source: feed.id,
+            fetched: jobs.length,
+            upserted: 0,
+            error: insertError.message,
+          });
+          continue;
+        }
+        upserted += toInsert.length;
+      }
+
+      let updateFailed: string | undefined;
+      for (const row of rows) {
+        const id = existingByGuid.get(row.external_guid);
+        if (!id) continue;
+
+        const { error: updateError } = await supabase
+          .from("jobs")
+          .update({
+            title: row.title,
+            description: row.description,
+            location_city: row.location_city,
+            location_country: row.location_country,
+            skills: row.skills,
+            status: row.status,
+            published_at: row.published_at,
+            external_url: row.external_url,
+            rss_company_name: row.rss_company_name,
+          })
+          .eq("id", id);
+
+        if (updateError) {
+          updateFailed = updateError.message;
+          break;
+        }
+        upserted += 1;
+      }
+
+      if (updateFailed) {
+        results.push({
+          source: feed.id,
+          fetched: jobs.length,
+          upserted,
+          error: updateFailed,
         });
         continue;
       }
@@ -65,7 +126,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
       results.push({
         source: feed.id,
         fetched: jobs.length,
-        upserted: jobs.length,
+        upserted,
       });
     } catch (err) {
       results.push({
