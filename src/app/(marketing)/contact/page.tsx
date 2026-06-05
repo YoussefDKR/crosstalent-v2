@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Mail, MessageSquare } from "lucide-react";
+import { Mail } from "lucide-react";
+import { ContactForm } from "@/components/contact/contact-form";
+import { CONTACT_PUBLIC_EMAIL } from "@/config/contact";
 import { siteConfig } from "@/config/site";
-
-const CONTACT_EMAIL = "hello@crosstalent.io";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -19,60 +19,41 @@ export default function ContactPage() {
             Contact us
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Questions about pricing, partnerships, or getting started? We&apos;re
-            happy to help.
+            Send a message and we&apos;ll reply to your email. You can also reach
+            us at{" "}
+            <a
+              href={`mailto:${CONTACT_PUBLIC_EMAIL}`}
+              className="font-medium text-[#2563EB] hover:underline"
+            >
+              {CONTACT_PUBLIC_EMAIL}
+            </a>
+            .
           </p>
         </div>
 
-        <div className="mt-10 space-y-4">
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="flex items-start gap-4 rounded-2xl border border-border/80 bg-white p-6 shadow-sm transition-colors hover:border-[#2563EB]/30"
-          >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
+        <div className="mt-10 rounded-2xl border border-border/80 bg-white p-6 shadow-sm sm:p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
               <Mail className="size-5" />
             </span>
             <div>
-              <p className="font-semibold text-[#0F172A]">Email</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                For employers, candidates, and general enquiries.
+              <p className="font-semibold text-[#0F172A]">Send a message</p>
+              <p className="text-sm text-muted-foreground">
+                Employers, candidates, and partners welcome.
               </p>
-              <p className="mt-2 font-medium text-[#2563EB]">{CONTACT_EMAIL}</p>
-            </div>
-          </a>
-
-          <div className="rounded-2xl border border-border/80 bg-white p-6 shadow-sm">
-            <div className="flex items-start gap-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#10B981]/10 text-[#10B981]">
-                <MessageSquare className="size-5" />
-              </span>
-              <div>
-                <p className="font-semibold text-[#0F172A]">Already signed up?</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Employers can manage billing and trials from the dashboard.
-                  Candidates can update their profile anytime.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-3 text-sm">
-                  <Link
-                    href={siteConfig.links.login}
-                    className="font-medium text-[#2563EB] hover:underline"
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    href={siteConfig.links.pricing}
-                    className="font-medium text-[#2563EB] hover:underline"
-                  >
-                    View pricing
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
+          <ContactForm />
         </div>
 
-        <p className="mt-10 text-center text-sm text-muted-foreground">
-          We typically reply within one business day.
+        <p className="mt-8 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            href={siteConfig.links.login}
+            className="font-medium text-[#2563EB] hover:underline"
+          >
+            Sign in
+          </Link>
         </p>
       </div>
     </div>
