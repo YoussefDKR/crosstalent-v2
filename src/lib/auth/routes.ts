@@ -27,6 +27,7 @@ export const PUBLIC_PATH_PREFIXES = [
   "/about",
   "/contact",
   "/privacy",
+  "/terms",
   "/account/delete",
   "/docs",
 ] as const;

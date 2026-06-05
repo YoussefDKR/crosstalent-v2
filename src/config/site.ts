@@ -13,6 +13,7 @@ export const siteConfig = {
     pricing: "/pricing",
     contact: "/contact",
     privacy: "/privacy",
+    terms: "/terms",
     whyCrossTalent: "/why-crosstalent",
     forEmployers: "/for-employers",
     forCandidates: "/for-candidates",
