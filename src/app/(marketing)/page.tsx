@@ -23,6 +23,10 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
     redirect("/employer/dashboard");
   }
 
+  if (profile?.role === "admin") {
+    redirect("/admin/dashboard");
+  }
+
   return (
     <>
       <Hero profile={profile} />

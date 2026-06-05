@@ -63,16 +63,18 @@ export async function signInWithEmail(
   return { role };
 }
 
+function rolePathPrefix(role: UserRole): string {
+  if (role === "admin") return "/admin";
+  if (role === "employer") return "/employer";
+  return "/candidate";
+}
+
 export function getPostLoginPath(
   role: UserRole,
   redirectTo?: string
 ): string {
-  if (
-    redirectTo &&
-    redirectTo.startsWith(
-      `/${role === "candidate" ? "candidate" : "employer"}`
-    )
-  ) {
+  const prefix = rolePathPrefix(role);
+  if (redirectTo && redirectTo.startsWith(prefix)) {
     return redirectTo;
   }
   return getDashboardPath(role);

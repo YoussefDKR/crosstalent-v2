@@ -1,5 +1,6 @@
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { Footer } from "@/components/layout/footer";
+import { AdminAppShell } from "@/components/admin/admin-app-shell";
 import { CandidateAppShell } from "@/components/candidate/candidate-app-shell";
 import { EmployerAppShell } from "@/components/employer/employer-app-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -20,6 +21,10 @@ export default async function MarketingLayout({
 
   if (profile?.role === "employer") {
     return <EmployerAppShell profile={profile}>{children}</EmployerAppShell>;
+  }
+
+  if (profile?.role === "admin") {
+    return <AdminAppShell profile={profile}>{children}</AdminAppShell>;
   }
 
   return (

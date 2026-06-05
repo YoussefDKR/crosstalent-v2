@@ -12,7 +12,7 @@ export type Database = {
       profiles: {
         Row: {
           id: string;
-          role: "candidate" | "employer";
+          role: "candidate" | "employer" | "admin";
           full_name: string | null;
           email: string | null;
           avatar_url: string | null;
@@ -21,7 +21,7 @@ export type Database = {
         };
         Insert: {
           id: string;
-          role: "candidate" | "employer";
+          role: "candidate" | "employer" | "admin";
           full_name?: string | null;
           email?: string | null;
           avatar_url?: string | null;
@@ -30,7 +30,7 @@ export type Database = {
         };
         Update: {
           id?: string;
-          role?: "candidate" | "employer";
+          role?: "candidate" | "employer" | "admin";
           full_name?: string | null;
           email?: string | null;
           avatar_url?: string | null;
@@ -357,7 +357,7 @@ export type Database = {
       };
     };
     Enums: {
-      user_role: "candidate" | "employer";
+      user_role: "candidate" | "employer" | "admin";
       application_status: "pending" | "accepted" | "rejected";
     };
   };

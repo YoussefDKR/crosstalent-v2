@@ -64,3 +64,11 @@ export async function requireProfile(): Promise<Profile> {
   }
   return profile;
 }
+
+export async function requireAdminProfile(): Promise<Profile> {
+  const profile = await getCurrentProfile();
+  if (!profile || profile.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+  return profile;
+}

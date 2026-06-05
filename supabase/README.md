@@ -30,6 +30,10 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 14. `migrations/20250611000000_notification_reads.sql` — notification read state
 15. `migrations/20250612000000_google_oauth.sql` — Google OAuth signup role intents
 16. `migrations/20250613000000_rss_jobs.sql` — curated remote jobs from RSS feeds
+17. `migrations/20250614000000_admin_role_enum.sql` — add `admin` to `user_role` (**run alone first**)
+18. `migrations/20250614100000_admin_role_functions.sql` — admin helpers + triggers (**run second**)
+
+> **Supabase SQL Editor:** PostgreSQL cannot use a new enum value in the same transaction that adds it. Run step 17, wait for success, then run step 18 in a **new** query tab.
 
 After step 16, set `CRON_SECRET` in Vercel and run a one-time job sync:
 
@@ -38,6 +42,24 @@ curl -X POST "https://www.crosstalent.io/api/jobs/sync-rss" -H "Authorization: B
 ```
 
 Feeds: We Work Remotely, Remotive, Himalayas (see `src/lib/jobs/rss-feeds.ts`).
+
+### Promote an admin (after steps 17–18)
+
+Admins cannot self-signup. In Supabase **SQL Editor**, run (replace the email):
+
+```sql
+alter table public.profiles disable trigger profiles_role_immutable;
+
+update public.profiles
+set role = 'admin'
+where email = 'you@example.com';
+
+alter table public.profiles enable trigger profiles_role_immutable;
+```
+
+The trigger normally blocks role changes; disabling it briefly is safe for this one-time promotion.
+
+Sign out and sign in again — you will land on `/admin/dashboard`.
 
 If you already signed up before step 1, run step 3 (or all three) and sign in again.
 

@@ -15,8 +15,14 @@ function getSiteUrl() {
   return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001";
 }
 
+function rolePathPrefix(role: UserRole): string {
+  if (role === "admin") return "/admin";
+  if (role === "employer") return "/employer";
+  return "/candidate";
+}
+
 function redirectByRole(role: UserRole, fallback?: string): never {
-  if (fallback && fallback.startsWith(`/${role === "candidate" ? "candidate" : "employer"}`)) {
+  if (fallback && fallback.startsWith(rolePathPrefix(role))) {
     redirect(fallback);
   }
   redirect(getDashboardPath(role));

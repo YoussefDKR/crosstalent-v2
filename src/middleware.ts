@@ -4,6 +4,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 import {
   AUTH_ROUTES,
   getDashboardPath,
+  isAdminPath,
   isAuthPath,
   isCandidatePath,
   isEmployerPath,
@@ -41,7 +42,11 @@ export async function middleware(request: NextRequest) {
     }
 
     if (!user) {
-      if (isCandidatePath(pathname) || isEmployerPath(pathname)) {
+      if (
+        isCandidatePath(pathname) ||
+        isEmployerPath(pathname) ||
+        isAdminPath(pathname)
+      ) {
         const url = request.nextUrl.clone();
         url.pathname = AUTH_ROUTES.login;
         url.searchParams.set("redirectTo", pathname);
@@ -71,14 +76,19 @@ export async function middleware(request: NextRequest) {
     }
 
     if (role) {
+      if (isAdminPath(pathname) && role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = getDashboardPath(role);
+        return redirectWithSession(url, supabaseResponse);
+      }
       if (isCandidatePath(pathname) && role !== "candidate") {
         const url = request.nextUrl.clone();
-        url.pathname = getDashboardPath("employer");
+        url.pathname = getDashboardPath(role);
         return redirectWithSession(url, supabaseResponse);
       }
       if (isEmployerPath(pathname) && role !== "employer") {
         const url = request.nextUrl.clone();
-        url.pathname = getDashboardPath("candidate");
+        url.pathname = getDashboardPath(role);
         return redirectWithSession(url, supabaseResponse);
       }
     }
@@ -86,7 +96,8 @@ export async function middleware(request: NextRequest) {
     if (
       !isPublicPath(pathname) &&
       !isCandidatePath(pathname) &&
-      !isEmployerPath(pathname)
+      !isEmployerPath(pathname) &&
+      !isAdminPath(pathname)
     ) {
       if (role) {
         const url = request.nextUrl.clone();

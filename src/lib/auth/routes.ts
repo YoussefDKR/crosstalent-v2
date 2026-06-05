@@ -10,6 +10,7 @@ export const AUTH_ROUTES = {
 export const DASHBOARD_ROUTES: Record<UserRole, string> = {
   candidate: "/",
   employer: "/employer/dashboard",
+  admin: "/admin/dashboard",
 };
 
 export const PUBLIC_PATH_PREFIXES = [
@@ -29,7 +30,7 @@ export const PUBLIC_PATH_PREFIXES = [
 ] as const;
 
 export function getDashboardPath(role: UserRole): string {
-  return DASHBOARD_ROUTES[role];
+  return DASHBOARD_ROUTES[role] ?? "/login";
 }
 
 export function isPublicPath(pathname: string): boolean {
@@ -50,6 +51,10 @@ export function isCandidatePath(pathname: string): boolean {
 
 export function isEmployerPath(pathname: string): boolean {
   return pathname.startsWith("/employer");
+}
+
+export function isAdminPath(pathname: string): boolean {
+  return pathname.startsWith("/admin");
 }
 
 export function parseSignupRole(
