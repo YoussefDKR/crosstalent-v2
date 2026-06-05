@@ -23,8 +23,8 @@ export function resolveGoogleOAuthRedirectUri(request: Request): string {
       : canonicalHost;
 
     if (host === canonicalHost || host === apexHost) {
-      // Use the host the user is actually on (www vs apex must match Google Console).
-      return buildGoogleOAuthRedirectUri(requestUrl.origin);
+      // Always use canonical app URL (www) so it matches Google redirect URIs.
+      return buildGoogleOAuthRedirectUri(new URL(getSiteUrl()).origin);
     }
   }
 
