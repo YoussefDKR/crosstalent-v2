@@ -13,39 +13,16 @@ export function HeroVisual() {
   return (
     <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
       <div className="relative aspect-[5/4] overflow-hidden rounded-2xl bg-[#E8EEF4] shadow-xl ring-1 ring-black/5 sm:aspect-[4/3]">
-        {/* Subtle world map (Europe / Africa focus) */}
-        <svg
-          className="pointer-events-none absolute inset-0 size-full text-slate-300/90"
-          viewBox="0 0 480 360"
-          aria-hidden
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <ellipse cx="240" cy="200" rx="200" ry="120" fill="currentColor" opacity="0.35" />
-          <path
-            d="M120 220 Q200 160 280 140 T380 120"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            opacity="0.5"
-          />
-          <circle cx="155" cy="235" r="6" fill="#2563EB" opacity="0.35" />
-          <circle cx="335" cy="155" r="6" fill="#2563EB" opacity="0.35" />
-        </svg>
-
         <Image
-          src="/images/hero-professional.jpg"
-          alt="Professional working remotely, connecting North Africa with Europe"
+          src="/images/hero-professional.png"
+          alt="Professional working remotely with global opportunities across North Africa and Europe"
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover object-[center_20%]"
+          className="object-cover object-center"
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#F8FAFC]/85 via-[#F8FAFC]/25 to-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#F8FAFC]/40 via-transparent to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#F8FAFC]/30 via-transparent to-transparent"
           aria-hidden
         />
       </div>
