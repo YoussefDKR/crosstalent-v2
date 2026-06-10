@@ -1,9 +1,7 @@
-import Link from "next/link";
-import { Plus } from "lucide-react";
 import { EmployerSidebar } from "@/components/employer/employer-sidebar";
 import { EmployerMobileNav } from "@/components/employer/employer-mobile-nav";
+import { EmployerMobilePostJob } from "@/components/employer/employer-mobile-post-job";
 import { AppShellHeader } from "@/components/layout/app-shell-header";
-import { Button } from "@/components/ui/button";
 import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCompanyProfileData } from "@/lib/employer/queries";
 import { listAppNotifications } from "@/lib/notifications/queries";
@@ -47,17 +45,7 @@ export async function EmployerAppShell({
           notifications={notifications}
           mobileTitle={companyName}
         />
-        <div className="shrink-0 border-b border-[#2563EB]/20 bg-[#2563EB] px-4 py-3 lg:hidden">
-          <Link href="/employer/jobs/new" className="block">
-            <Button
-              size="lg"
-              className="h-12 w-full gap-2 rounded-xl bg-white text-base font-semibold text-[#2563EB] shadow-sm hover:bg-white/95"
-            >
-              <Plus className="size-5" strokeWidth={2.5} />
-              Post a new job
-            </Button>
-          </Link>
-        </div>
+        <EmployerMobilePostJob />
         <EmployerMobileNav />
 
         <main className="flex-1 px-4 py-8 sm:px-8 lg:px-10 lg:py-10">

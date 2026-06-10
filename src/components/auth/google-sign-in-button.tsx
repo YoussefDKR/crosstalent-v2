@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/context/i18n-provider";
 import { signInWithGoogle } from "@/lib/auth/oauth-client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -39,14 +40,16 @@ type GoogleSignInButtonProps = {
 };
 
 export function GoogleSignInButton({
-  label = "Continue with Google",
+  label,
   redirectTo,
   signupRole,
   disabled,
   onError,
   className,
 }: GoogleSignInButtonProps) {
+  const { t } = useI18n();
   const [pending, setPending] = useState(false);
+  const buttonLabel = label ?? t("auth.continueGoogle");
 
   async function handleClick() {
     setPending(true);
@@ -69,7 +72,7 @@ export function GoogleSignInButton({
       )}
     >
       <GoogleIcon className="size-5 shrink-0" />
-      {pending ? "Redirecting to Google…" : label}
+      {pending ? t("common.redirectingGoogle") : buttonLabel}
     </Button>
   );
 }

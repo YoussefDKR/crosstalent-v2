@@ -13,12 +13,13 @@ import {
   UserCircle,
   Users,
 } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import {
   candidateNav,
   employerNav,
   isNavActive,
   type NavItem,
-} from "@/config/navigation";
+} from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types";
 
@@ -36,7 +37,7 @@ const iconByHref: Record<string, typeof Home> = {
   "/employer/billing": CreditCard,
 };
 
-function iconFor(item: NavItem, role: UserRole) {
+function iconFor(item: NavItem) {
   if (item.href === "/employer/applications") return ClipboardList;
   return iconByHref[item.href] ?? Home;
 }
@@ -55,7 +56,8 @@ export function RoleNav({
   onNavigate,
 }: RoleNavProps) {
   const pathname = usePathname();
-  const items = role === "candidate" ? candidateNav : employerNav;
+  const { messages } = useI18n();
+  const items = role === "candidate" ? candidateNav(messages) : employerNav(messages);
 
   if (variant === "bar") {
     return (
@@ -68,7 +70,7 @@ export function RoleNav({
       >
         {items.map((item) => {
           const active = isNavActive(pathname, item.href, item.matchHome);
-          const Icon = iconFor(item, role);
+          const Icon = iconFor(item);
           return (
             <Link
               key={item.href + item.label}
@@ -96,11 +98,13 @@ export function RoleNav({
       aria-label={role === "candidate" ? "Candidate" : "Employer"}
     >
       <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        {role === "candidate" ? "Candidate" : "Employer"}
+        {role === "candidate"
+          ? messages.auth.candidate
+          : messages.auth.employer}
       </p>
       {items.map((item) => {
         const active = isNavActive(pathname, item.href, item.matchHome);
-        const Icon = iconFor(item, role);
+        const Icon = iconFor(item);
         return (
           <Link
             key={item.href + item.label}

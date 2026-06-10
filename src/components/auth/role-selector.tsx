@@ -1,6 +1,7 @@
 "use client";
 
 import { Building2, GraduationCap } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/types";
 
@@ -10,27 +11,24 @@ type RoleSelectorProps = {
   disabled?: boolean;
 };
 
-const options: {
-  role: UserRole;
-  title: string;
-  description: string;
-  icon: typeof GraduationCap;
-}[] = [
-  {
-    role: "candidate",
-    title: "Candidate",
-    description: "Free · Looking for opportunities in Europe",
-    icon: GraduationCap,
-  },
-  {
-    role: "employer",
-    title: "Employer",
-    description: "Paid plans · Hiring from North Africa",
-    icon: Building2,
-  },
-];
-
 export function RoleSelector({ value, onChange, disabled }: RoleSelectorProps) {
+  const { t } = useI18n();
+
+  const options = [
+    {
+      role: "candidate" as const,
+      title: t("auth.candidate"),
+      description: t("auth.candidateRoleDesc"),
+      icon: GraduationCap,
+    },
+    {
+      role: "employer" as const,
+      title: t("auth.employer"),
+      description: t("auth.employerRoleDesc"),
+      icon: Building2,
+    },
+  ];
+
   return (
     <div className="grid grid-cols-2 gap-3">
       {options.map((option) => {

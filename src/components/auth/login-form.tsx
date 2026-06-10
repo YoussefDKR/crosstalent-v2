@@ -11,6 +11,7 @@ import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 
 type LoginFormProps = {
@@ -19,6 +20,7 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ redirectTo, authError }: LoginFormProps) {
+  const { t } = useI18n();
   const [error, setError] = useState<string | null>(authError ?? null);
   const [pending, setPending] = useState(false);
 
@@ -41,14 +43,13 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
     }
 
     const path = getPostLoginPath(result.role, redirectTo);
-    // Full navigation so the marketing layout header picks up the new session.
     window.location.href = path;
   }
 
   return (
     <div className="space-y-5">
       <GoogleSignInButton
-        label="Sign in with Google"
+        label={t("auth.signInWithGoogle")}
         redirectTo={redirectTo}
         disabled={pending}
         onError={setError}
@@ -57,60 +58,60 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
       <AuthDivider />
 
       <form onSubmit={handleSubmit} className="space-y-5">
-      {error && (
-        <div
-          role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-        >
-          {error}
+        {error && (
+          <div
+            role="alert"
+            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          >
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="email">{t("auth.email")}</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@company.com"
+            required
+            disabled={pending}
+          />
         </div>
-      )}
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@company.com"
-          required
+        <div className="space-y-2">
+          <Label htmlFor="password">{t("auth.password")}</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            required
+            minLength={8}
+            disabled={pending}
+          />
+        </div>
+
+        <Button
+          type="submit"
           disabled={pending}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          placeholder="••••••••"
-          required
-          minLength={8}
-          disabled={pending}
-        />
-      </div>
-
-      <Button
-        type="submit"
-        disabled={pending}
-        className="h-10 w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-      >
-        {pending ? "Signing in…" : "Sign in"}
-      </Button>
-
-      <p className="text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
-        <Link
-          href={siteConfig.links.signup}
-          className="font-medium text-[#2563EB] hover:underline"
+          className="h-10 w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
         >
-          Create one
-        </Link>
-      </p>
-    </form>
+          {pending ? t("auth.signingIn") : t("common.signIn")}
+        </Button>
+
+        <p className="text-center text-sm text-muted-foreground">
+          {t("auth.noAccount")}{" "}
+          <Link
+            href={siteConfig.links.signup}
+            className="font-medium text-[#2563EB] hover:underline"
+          >
+            {t("common.createOne")}
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

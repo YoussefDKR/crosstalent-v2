@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { siteConfig } from "@/config/site";
+import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -18,22 +19,21 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { redirectTo, error } = await searchParams;
+  const { t } = await getServerI18n();
 
   const authError =
-    error === "auth_callback_failed"
-      ? "Google or email sign-in could not be completed. Please try again."
-      : undefined;
+    error === "auth_callback_failed" ? t("auth.authCallbackFailed") : undefined;
 
   return (
     <AuthShell
-      title="Welcome back"
-      subtitle="Sign in to continue to your CrossTalent dashboard."
+      title={t("auth.welcomeBack")}
+      subtitle={t("auth.loginSubtitleDashboard")}
       footer={
         <Link
           href="/"
           className="text-muted-foreground hover:text-[#0F172A]"
         >
-          ← Back to home
+          {t("common.backToHome")}
         </Link>
       }
     >

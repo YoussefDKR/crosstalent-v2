@@ -1,11 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Logo } from "@/components/shared/logo";
-import { navForRole } from "@/config/navigation";
+import { useI18n } from "@/context/i18n-provider";
+import { navForRole } from "@/i18n/navigation";
 import { siteConfig } from "@/config/site";
 import type { Profile } from "@/types";
-import { RoleNav } from "./role-nav";
 
 type AppTopBarProps = {
   profile: Profile;
@@ -13,8 +16,12 @@ type AppTopBarProps = {
 };
 
 export function AppTopBar({ profile, mobileNavSlot }: AppTopBarProps) {
-  const roleLabel = profile.role === "candidate" ? "Candidate" : "Employer";
-  const nav = navForRole(profile.role);
+  const { messages, t } = useI18n();
+  const roleLabel =
+    profile.role === "candidate"
+      ? messages.auth.candidate
+      : messages.auth.employer;
+  const nav = navForRole(messages, profile.role);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-white/95 backdrop-blur-md">
@@ -37,6 +44,7 @@ export function AppTopBar({ profile, mobileNavSlot }: AppTopBarProps) {
         </nav>
 
         <div className="flex items-center gap-3">
+          <LanguageSwitcher compact className="hidden sm:inline-flex" />
           <div className="hidden items-center gap-3 sm:flex">
             <ProfileAvatar
               pathOrUrl={profile.avatarUrl}
@@ -55,7 +63,7 @@ export function AppTopBar({ profile, mobileNavSlot }: AppTopBarProps) {
               href={siteConfig.links.employerJobs}
               className="hidden rounded-lg bg-[#2563EB] px-3 py-2 text-sm font-medium text-white hover:bg-[#1d4ed8] sm:inline-flex"
             >
-              Post a job
+              {t("employer.postAJob")}
             </Link>
           )}
           <SignOutButton />

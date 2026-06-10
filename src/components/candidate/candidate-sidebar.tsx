@@ -12,46 +12,11 @@ import {
   Settings,
   UserCircle,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Logo } from "@/components/shared/logo";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-
-const links = [
-  { href: "/candidate/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/candidate/profile", label: "My profile", icon: UserCircle },
-  {
-    href: "/",
-    label: "Find jobs",
-    icon: Search,
-    match: (p: string) =>
-      p === "/" || p === "/jobs" || p.startsWith("/jobs/"),
-  },
-  {
-    href: "/candidate/dashboard",
-    label: "My applications",
-    icon: Briefcase,
-    disabled: true,
-    badge: "Soon",
-  },
-  {
-    href: "#",
-    label: "Saved jobs",
-    icon: Bookmark,
-    disabled: true,
-  },
-  {
-    href: "#",
-    label: "Job alerts",
-    icon: Bell,
-    disabled: true,
-  },
-  {
-    href: siteConfig.links.candidateMessages,
-    label: "Messages",
-    icon: MessageSquare,
-  },
-  { href: "/candidate/settings", label: "Settings", icon: Settings },
-];
 
 function isActive(
   pathname: string,
@@ -68,10 +33,61 @@ type CandidateSidebarProps = {
 
 export function CandidateSidebar({ footer }: CandidateSidebarProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const links = [
+    {
+      href: "/candidate/dashboard",
+      label: t("common.dashboard"),
+      icon: LayoutDashboard,
+    },
+    {
+      href: "/candidate/profile",
+      label: t("nav.myProfile"),
+      icon: UserCircle,
+    },
+    {
+      href: "/",
+      label: t("nav.findJobs"),
+      icon: Search,
+      match: (p: string) =>
+        p === "/" || p === "/jobs" || p.startsWith("/jobs/"),
+    },
+    {
+      href: "/candidate/dashboard",
+      label: t("nav.myApplications"),
+      icon: Briefcase,
+      disabled: true,
+      badge: t("common.soon"),
+    },
+    {
+      href: "#",
+      label: t("nav.savedJobs"),
+      icon: Bookmark,
+      disabled: true,
+    },
+    {
+      href: "#",
+      label: t("nav.jobAlerts"),
+      icon: Bell,
+      disabled: true,
+    },
+    {
+      href: siteConfig.links.candidateMessages,
+      label: t("nav.messages"),
+      icon: MessageSquare,
+    },
+    {
+      href: "/candidate/settings",
+      label: t("nav.settings"),
+      icon: Settings,
+    },
+  ];
 
   return (
-      <aside className="hidden h-full min-h-screen w-64 shrink-0 flex-col bg-[#0F172A] px-4 py-6 text-white lg:flex">
-      <Logo variant="light" className="mb-8 px-2" />
+    <aside className="hidden h-full min-h-screen w-64 shrink-0 flex-col bg-[#0F172A] px-4 py-6 text-white lg:flex">
+      <Logo variant="light" className="mb-6 px-2" />
+      <LanguageSwitcher className="mb-6 px-2 text-white/80 [&_select]:border-white/20 [&_select]:bg-white/10 [&_select]:text-white" />
 
       <nav className="flex flex-1 flex-col gap-1" aria-label="Candidate">
         {links.map((item) => {

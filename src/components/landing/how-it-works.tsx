@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MessageSquare, Search, UserRound } from "lucide-react";
-import { howItWorksSteps } from "@/config/site";
+import { useI18n } from "@/context/i18n-provider";
 
 const icons = {
   user: UserRound,
@@ -10,26 +10,47 @@ const icons = {
   message: MessageSquare,
 } as const;
 
+const stepIcons = ["user", "search", "message"] as const;
+
 export function HowItWorks() {
+  const { t } = useI18n();
+
+  const steps = [
+    {
+      title: t("landing.step1Title"),
+      description: t("landing.step1Description"),
+      icon: stepIcons[0],
+    },
+    {
+      title: t("landing.step2Title"),
+      description: t("landing.step2Description"),
+      icon: stepIcons[1],
+    },
+    {
+      title: t("landing.step3Title"),
+      description: t("landing.step3Description"),
+      icon: stepIcons[2],
+    },
+  ];
+
   return (
     <section id="how-it-works" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            How CrossTalent works
+            {t("landing.howItWorksTitle")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Three simple steps from profile to your next role with a European
-            company.
+            {t("landing.howItWorksSubtitle")}
           </p>
         </div>
 
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {howItWorksSteps.map((step, index) => {
+          {steps.map((step, index) => {
             const Icon = icons[step.icon];
             return (
               <motion.article
-                key={step.step}
+                key={step.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}

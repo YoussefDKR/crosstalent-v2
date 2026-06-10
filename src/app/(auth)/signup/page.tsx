@@ -4,6 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { SignupForm } from "@/components/auth/signup-form";
 import { resolveSignupDefaultRole } from "@/lib/auth/routes";
 import { siteConfig } from "@/config/site";
+import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
   title: "Create account",
@@ -17,21 +18,22 @@ type SignupPageProps = {
 export default async function SignupPage({ searchParams }: SignupPageProps) {
   const { role: roleParam } = await searchParams;
   const defaultRole = resolveSignupDefaultRole(roleParam);
+  const { t } = await getServerI18n();
 
   return (
     <AuthShell
-      title="Create your account"
+      title={t("auth.createAccount")}
       subtitle={
         defaultRole === "employer"
-          ? "Start hiring top talent from North Africa."
-          : "Build your profile and discover European opportunities."
+          ? t("auth.signupEmployerSubtitle")
+          : t("auth.signupCandidateSubtitle")
       }
       footer={
         <Link
           href="/"
           className="text-muted-foreground hover:text-[#0F172A]"
         >
-          ← Back to home
+          {t("common.backToHome")}
         </Link>
       }
     >

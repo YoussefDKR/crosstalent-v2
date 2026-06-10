@@ -11,25 +11,10 @@ import {
   Shield,
   Users,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-
-const links = [
-  { href: "/admin/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
-  {
-    href: "/admin/applications",
-    label: "Applications",
-    icon: ClipboardList,
-  },
-  {
-    href: "/admin/subscriptions",
-    label: "Subscriptions",
-    icon: CreditCard,
-  },
-  { href: "/admin/settings", label: "Profile", icon: Settings },
-];
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -37,6 +22,24 @@ function isActive(pathname: string, href: string) {
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const links = [
+    { href: "/admin/dashboard", label: t("admin.overview"), icon: LayoutDashboard },
+    { href: "/admin/users", label: t("nav.users"), icon: Users },
+    { href: "/admin/jobs", label: t("nav.jobs"), icon: Briefcase },
+    {
+      href: "/admin/applications",
+      label: t("nav.applications"),
+      icon: ClipboardList,
+    },
+    {
+      href: "/admin/subscriptions",
+      label: t("nav.subscriptions"),
+      icon: CreditCard,
+    },
+    { href: "/admin/settings", label: t("admin.profile"), icon: Settings },
+  ];
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-[#0F172A] lg:flex">
@@ -46,8 +49,15 @@ export function AdminSidebar() {
         </span>
         <div>
           <p className="text-sm font-semibold text-white">{siteConfig.name}</p>
-          <p className="text-xs text-slate-400">Admin</p>
+          <p className="text-xs text-slate-400">{t("admin.adminLabel")}</p>
         </div>
+      </div>
+
+      <div className="px-5 pb-4">
+        <LanguageSwitcher
+          compact
+          className="text-white/80 [&_select]:border-white/20 [&_select]:bg-white/10 [&_select]:text-white"
+        />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-3">
@@ -73,7 +83,7 @@ export function AdminSidebar() {
           href="/jobs"
           className="text-xs font-medium text-slate-400 hover:text-slate-200"
         >
-          View public job board →
+          {t("admin.viewJobBoard")}
         </Link>
       </div>
     </aside>

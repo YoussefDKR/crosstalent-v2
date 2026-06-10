@@ -10,11 +10,13 @@ import { NotificationMenu } from "@/components/layout/notification-menu";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { useI18n } from "@/context/i18n-provider";
 import {
   marketingNav,
   navForRole,
   isNavActive,
-} from "@/config/navigation";
+} from "@/i18n/navigation";
 import { siteConfig } from "@/config/site";
 import { getDashboardPath } from "@/lib/auth/routes";
 import { cn } from "@/lib/utils";
@@ -32,9 +34,12 @@ export function Header({
 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { messages, t } = useI18n();
   const isLoggedIn = Boolean(profile);
   const isMarketingGuest = !profile;
-  const navLinks = profile ? navForRole(profile.role) : marketingNav;
+  const navLinks = profile
+    ? navForRole(messages, profile.role)
+    : marketingNav(messages);
 
   const authActions = isLoggedIn && profile ? (
     <>
@@ -54,20 +59,21 @@ export function Header({
           size="sm"
           className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
         >
-          Dashboard
+          {t("common.dashboard")}
         </Button>
       </Link>
       <SignOutButton />
     </>
   ) : (
     <>
+      <LanguageSwitcher compact />
       <Link href={siteConfig.links.login}>
         <Button
           variant="ghost"
           size="lg"
           className="h-11 px-6 text-base font-semibold text-[#0F172A] hover:bg-slate-100"
         >
-          Log in
+          {t("common.login")}
         </Button>
       </Link>
       <Link href={siteConfig.links.signup}>
@@ -75,7 +81,7 @@ export function Header({
           size="lg"
           className="h-11 rounded-lg bg-[#2563EB] px-7 text-base font-semibold text-white shadow-sm hover:bg-[#1d4ed8]"
         >
-          Sign up
+          {t("common.signup")}
         </Button>
       </Link>
     </>
@@ -142,6 +148,7 @@ export function Header({
             <Logo className="justify-self-start" />
             {nav}
             <div className="flex shrink-0 items-center justify-self-end gap-3">
+              {isLoggedIn && <LanguageSwitcher compact />}
               {authActions}
             </div>
           </div>
@@ -155,7 +162,10 @@ export function Header({
         >
           <Logo className="shrink-0" />
           {nav}
-          <div className="ml-auto hidden items-center gap-3 md:flex">{authActions}</div>
+          <div className="ml-auto hidden items-center gap-3 md:flex">
+            <LanguageSwitcher compact />
+            {authActions}
+          </div>
           <button
             type="button"
             className="ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-lg border border-border md:hidden"
@@ -201,20 +211,21 @@ export function Header({
                       onClick={() => setMobileOpen(false)}
                     >
                       <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                        Dashboard
+                        {t("common.dashboard")}
                       </Button>
                     </Link>
                     <SignOutButton className="w-full" />
                   </>
                 ) : (
                   <>
+                    <LanguageSwitcher className="px-1" />
                     <Link href={siteConfig.links.login}>
                       <Button
                         variant="outline"
                         size="lg"
                         className="h-12 w-full text-base font-semibold"
                       >
-                        Log in
+                        {t("common.login")}
                       </Button>
                     </Link>
                     <Link href={siteConfig.links.signup}>
@@ -222,7 +233,7 @@ export function Header({
                         size="lg"
                         className="h-12 w-full bg-[#2563EB] text-base font-semibold text-white hover:bg-[#1d4ed8]"
                       >
-                        Sign up
+                        {t("common.signup")}
                       </Button>
                     </Link>
                   </>

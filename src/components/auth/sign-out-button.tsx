@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/context/i18n-provider";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ export function SignOutButton({
   size = "sm",
   redirectTo = "/",
 }: SignOutButtonProps) {
+  const { t } = useI18n();
   const [pending, setPending] = useState(false);
 
   async function handleSignOut() {
@@ -41,7 +43,7 @@ export function SignOutButton({
       disabled={pending}
       onClick={handleSignOut}
     >
-      {pending ? "Signing out…" : "Sign out"}
+      {pending ? t("common.signingOut") : t("common.signOut")}
     </Button>
   );
 }

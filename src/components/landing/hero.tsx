@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { HeroVisual } from "@/components/landing/hero-visual";
 import { Sparkles } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { getDashboardPath } from "@/lib/auth/routes";
 import type { Profile } from "@/types";
@@ -14,7 +15,15 @@ type HeroProps = {
 };
 
 export function Hero({ profile = null }: HeroProps) {
+  const { t } = useI18n();
   const isGuest = !profile;
+
+  const heroSubtitle =
+    profile?.role === "candidate"
+      ? t("landing.heroCandidate")
+      : profile?.role === "employer"
+        ? t("landing.heroEmployer")
+        : t("landing.heroGuest");
 
   return (
     <section className="relative overflow-hidden bg-[#F8FAFC] pt-10 pb-16 sm:pt-14 sm:pb-20 lg:pt-16 lg:pb-24">
@@ -27,8 +36,9 @@ export function Hero({ profile = null }: HeroProps) {
               transition={{ duration: 0.5 }}
               className="text-4xl font-semibold leading-[1.1] tracking-tight text-[#0F172A] sm:text-5xl lg:text-[3.25rem]"
             >
-              Real talent.{" "}
-              <span className="text-[#2563EB]">Global</span> opportunity.
+              {t("landing.heroTitle")}{" "}
+              <span className="text-[#2563EB]">{t("landing.heroHighlight")}</span>{" "}
+              {t("landing.heroTitleEnd")}
             </motion.h1>
 
             <motion.p
@@ -37,11 +47,7 @@ export function Hero({ profile = null }: HeroProps) {
               transition={{ duration: 0.5, delay: 0.08 }}
               className="mt-6 text-lg leading-relaxed text-muted-foreground"
             >
-              {profile?.role === "candidate"
-                ? "Welcome back. Browse remote and hybrid roles with European companies, or finish your profile to stand out."
-                : profile?.role === "employer"
-                  ? "Manage your jobs and reach ambitious professionals across North Africa."
-                  : "CrossTalent connects ambitious professionals from North Africa with European companies. Remote and hybrid jobs. Better futures for both."}
+              {heroSubtitle}
             </motion.p>
 
             <motion.div
@@ -64,8 +70,8 @@ export function Hero({ profile = null }: HeroProps) {
                       className="h-12 min-w-[200px] rounded-lg bg-[#2563EB] px-8 text-base font-semibold text-white shadow-md shadow-[#2563EB]/20 hover:bg-[#1d4ed8]"
                     >
                       {profile.role === "candidate"
-                        ? "Find remote jobs"
-                        : "Go to dashboard"}
+                        ? t("landing.findRemoteJobs")
+                        : t("landing.goToDashboard")}
                     </Button>
                   </Link>
                   <Link href={getDashboardPath(profile.role)}>
@@ -75,8 +81,8 @@ export function Hero({ profile = null }: HeroProps) {
                       className="h-12 min-w-[200px] rounded-lg border-2 border-[#2563EB] px-8 text-base font-semibold text-[#2563EB] hover:bg-[#2563EB]/5"
                     >
                       {profile.role === "candidate"
-                        ? "My dashboard"
-                        : "Post a job"}
+                        ? t("landing.myDashboard")
+                        : t("landing.postAJob")}
                     </Button>
                   </Link>
                 </>
@@ -87,7 +93,7 @@ export function Hero({ profile = null }: HeroProps) {
                       size="lg"
                       className="h-12 min-w-[200px] rounded-lg bg-[#2563EB] px-8 text-base font-semibold text-white shadow-md shadow-[#2563EB]/20 hover:bg-[#1d4ed8]"
                     >
-                      Find remote jobs
+                      {t("landing.findRemoteJobs")}
                     </Button>
                   </Link>
                   <Link href={siteConfig.links.forEmployers}>
@@ -96,7 +102,7 @@ export function Hero({ profile = null }: HeroProps) {
                       variant="outline"
                       className="h-12 min-w-[200px] rounded-lg border-2 border-[#2563EB] px-8 text-base font-semibold text-[#2563EB] hover:bg-[#2563EB]/5"
                     >
-                      I&apos;m hiring talent
+                      {t("landing.imHiring")}
                     </Button>
                   </Link>
                 </>
@@ -111,7 +117,7 @@ export function Hero({ profile = null }: HeroProps) {
                 className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground"
               >
                 <Sparkles className="size-4 text-[#2563EB]" aria-hidden />
-                Early access beta — help us build the future of cross-border hiring
+                {t("landing.earlyAccess")}
               </motion.p>
             )}
           </div>

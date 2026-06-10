@@ -13,31 +13,13 @@ import {
   Settings,
   Users,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { companyInitials, companyLogoColorClass } from "@/lib/jobs/format";
 import { resolveImageUrl } from "@/lib/images/urls";
 import { cn } from "@/lib/utils";
-
-const links = [
-  { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: siteConfig.links.employerJobs, label: "Jobs", icon: Briefcase },
-  {
-    href: "/employer/applications",
-    label: "Applications",
-    icon: ClipboardList,
-  },
-  { href: siteConfig.links.employerCandidates, label: "Candidates", icon: Users },
-  {
-    href: siteConfig.links.employerMessages,
-    label: "Messages",
-    icon: MessageSquare,
-    badgeKey: "messages" as const,
-  },
-  { href: siteConfig.links.employerCompany, label: "Company profile", icon: Building2 },
-  { href: siteConfig.links.employerBilling, label: "Billing", icon: CreditCard },
-  { href: siteConfig.links.employerSettings, label: "Settings", icon: Settings },
-];
 
 type EmployerSidebarProps = {
   companyName: string;
@@ -59,8 +41,54 @@ export function EmployerSidebar({
   showCandidates = true,
 }: EmployerSidebarProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
   const logoUrl = resolveImageUrl(companyLogoUrl);
   const initials = companyInitials(companyName);
+
+  const links = [
+    {
+      href: "/employer/dashboard",
+      label: t("common.dashboard"),
+      icon: LayoutDashboard,
+    },
+    {
+      href: siteConfig.links.employerJobs,
+      label: t("nav.jobs"),
+      icon: Briefcase,
+    },
+    {
+      href: "/employer/applications",
+      label: t("nav.applications"),
+      icon: ClipboardList,
+    },
+    {
+      href: siteConfig.links.employerCandidates,
+      label: t("nav.candidates"),
+      icon: Users,
+    },
+    {
+      href: siteConfig.links.employerMessages,
+      label: t("nav.messages"),
+      icon: MessageSquare,
+      badgeKey: "messages" as const,
+    },
+    {
+      href: siteConfig.links.employerCompany,
+      label: t("employer.companyProfile"),
+      icon: Building2,
+    },
+    {
+      href: siteConfig.links.employerBilling,
+      label: t("nav.billing"),
+      icon: CreditCard,
+    },
+    {
+      href: siteConfig.links.employerSettings,
+      label: t("nav.settings"),
+      icon: Settings,
+    },
+  ];
+
   const navLinks = showCandidates
     ? links
     : links.filter((l) => l.href !== siteConfig.links.employerCandidates);
@@ -92,6 +120,9 @@ export function EmployerSidebar({
             {companyName}
           </p>
         </Link>
+        <div className="mt-4">
+          <LanguageSwitcher compact />
+        </div>
       </div>
 
       <nav
@@ -99,37 +130,37 @@ export function EmployerSidebar({
         aria-label="Employer"
       >
         <div className="flex flex-col gap-1 pb-4">
-        {navLinks.map((item) => {
-          const active = isActive(pathname, item.href);
-          const Icon = item.icon;
-          const badge =
-            item.badgeKey === "messages"
-              ? messageCount
-              : item.href === "/employer/applications"
-                ? pendingApplications
-                : 0;
+          {navLinks.map((item) => {
+            const active = isActive(pathname, item.href);
+            const Icon = item.icon;
+            const badge =
+              item.badgeKey === "messages"
+                ? messageCount
+                : item.href === "/employer/applications"
+                  ? pendingApplications
+                  : 0;
 
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                active
-                  ? "bg-[#2563EB]/10 text-[#2563EB]"
-                  : "text-[#0F172A]/75 hover:bg-white hover:text-[#0F172A]"
-              )}
-            >
-              <Icon className="size-4 shrink-0" />
-              <span className="flex-1">{item.label}</span>
-              {badge > 0 && (
-                <span className="flex size-5 items-center justify-center rounded-full bg-[#2563EB] text-[10px] font-semibold text-white">
-                  {badge > 9 ? "9+" : badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  active
+                    ? "bg-[#2563EB]/10 text-[#2563EB]"
+                    : "text-[#0F172A]/75 hover:bg-white hover:text-[#0F172A]"
+                )}
+              >
+                <Icon className="size-4 shrink-0" />
+                <span className="flex-1">{item.label}</span>
+                {badge > 0 && (
+                  <span className="flex size-5 items-center justify-center rounded-full bg-[#2563EB] text-[10px] font-semibold text-white">
+                    {badge > 9 ? "9+" : badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </div>
       </nav>
 
@@ -140,7 +171,7 @@ export function EmployerSidebar({
             className="h-12 w-full gap-2.5 rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-md shadow-[#2563EB]/25 hover:bg-[#1d4ed8]"
           >
             <Plus className="size-5" strokeWidth={2.5} />
-            Post a new job
+            {t("employer.postNewJob")}
           </Button>
         </Link>
       </div>

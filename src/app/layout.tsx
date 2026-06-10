@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { VisitTracker } from "@/components/analytics/visit-tracker";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
+import { I18nProvider } from "@/context/i18n-provider";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { localeDirection } from "@/i18n/config";
+import { getLocale } from "@/i18n/get-locale";
+import { getMessages } from "@/i18n/get-messages";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -49,17 +53,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = getMessages(locale);
+  const dir = localeDirection(locale);
+
   return (
-    <html lang="en" className={plusJakarta.variable}>
+    <html lang={locale} dir={dir} className={plusJakarta.variable}>
       <body className="min-h-screen font-sans antialiased">
-        {children}
-        <VisitTracker />
-        <CookieConsentBanner />
+        <I18nProvider locale={locale} messages={messages}>
+          {children}
+          <VisitTracker />
+          <CookieConsentBanner />
+        </I18nProvider>
       </body>
     </html>
   );

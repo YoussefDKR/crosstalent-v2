@@ -6,6 +6,7 @@ import {
   COOKIE_CONSENT_KEY,
   type CookieConsentChoice,
 } from "@/config/cookies";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 
@@ -28,6 +29,7 @@ function saveConsent(choice: CookieConsentChoice) {
 }
 
 export function CookieConsentBanner() {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -54,19 +56,18 @@ export function CookieConsentBanner() {
             id="cookie-consent-title"
             className="text-sm font-semibold text-[#0F172A]"
           >
-            Cookies on {siteConfig.name}
+            {t("cookie.title", { name: siteConfig.name })}
           </p>
           <p
             id="cookie-consent-desc"
             className="text-sm leading-relaxed text-muted-foreground"
           >
-            We use essential cookies to keep you signed in and to protect the
-            service. We do not use advertising cookies. See our{" "}
+            {t("cookie.description")}{" "}
             <Link
               href={siteConfig.links.privacy}
               className="font-medium text-[#2563EB] hover:underline"
             >
-              Privacy Policy
+              {t("common.privacyPolicy")}
             </Link>
             .
           </p>
@@ -78,14 +79,14 @@ export function CookieConsentBanner() {
             onClick={() => handleChoice("declined")}
             className="h-10 px-4"
           >
-            Decline
+            {t("common.decline")}
           </Button>
           <Button
             type="button"
             onClick={() => handleChoice("accepted")}
             className="h-10 bg-[#2563EB] px-4 text-white hover:bg-[#1d4ed8]"
           >
-            Accept
+            {t("common.accept")}
           </Button>
         </div>
       </div>
