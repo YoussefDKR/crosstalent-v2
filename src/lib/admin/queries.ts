@@ -1,10 +1,12 @@
 import { EMPLOYER_PLANS, STARTER_PLAN } from "@/config/billing";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isStripeConfigured } from "@/lib/stripe/config";
+import { countryDisplayName } from "@/lib/geo/request-country";
 import type {
   AdminApplicationRow,
   AdminJobRow,
   AdminRevenueStats,
+  AdminSignupCountryStats,
   AdminStats,
   AdminSubscriptionRow,
   AdminUserRow,
@@ -390,10 +392,94 @@ export async function listRecentSignups(limit = 8): Promise<AdminUserRow[]> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, full_name, email, role, created_at, avatar_url")
+    .select("id, full_name, email, role, created_at, avatar_url, signup_country")
     .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error) throw new Error(error.message);
   return (data ?? []) as AdminUserRow[];
+}
+
+function resolveProfileCountry(
+  signupCountry: string | null | undefined,
+  candidateCountry: string | null | undefined,
+  employerCountry: string | null | undefined
+): string {
+  return (
+    signupCountry?.trim().toUpperCase() ||
+    candidateCountry?.trim().toUpperCase() ||
+    employerCountry?.trim().toUpperCase() ||
+    "UNKNOWN"
+  );
+}
+
+export async function getSignupCountryStats(): Promise<AdminSignupCountryStats> {
+  const supabase = createAdminClient();
+  const { data: profiles, error } = await supabase
+    .from("profiles")
+    .select("id, signup_country")
+    .neq("role", "admin");
+
+  if (error) throw new Error(error.message);
+
+  const rows = profiles ?? [];
+  if (rows.length === 0) {
+    return {
+      totalUsers: 0,
+      trackedUsers: 0,
+      unknownUsers: 0,
+      countries: [],
+    };
+  }
+
+  const userIds = rows.map((row) => row.id);
+  const [{ data: candidates }, { data: companies }] = await Promise.all([
+    supabase
+      .from("candidate_profiles")
+      .select("user_id, country_code")
+      .in("user_id", userIds),
+    supabase
+      .from("company_profiles")
+      .select("user_id, headquarters_country")
+      .in("user_id", userIds),
+  ]);
+
+  const candidateByUser = new Map(
+    (candidates ?? []).map((row) => [row.user_id, row.country_code])
+  );
+  const companyByUser = new Map(
+    (companies ?? []).map((row) => [row.user_id, row.headquarters_country])
+  );
+
+  const counts = new Map<string, number>();
+  let trackedUsers = 0;
+
+  for (const profile of rows) {
+    if (profile.signup_country) trackedUsers += 1;
+    const country = resolveProfileCountry(
+      profile.signup_country,
+      candidateByUser.get(profile.id),
+      companyByUser.get(profile.id)
+    );
+    counts.set(country, (counts.get(country) ?? 0) + 1);
+  }
+
+  const totalUsers = rows.length;
+  const unknownUsers = counts.get("UNKNOWN") ?? 0;
+  const countries = [...counts.entries()]
+    .filter(([code]) => code !== "UNKNOWN")
+    .map(([countryCode, count]) => ({
+      countryCode,
+      countryName: countryDisplayName(countryCode),
+      count,
+      share: totalUsers > 0 ? Math.round((count / totalUsers) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    totalUsers,
+    trackedUsers,
+    unknownUsers,
+    countries,
+  };
 }

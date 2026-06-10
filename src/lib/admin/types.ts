@@ -57,6 +57,21 @@ export type AdminUserRow = {
   role: UserRole;
   created_at: string;
   avatar_url: string | null;
+  signup_country: string | null;
+};
+
+export type AdminCountrySignupStat = {
+  countryCode: string;
+  countryName: string;
+  count: number;
+  share: number;
+};
+
+export type AdminSignupCountryStats = {
+  totalUsers: number;
+  trackedUsers: number;
+  unknownUsers: number;
+  countries: AdminCountrySignupStat[];
 };
 
 export type AdminJobRow = {

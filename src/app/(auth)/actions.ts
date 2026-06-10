@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { createClient } from "@/lib/supabase/server";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
@@ -62,6 +63,7 @@ export async function signUp(
   }
 
   if (data.session && data.user) {
+    await recordSignupCountry(data.user.id);
     const resolvedRole = (await resolveUserRole(data.user.id)) ?? role;
     redirectByRole(resolvedRole);
   }
@@ -107,5 +109,6 @@ export async function signIn(
     };
   }
 
+  await recordSignupCountry(data.user.id);
   redirectByRole(role, redirectTo || undefined);
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { exchangeGoogleAuthCode } from "@/lib/auth/google-oauth";
 import { verifyGoogleOAuthState } from "@/lib/auth/google-oauth-state";
 import { getPostLoginPath } from "@/lib/auth/post-login";
@@ -71,6 +72,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(url);
   }
 
+  await recordSignupCountry(user.id);
   const role = await resolveUserRole(user.id);
   if (!role) {
     const url = new URL(`${origin}/login`);

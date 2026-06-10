@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { createClient } from "@/lib/supabase/server";
 import { getDashboardPath } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
       } = await supabase.auth.getUser();
 
       if (user) {
+        await recordSignupCountry(user.id);
         const role = await resolveUserRole(user.id);
         if (role) {
           const destination =

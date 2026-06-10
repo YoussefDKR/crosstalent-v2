@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { formatJobPostedAt } from "@/lib/jobs/format";
+import { countryDisplayName } from "@/lib/geo/request-country";
+import { countryFlagEmoji, formatJobPostedAt } from "@/lib/jobs/format";
 import type { AdminUserRow } from "@/lib/admin/types";
 
 type AdminRecentSignupsProps = {
@@ -50,6 +51,15 @@ export function AdminRecentSignups({ users }: AdminRecentSignupsProps) {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              {user.signup_country && (
+                <span
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground"
+                  title={countryDisplayName(user.signup_country)}
+                >
+                  <span aria-hidden>{countryFlagEmoji(user.signup_country)}</span>
+                  {user.signup_country}
+                </span>
+              )}
               <Badge variant={roleVariant(user.role)} className="capitalize">
                 {user.role}
               </Badge>
