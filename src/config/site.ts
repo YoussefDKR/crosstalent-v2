@@ -4,6 +4,7 @@ export const siteConfig = {
   description:
     "Premium recruitment platform connecting North African professionals with European companies.",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001",
+  ogImage: "/images/og.png",
   links: {
     login: "/login",
     signup: "/signup",
