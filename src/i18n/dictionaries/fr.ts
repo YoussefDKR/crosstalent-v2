@@ -2,6 +2,8 @@ import type { Messages } from "@/i18n/dictionaries/en";
 import { billingFr } from "@/i18n/dictionaries/billing/fr";
 import { candidateFr } from "@/i18n/dictionaries/candidate/fr";
 import { jobsFr } from "@/i18n/dictionaries/jobs/fr";
+import { privacyFr } from "@/i18n/dictionaries/legal/privacy/fr";
+import { termsFr } from "@/i18n/dictionaries/legal/terms/fr";
 import { marketingFr } from "@/i18n/dictionaries/marketing/fr";
 
 export const fr: Messages = {
@@ -402,6 +404,10 @@ export const fr: Messages = {
     sendBtn: "Envoyer le message",
     hasAccount: "Vous avez déjà un compte ?",
     questions: "Des questions ?",
+  },
+  legal: {
+    privacy: privacyFr,
+    terms: termsFr,
   },
   marketing: marketingFr,
   jobs: jobsFr,

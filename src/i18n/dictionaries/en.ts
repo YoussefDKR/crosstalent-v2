@@ -1,6 +1,8 @@
 import { billingEn } from "@/i18n/dictionaries/billing/en";
 import { candidateEn } from "@/i18n/dictionaries/candidate/en";
 import { jobsEn } from "@/i18n/dictionaries/jobs/en";
+import { privacyEn } from "@/i18n/dictionaries/legal/privacy/en";
+import { termsEn } from "@/i18n/dictionaries/legal/terms/en";
 import { marketingEn } from "@/i18n/dictionaries/marketing/en";
 import type { DeepString } from "@/i18n/types";
 
@@ -393,6 +395,10 @@ export const en = {
     sendBtn: "Send message",
     hasAccount: "Already have an account?",
     questions: "Questions?",
+  },
+  legal: {
+    privacy: privacyEn,
+    terms: termsEn,
   },
   marketing: marketingEn,
   jobs: jobsEn,

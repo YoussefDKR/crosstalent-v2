@@ -2,6 +2,8 @@ import type { Messages } from "@/i18n/dictionaries/en";
 import { billingAr } from "@/i18n/dictionaries/billing/ar";
 import { candidateAr } from "@/i18n/dictionaries/candidate/ar";
 import { jobsAr } from "@/i18n/dictionaries/jobs/ar";
+import { privacyAr } from "@/i18n/dictionaries/legal/privacy/ar";
+import { termsAr } from "@/i18n/dictionaries/legal/terms/ar";
 import { marketingAr } from "@/i18n/dictionaries/marketing/ar";
 
 export const ar: Messages = {
@@ -389,6 +391,10 @@ export const ar: Messages = {
     sendBtn: "إرسال الرسالة",
     hasAccount: "لديك حساب بالفعل؟",
     questions: "أسئلة؟",
+  },
+  legal: {
+    privacy: privacyAr,
+    terms: termsAr,
   },
   marketing: marketingAr,
   jobs: jobsAr,
