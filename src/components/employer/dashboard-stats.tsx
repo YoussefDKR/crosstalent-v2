@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import type { EmployerDashboardStats } from "@/lib/employer/dashboard";
+
 type DashboardStatsProps = {
   stats: EmployerDashboardStats;
 };
@@ -43,32 +47,34 @@ function StatCard({
 }
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
+  const { t } = useI18n();
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        label="Active jobs"
+        label={t("employer.activeJobs")}
         value={stats.activeJobs}
         href="/employer/jobs"
-        linkLabel="View jobs"
+        linkLabel={t("employer.viewJobs")}
       />
       <StatCard
-        label="Applications"
+        label={t("employer.applications")}
         value={stats.totalApplications}
         growth={stats.applicationsGrowth}
         href="/employer/applications"
-        linkLabel="View all"
+        linkLabel={t("employer.viewAll")}
       />
       <StatCard
-        label="Shortlisted"
+        label={t("employer.shortlisted")}
         value={stats.shortlisted}
         href="/employer/applications?status=accepted"
-        linkLabel="View all"
+        linkLabel={t("employer.viewAll")}
       />
       <StatCard
-        label="In review"
+        label={t("employer.inReview")}
         value={stats.inReview}
         href="/employer/applications?status=pending"
-        linkLabel="View all"
+        linkLabel={t("employer.viewAll")}
       />
     </div>
   );

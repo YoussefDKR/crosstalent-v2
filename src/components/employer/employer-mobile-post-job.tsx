@@ -15,8 +15,8 @@ export function EmployerMobilePostJob() {
           size="lg"
           className="h-12 w-full gap-2 rounded-xl bg-white text-base font-semibold text-[#2563EB] shadow-sm hover:bg-white/95"
         >
-          <Plus className="size-5" strokeWidth={2.5} />
-          {t("employer.postNewJob")}
+          <Plus className="size-4 shrink-0" strokeWidth={2.5} />
+          <span className="truncate">{t("employer.postNewJob")}</span>
         </Button>
       </Link>
     </div>

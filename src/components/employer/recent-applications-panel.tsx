@@ -1,42 +1,59 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
+import { useI18n } from "@/context/i18n-provider";
 import {
-  applicationDisplayStatus,
   applicationStatusBadgeClass,
   languageTagClass,
 } from "@/lib/applications/display";
 import type { EmployerRecentApplication } from "@/lib/employer/dashboard";
+import type { ApplicationStatus } from "@/types/applications";
 import { cn } from "@/lib/utils";
 
 type RecentApplicationsPanelProps = {
   applications: EmployerRecentApplication[];
 };
 
+function applicationDisplayStatus(
+  status: ApplicationStatus,
+  t: (key: string) => string
+): string {
+  const map: Record<ApplicationStatus, string> = {
+    pending: t("employer.statusNew"),
+    accepted: t("employer.statusShortlisted"),
+    rejected: t("employer.statusDeclined"),
+  };
+  return map[status];
+}
+
 export function RecentApplicationsPanel({
   applications,
 }: RecentApplicationsPanelProps) {
+  const { t } = useI18n();
+
   return (
     <section className="rounded-2xl border border-border/80 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-border/60 px-6 py-4">
         <h2 className="text-lg font-semibold text-[#0F172A]">
-          Recent applications
+          {t("employer.recentApplications")}
         </h2>
         <Link
           href="/employer/applications"
           className="text-sm font-medium text-[#2563EB] hover:underline"
         >
-          View all
+          {t("employer.viewAll")}
         </Link>
       </div>
 
       {applications.length === 0 ? (
         <div className="px-6 py-12 text-center text-sm text-muted-foreground">
-          No applications yet.{" "}
+          {t("employer.noApplicationsYet")}{" "}
           <Link href="/employer/jobs/new" className="font-medium text-[#2563EB]">
-            Post a job
+            {t("employer.postAJob")}
           </Link>{" "}
-          to start receiving candidates.
+          {t("employer.postJobToReceive")}
         </div>
       ) : (
         <ul className="divide-y divide-border/60">
@@ -85,7 +102,7 @@ export function RecentApplicationsPanel({
                       applicationStatusBadgeClass(app.status)
                     )}
                   >
-                    {applicationDisplayStatus(app.status)}
+                    {applicationDisplayStatus(app.status, t)}
                   </span>
                 </div>
                 <ChevronRight className="hidden size-5 text-muted-foreground sm:block" />

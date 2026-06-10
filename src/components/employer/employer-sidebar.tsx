@@ -164,10 +164,10 @@ export function EmployerSidebar({
         <Link href="/employer/jobs/new" className="block">
           <Button
             size="lg"
-            className="h-12 w-full gap-2.5 rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-md shadow-[#2563EB]/25 hover:bg-[#1d4ed8]"
+            className="h-11 w-full gap-2 rounded-xl bg-[#2563EB] px-3 text-sm font-semibold text-white shadow-md shadow-[#2563EB]/25 hover:bg-[#1d4ed8]"
           >
-            <Plus className="size-5" strokeWidth={2.5} />
-            {t("employer.postNewJob")}
+            <Plus className="size-4 shrink-0" strokeWidth={2.5} />
+            <span className="truncate">{t("employer.postNewJob")}</span>
           </Button>
         </Link>
       </div>
