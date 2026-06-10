@@ -8,6 +8,7 @@ import { AdminAppShell } from "@/components/admin/admin-app-shell";
 import { EmployerSectionCard } from "@/components/employer/section-card";
 import { ImageUpload } from "@/components/shared/image-upload";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
   title: "Profile — Admin",
@@ -17,15 +18,17 @@ export default async function AdminSettingsPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "admin") redirect("/login");
 
+  const { t } = await getServerI18n();
+
   return (
     <AdminAppShell profile={profile}>
       <div className="mx-auto max-w-4xl space-y-8">
         <header>
           <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A]">
-            Admin profile
+            {t("admin.settingsTitle")}
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Your personal account — photo, name, email, and password.
+            {t("admin.settingsSubtitle")}
           </p>
         </header>
 

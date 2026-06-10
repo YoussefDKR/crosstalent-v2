@@ -62,7 +62,7 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
               <Globe2 className="size-4" />
               {siteConfig.name}
             </Link>
-            <LanguageSwitcher compact />
+            <LanguageSwitcher />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-[#0F172A] sm:text-3xl">
             {title}

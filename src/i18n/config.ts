@@ -10,6 +10,12 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   ar: "العربية",
 };
 
+export const LOCALE_ABBREV: Record<Locale, string> = {
+  en: "EN",
+  fr: "FR",
+  ar: "AR",
+};
+
 export function isLocale(value: string | null | undefined): value is Locale {
   return LOCALES.includes(value as Locale);
 }

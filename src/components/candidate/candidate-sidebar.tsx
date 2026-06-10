@@ -12,7 +12,6 @@ import {
   Settings,
   UserCircle,
 } from "lucide-react";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Logo } from "@/components/shared/logo";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -86,8 +85,7 @@ export function CandidateSidebar({ footer }: CandidateSidebarProps) {
 
   return (
     <aside className="hidden h-full min-h-screen w-64 shrink-0 flex-col bg-[#0F172A] px-4 py-6 text-white lg:flex">
-      <Logo variant="light" className="mb-6 px-2" />
-      <LanguageSwitcher className="mb-6 px-2 text-white/80 [&_select]:border-white/20 [&_select]:bg-white/10 [&_select]:text-white" />
+      <Logo variant="light" className="mb-8 px-2" />
 
       <nav className="flex flex-1 flex-col gap-1" aria-label="Candidate">
         {links.map((item) => {

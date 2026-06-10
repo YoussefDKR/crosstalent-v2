@@ -5,6 +5,7 @@ import { AdminUserSearch } from "@/components/admin/admin-user-search";
 import { AdminUsersTable } from "@/components/admin/admin-users-table";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { listAdminUsers } from "@/lib/admin/queries";
+import { getServerI18n } from "@/i18n/server";
 import type { UserRole } from "@/types";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "admin") redirect("/login");
 
+  const { t } = await getServerI18n();
   const params = await searchParams;
   const roleParam = typeof params.role === "string" ? params.role : "all";
   const q = typeof params.q === "string" ? params.q : "";
@@ -36,15 +38,14 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
       <div className="space-y-8">
         <header>
           <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A]">
-            Users
+            {t("admin.usersTitle")}
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            All candidates, employers, and admins on the platform.
-          </p>
+          <p className="mt-2 text-muted-foreground">{t("admin.usersSubtitle")}</p>
         </header>
         <AdminUserSearch role={role} q={q} />
         <p className="text-sm text-muted-foreground">
-          {users.length} {users.length === 1 ? "user" : "users"}
+          {users.length}{" "}
+          {users.length === 1 ? t("admin.userSingular") : t("admin.userPlural")}
         </p>
         <AdminUsersTable users={users} />
       </div>

@@ -13,7 +13,6 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -120,9 +119,6 @@ export function EmployerSidebar({
             {companyName}
           </p>
         </Link>
-        <div className="mt-4">
-          <LanguageSwitcher compact />
-        </div>
       </div>
 
       <nav

@@ -11,7 +11,6 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -53,14 +52,7 @@ export function AdminSidebar() {
         </div>
       </div>
 
-      <div className="px-5 pb-4">
-        <LanguageSwitcher
-          compact
-          className="text-white/80 [&_select]:border-white/20 [&_select]:bg-white/10 [&_select]:text-white"
-        />
-      </div>
-
-      <nav className="flex flex-1 flex-col gap-1 px-3">
+      <nav className="flex flex-1 flex-col gap-1 px-3 pt-2">
         {links.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}

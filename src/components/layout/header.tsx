@@ -66,7 +66,7 @@ export function Header({
     </>
   ) : (
     <>
-      <LanguageSwitcher compact />
+      <LanguageSwitcher />
       <Link href={siteConfig.links.login}>
         <Button
           variant="ghost"
@@ -148,7 +148,7 @@ export function Header({
             <Logo className="justify-self-start" />
             {nav}
             <div className="flex shrink-0 items-center justify-self-end gap-3">
-              {isLoggedIn && <LanguageSwitcher compact />}
+              {isLoggedIn && <LanguageSwitcher />}
               {authActions}
             </div>
           </div>
@@ -163,7 +163,7 @@ export function Header({
           <Logo className="shrink-0" />
           {nav}
           <div className="ml-auto hidden items-center gap-3 md:flex">
-            <LanguageSwitcher compact />
+            <LanguageSwitcher />
             {authActions}
           </div>
           <button

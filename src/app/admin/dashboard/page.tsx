@@ -10,6 +10,7 @@ import {
   getAdminStats,
   listRecentSignups,
 } from "@/lib/admin/queries";
+import { getServerI18n } from "@/i18n/server";
 
 export const metadata: Metadata = {
   title: "Admin dashboard",
@@ -19,6 +20,7 @@ export default async function AdminDashboardPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "admin") redirect("/login");
 
+  const { t } = await getServerI18n();
   const [stats, recentSignups, analytics] = await Promise.all([
     getAdminStats(),
     listRecentSignups(),
@@ -30,10 +32,10 @@ export default async function AdminDashboardPage() {
       <div className="space-y-8">
         <header>
           <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            Platform overview
+            {t("admin.dashboardTitle")}
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Traffic, signups, jobs, and applications across CrossTalent.
+            {t("admin.dashboardSubtitle")}
           </p>
         </header>
         <AdminStats stats={stats} />

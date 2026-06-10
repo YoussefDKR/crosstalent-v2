@@ -44,7 +44,7 @@ export function AppTopBar({ profile, mobileNavSlot }: AppTopBarProps) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LanguageSwitcher compact className="hidden sm:inline-flex" />
+          <LanguageSwitcher className="hidden sm:inline-flex" />
           <div className="hidden items-center gap-3 sm:flex">
             <ProfileAvatar
               pathOrUrl={profile.avatarUrl}
