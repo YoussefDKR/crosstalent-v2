@@ -136,6 +136,17 @@ export const ar: Messages = {
     imHiring: "أنا أوظّف",
     earlyAccess:
       "نسخة تجريبية مبكرة — ساعدنا في بناء مستقبل التوظيف عبر الحدود",
+    heroImageAlt:
+      "محترفة تعمل عن بُعد مع فرص عالمية بين شمال أفريقيا وأوروبا",
+    heroWorkFrom: "اعمل من",
+    heroNorthAfrica: "شمال أفريقيا",
+    heroWorkWith: "اعمل مع",
+    heroEurope: "أوروبا",
+    heroBenefits: [
+      { title: "فرص أفضل", subtitle: "رواتب أعلى" },
+      { title: "عمل عن بُعد", subtitle: "من أي مكان" },
+      { title: "نمِّ مسيرتك المهنية", subtitle: "مع شركات عالمية" },
+    ],
   },
   employer: {
     companyProfile: "ملف الشركة",

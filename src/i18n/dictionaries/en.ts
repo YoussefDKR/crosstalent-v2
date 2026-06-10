@@ -137,6 +137,17 @@ export const en = {
     imHiring: "I'm hiring talent",
     earlyAccess:
       "Early access beta — help us build the future of cross-border hiring",
+    heroImageAlt:
+      "Professional working remotely with global opportunities across North Africa and Europe",
+    heroWorkFrom: "Work from",
+    heroNorthAfrica: "North Africa",
+    heroWorkWith: "Work with",
+    heroEurope: "Europe",
+    heroBenefits: [
+      { title: "Better opportunities", subtitle: "Higher salaries" },
+      { title: "Work remotely", subtitle: "From anywhere" },
+      { title: "Grow your career", subtitle: "With global companies" },
+    ],
   },
   employer: {
     companyProfile: "Company profile",

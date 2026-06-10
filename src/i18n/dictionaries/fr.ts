@@ -143,6 +143,20 @@ export const fr: Messages = {
     imHiring: "Je recrute",
     earlyAccess:
       "Bêta en accès anticipé — aidez-nous à construire l'avenir du recrutement transfrontalier",
+    heroImageAlt:
+      "Professionnelle en télétravail avec des opportunités mondiales entre l'Afrique du Nord et l'Europe",
+    heroWorkFrom: "Travaillez depuis",
+    heroNorthAfrica: "l'Afrique du Nord",
+    heroWorkWith: "Travaillez avec",
+    heroEurope: "l'Europe",
+    heroBenefits: [
+      { title: "Meilleures opportunités", subtitle: "Salaires plus élevés" },
+      { title: "Travaillez à distance", subtitle: "De n'importe où" },
+      {
+        title: "Faites évoluer votre carrière",
+        subtitle: "Avec des entreprises internationales",
+      },
+    ],
   },
   employer: {
     companyProfile: "Profil de l'entreprise",
