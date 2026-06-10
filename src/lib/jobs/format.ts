@@ -1,4 +1,5 @@
 import { JOB_LOCATION_COUNTRIES } from "@/config/jobs";
+import type { JobRow } from "@/types/jobs";
 
 const countryByCode = new Map(
   JOB_LOCATION_COUNTRIES.map((c) => [c.code, c.label])
@@ -56,4 +57,20 @@ export function companyLogoColorClass(name: string | null | undefined): string {
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = s.charCodeAt(i) + ((hash << 5) - hash);
   return logoHues[Math.abs(hash) % logoHues.length];
+}
+
+export function formatSalaryRange(job: JobRow): string | null {
+  if (!job.salary_min && !job.salary_max) return null;
+  const currency = job.salary_currency ?? "EUR";
+  const fmt = (n: number) =>
+    new Intl.NumberFormat("en-EU", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
+  if (job.salary_min && job.salary_max) {
+    return `${fmt(job.salary_min)} – ${fmt(job.salary_max)}`;
+  }
+  if (job.salary_min) return `From ${fmt(job.salary_min)}`;
+  return `Up to ${fmt(job.salary_max!)}`;
 }

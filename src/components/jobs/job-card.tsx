@@ -9,7 +9,7 @@ import {
   locationLabel,
   remoteLabel,
 } from "@/lib/jobs/labels";
-import { formatSalaryRange } from "@/lib/jobs/queries";
+import { formatSalaryRange } from "@/lib/jobs/format";
 import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
 import type { JobWithCompany } from "@/types/jobs";
 

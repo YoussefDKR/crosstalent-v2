@@ -197,20 +197,4 @@ export async function getEmployerJob(
   return data as JobRow;
 }
 
-export function formatSalaryRange(job: JobRow): string | null {
-  if (!job.salary_min && !job.salary_max) return null;
-  const currency = job.salary_currency ?? "EUR";
-  const fmt = (n: number) =>
-    new Intl.NumberFormat("en-EU", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }).format(n);
-  if (job.salary_min && job.salary_max) {
-    return `${fmt(job.salary_min)} – ${fmt(job.salary_max)}`;
-  }
-  if (job.salary_min) return `From ${fmt(job.salary_min)}`;
-  return `Up to ${fmt(job.salary_max!)}`;
-}
-
 export { parseSkillsParam };

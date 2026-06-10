@@ -11,7 +11,8 @@ import {
   remoteLabel,
 } from "@/lib/jobs/labels";
 import { resolveImageUrl } from "@/lib/images/urls";
-import { formatSalaryRange, getPublishedJob } from "@/lib/jobs/queries";
+import { formatSalaryRange } from "@/lib/jobs/format";
+import { getPublishedJob } from "@/lib/jobs/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";

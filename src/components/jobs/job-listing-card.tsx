@@ -12,7 +12,7 @@ import {
   countryLabelFromCode,
   formatJobPostedAt,
 } from "@/lib/jobs/format";
-import { formatSalaryRange } from "@/lib/jobs/queries";
+import { formatSalaryRange } from "@/lib/jobs/format";
 import { Button } from "@/components/ui/button";
 import type { JobWithCompany } from "@/types/jobs";
 
