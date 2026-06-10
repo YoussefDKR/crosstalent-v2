@@ -7,6 +7,7 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { applyToJob } from "@/app/applications/actions";
 import { applicationStatusLabel } from "@/lib/applications/labels";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import type { ApplicationStatus } from "@/types/applications";
 
@@ -24,13 +25,14 @@ export function ApplyToJobButton({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const { t } = useI18n();
 
   if (applied && status) {
     return (
       <div className="flex items-center gap-2 text-sm text-[#0F172A]">
         <CheckCircle2 className="size-5 text-emerald-600" />
         <span>
-          Application submitted —{" "}
+          {t("jobs.applicationSubmitted")}{" "}
           <span className="font-medium">{applicationStatusLabel(status)}</span>
         </span>
       </div>
@@ -63,10 +65,10 @@ export function ApplyToJobButton({
         {pending ? (
           <>
             <Loader2 className="mr-2 size-4 animate-spin" />
-            Submitting…
+            {t("jobs.submitting")}
           </>
         ) : (
-          "Apply to this job"
+          t("jobs.applyToJob")
         )}
       </Button>
       {message && (
@@ -102,14 +104,16 @@ export function JobApplySection({
   externalSourceLabel,
   application,
 }: JobApplySectionProps) {
+  const { t } = useI18n();
+
   if (externalUrl) {
     return (
       <div className="mt-10 rounded-lg border border-amber-200/80 bg-amber-50/80 p-6">
-        <p className="text-sm font-medium text-[#0F172A]">Curated listing</p>
+        <p className="text-sm font-medium text-[#0F172A]">{t("jobs.curatedListing")}</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          This role is aggregated from{" "}
-          {externalSourceLabel ?? "a partner job board"}. Apply on the original
-          site — CrossTalent profiles are for direct employer posts as we grow.
+          {t("jobs.curatedDesc", {
+            source: externalSourceLabel ?? t("jobs.partnerBoard"),
+          })}
         </p>
         <a
           href={externalUrl}
@@ -118,7 +122,7 @@ export function JobApplySection({
           className="mt-4 inline-block"
         >
           <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-            View & apply externally
+            {t("jobs.viewApplyExternally")}
           </Button>
         </a>
       </div>
@@ -128,10 +132,8 @@ export function JobApplySection({
   if (isCandidate) {
     return (
       <div className="mt-10 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-6">
-        <p className="text-sm font-medium text-[#0F172A]">Ready to apply?</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Submit your profile to the employer for this role.
-        </p>
+        <p className="text-sm font-medium text-[#0F172A]">{t("jobs.readyToApply")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{t("jobs.submitProfile")}</p>
         <div className="mt-4">
           <ApplyToJobButton
             jobId={jobId}
@@ -145,13 +147,10 @@ export function JobApplySection({
 
   return (
     <div className="mt-10 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-6">
-      <p className="text-sm text-[#0F172A]">
-        Ready to apply? Create your free candidate profile to connect with
-        European employers.
-      </p>
+      <p className="text-sm text-[#0F172A]">{t("jobs.createProfilePrompt")}</p>
       <Link href={siteConfig.links.candidateSignup} className="mt-4 inline-block">
         <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-          Join as a candidate
+          {t("jobs.joinAsCandidate")}
         </Button>
       </Link>
     </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
@@ -13,34 +15,37 @@ import {
 } from "lucide-react";
 import { BetaBanner } from "@/components/landing/beta-banner";
 import { Button } from "@/components/ui/button";
-import {
-  whyDifferentiators,
-  whyFaqs,
-  whyPillars,
-  whyProblems,
-} from "@/config/why-crosstalent";
-import { howItWorksSteps, siteConfig } from "@/config/site";
+import { useI18n } from "@/context/i18n-provider";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-const problemIcons = {
-  globe: Globe2,
-  search: Search,
-  shield: Shield,
-} as const;
-
-const pillarIcons = {
-  bridge: Globe2,
-  quality: Sparkles,
-  flow: Workflow,
-} as const;
-
-const stepIcons = {
-  user: UserRound,
-  search: Search,
-  message: MessageSquare,
-} as const;
+const problemIcons = [Globe2, Search, Shield] as const;
+const pillarIcons = [Globe2, Sparkles, Workflow] as const;
+const stepIcons = [UserRound, Search, MessageSquare] as const;
 
 export function WhyCrossTalentPage() {
+  const { messages } = useI18n();
+  const m = messages.marketing.why;
+  const landing = messages.landing;
+
+  const howItWorksSteps = [
+    {
+      step: 1,
+      title: landing.step1Title,
+      description: landing.step1Description,
+    },
+    {
+      step: 2,
+      title: landing.step2Title,
+      description: landing.step2Description,
+    },
+    {
+      step: 3,
+      title: landing.step3Title,
+      description: landing.step3Description,
+    },
+  ];
+
   return (
     <>
       <section className="relative overflow-hidden bg-[#F8FAFC] py-16 sm:py-24">
@@ -50,16 +55,15 @@ export function WhyCrossTalentPage() {
         />
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
-            Why CrossTalent
+            {m.eyebrow}
           </p>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0F172A] sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-            Cross-border hiring should feel{" "}
-            <span className="text-[#2563EB]">obvious</span>, not impossible.
+            {m.title}{" "}
+            <span className="text-[#2563EB]">{m.titleHighlight}</span>
+            {m.titleEnd}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            We exist to connect ambitious professionals in North Africa with
-            European companies that need their skills — remotely, transparently,
-            and with respect on both sides of the Mediterranean.
+            {m.subtitle}
           </p>
         </div>
       </section>
@@ -70,16 +74,13 @@ export function WhyCrossTalentPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-              The gap we&apos;re closing
+              {m.gapTitle}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Millions of people are ready to work with Europe. Too often, the
-              infrastructure still isn&apos;t.
-            </p>
+            <p className="mt-4 text-lg text-muted-foreground">{m.gapSubtitle}</p>
           </div>
           <ul className="mt-14 grid gap-6 md:grid-cols-3">
-            {whyProblems.map((item) => {
-              const Icon = problemIcons[item.icon];
+            {m.problems.map((item, index) => {
+              const Icon = problemIcons[index];
               return (
                 <li
                   key={item.title}
@@ -105,16 +106,13 @@ export function WhyCrossTalentPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              What we do differently
+              {m.pillarsDarkTitle}
             </h2>
-            <p className="mt-4 text-lg text-slate-300">
-              CrossTalent is a dedicated bridge — not a generic board with a
-              world map slapped on the homepage.
-            </p>
+            <p className="mt-4 text-lg text-slate-300">{m.pillarsSubtitle}</p>
           </div>
           <ul className="mt-14 grid gap-8 lg:grid-cols-3">
-            {whyPillars.map((item) => {
-              const Icon = pillarIcons[item.icon];
+            {m.pillars.map((item, index) => {
+              const Icon = pillarIcons[index];
               return (
                 <li
                   key={item.title}
@@ -138,29 +136,26 @@ export function WhyCrossTalentPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-              CrossTalent vs. the usual job hunt
+              {m.compareTitle}
             </h2>
-            <p className="mt-4 text-muted-foreground">
-              A side-by-side look at what you can expect here.
-            </p>
+            <p className="mt-4 text-muted-foreground">{m.compareSubtitle}</p>
           </div>
           <div className="mt-12 overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm">
             <div className="grid grid-cols-3 border-b border-border/80 bg-slate-50 text-sm font-semibold text-[#0F172A]">
               <div className="p-4 sm:p-5" />
               <div className="border-l border-border/80 p-4 text-muted-foreground sm:p-5">
-                Typical boards
+                {m.typicalBoards}
               </div>
               <div className="border-l border-border/80 bg-[#2563EB]/5 p-4 text-[#2563EB] sm:p-5">
-                CrossTalent
+                {m.compareCrossTalent}
               </div>
             </div>
-            {whyDifferentiators.map((row, i) => (
+            {m.differentiators.map((row, i) => (
               <div
                 key={row.label}
                 className={cn(
                   "grid grid-cols-3 text-sm sm:text-base",
-                  i < whyDifferentiators.length - 1 &&
-                    "border-b border-border/60"
+                  i < m.differentiators.length - 1 && "border-b border-border/60"
                 )}
               >
                 <div className="p-4 font-medium text-[#0F172A] sm:p-5">
@@ -181,11 +176,11 @@ export function WhyCrossTalentPage() {
       <section className="border-y border-border/80 bg-slate-50/80 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            How it works
+            {m.howItWorks}
           </h2>
           <ol className="mt-14 grid gap-8 md:grid-cols-3">
-            {howItWorksSteps.map((step) => {
-              const Icon = stepIcons[step.icon];
+            {howItWorksSteps.map((step, index) => {
+              const Icon = stepIcons[index];
               return (
                 <li
                   key={step.step}
@@ -195,7 +190,7 @@ export function WhyCrossTalentPage() {
                     <Icon className="size-7" strokeWidth={1.75} />
                   </span>
                   <p className="mt-4 text-xs font-bold tracking-widest text-[#2563EB]">
-                    STEP {step.step}
+                    {messages.marketing.forEmployers.stepLabel} {step.step}
                   </p>
                   <h3 className="mt-2 text-xl font-semibold text-[#0F172A]">
                     {step.title}
@@ -213,10 +208,10 @@ export function WhyCrossTalentPage() {
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-semibold tracking-tight text-[#0F172A]">
-            Common questions
+            {m.faqTitle}
           </h2>
           <dl className="mt-12 space-y-6">
-            {whyFaqs.map((faq) => (
+            {m.faqs.map((faq) => (
               <div
                 key={faq.question}
                 className="rounded-2xl border border-border/80 bg-white p-6 shadow-sm"
@@ -239,28 +234,26 @@ export function WhyCrossTalentPage() {
             <div className="rounded-2xl border border-border/80 bg-white p-8 shadow-sm lg:p-10">
               <Layers className="size-8 text-[#2563EB]" />
               <h3 className="mt-6 text-2xl font-semibold text-[#0F172A]">
-                Ready to find your next role?
+                {m.candidateCardTitle}
               </h3>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                Create a free profile, browse remote and hybrid jobs, and apply
-                to verified European employers.
+                {m.candidateCardDesc}
               </p>
               <Link href={siteConfig.links.forCandidates} className="mt-8 inline-block">
                 <Button
                   size="lg"
                   className="h-12 gap-2 bg-[#2563EB] px-8 text-base font-semibold text-white hover:bg-[#1d4ed8]"
                 >
-                  For job seekers
+                  {m.forJobSeekers}
                   <ArrowRight className="size-4" />
                 </Button>
               </Link>
             </div>
             <div className="rounded-2xl border border-[#0F172A]/10 bg-[#0F172A] p-8 text-white lg:p-10">
               <Briefcase className="size-8 text-[#2563EB]" />
-              <h3 className="mt-6 text-2xl font-semibold">Hiring across borders?</h3>
+              <h3 className="mt-6 text-2xl font-semibold">{m.employerCardTitle}</h3>
               <p className="mt-3 leading-relaxed text-slate-300">
-                Post roles, search talent by skills and languages, and manage
-                applications in one place.
+                {m.employerCardDesc}
               </p>
               <Link
                 href={siteConfig.links.forEmployers}
@@ -270,7 +263,7 @@ export function WhyCrossTalentPage() {
                   size="lg"
                   className="h-12 gap-2 bg-white px-8 text-base font-semibold text-[#0F172A] hover:bg-slate-100"
                 >
-                  Start hiring
+                  {m.startHiring}
                   <ArrowRight className="size-4" />
                 </Button>
               </Link>
@@ -278,7 +271,7 @@ export function WhyCrossTalentPage() {
                 href={siteConfig.links.pricing}
                 className="mt-4 block text-sm font-medium text-[#2563EB] hover:underline"
               >
-                View employer pricing →
+                {m.viewEmployerPricing}
               </Link>
             </div>
           </div>

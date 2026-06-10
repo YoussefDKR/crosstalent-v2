@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from "next/font/google";
 import { VisitTracker } from "@/components/analytics/visit-tracker";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { I18nProvider } from "@/context/i18n-provider";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
-import { localeDirection } from "@/i18n/config";
+import { localeDirection, type Locale } from "@/i18n/config";
 import { getLocale } from "@/i18n/get-locale";
 import { getMessages } from "@/i18n/get-messages";
+import { cn } from "@/lib/utils";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
+
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-arabic",
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -53,6 +61,10 @@ export const metadata: Metadata = {
   },
 };
 
+function bodyFontClass(locale: Locale): string {
+  return locale === "ar" ? "font-arabic" : "font-sans";
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -63,8 +75,12 @@ export default async function RootLayout({
   const dir = localeDirection(locale);
 
   return (
-    <html lang={locale} dir={dir} className={plusJakarta.variable}>
-      <body className="min-h-screen font-sans antialiased">
+    <html
+      lang={locale}
+      dir={dir}
+      className={cn(plusJakarta.variable, ibmPlexArabic.variable)}
+    >
+      <body className={cn("min-h-screen antialiased", bodyFontClass(locale))}>
         <I18nProvider locale={locale} messages={messages}>
           {children}
           <VisitTracker />

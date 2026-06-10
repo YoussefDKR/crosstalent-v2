@@ -2,24 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { href: "/candidate/dashboard", label: "Dashboard" },
-  { href: "/candidate/profile", label: "Profile" },
-  { href: "/", label: "Jobs", match: (p: string) => p === "/" || p.startsWith("/jobs") },
-  { href: siteConfig.links.candidateMessages, label: "Messages" },
-  { href: "/candidate/settings", label: "Settings" },
-];
-
 export function CandidateMobileNav() {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const links = [
+    { href: "/candidate/dashboard", label: t("nav.dashboard") },
+    { href: "/candidate/profile", label: t("nav.myProfile") },
+    {
+      href: "/",
+      label: t("nav.jobs"),
+      match: (p: string) => p === "/" || p.startsWith("/jobs"),
+    },
+    { href: siteConfig.links.candidateMessages, label: t("nav.messages") },
+    { href: "/candidate/settings", label: t("nav.settings") },
+  ];
 
   return (
     <nav
       className="flex gap-2 overflow-x-auto border-b border-border/60 bg-white px-4 py-2 lg:hidden"
-      aria-label="Candidate mobile"
+      aria-label={t("candidate.mobileNavAria")}
     >
       {links.map((item) => {
         const active = item.match

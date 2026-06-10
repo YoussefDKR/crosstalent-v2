@@ -20,27 +20,34 @@ import {
   getIncompleteLabels,
 } from "@/lib/candidate/completion";
 import { getCandidateProfileData } from "@/lib/candidate/queries";
+import { getServerI18n } from "@/i18n/server";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Candidate dashboard",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: t("candidate.dashboardTitle") };
+}
 
 export default async function CandidateDashboardPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "candidate") redirect("/login");
 
+  const { t, messages } = await getServerI18n();
   const data = await getCandidateProfileData(profile);
-  const completion = calculateProfileCompletion(data);
+  const completion = calculateProfileCompletion(
+    data,
+    messages.candidate.completionItems
+  );
   const incomplete = getIncompleteLabels(completion).slice(0, 3);
 
-  const firstName = profile.fullName?.split(" ")[0] ?? "there";
+  const firstName =
+    profile.fullName?.split(" ")[0] ?? t("candidate.defaultName");
 
   return (
     <DashboardShell
       profile={profile}
-      title={`Welcome back, ${firstName}`}
-      description="Track your profile strength and get ready for European opportunities."
+      title={t("candidate.welcomeBack", { name: firstName })}
+      description={t("candidate.welcomeDesc")}
     >
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -53,20 +60,21 @@ export default async function CandidateDashboardPage() {
               <Sparkles className="size-5" />
             </div>
             <div>
-              <p className="font-medium text-[#0F172A]">Quick tip</p>
+              <p className="font-medium text-[#0F172A]">
+                {t("candidate.quickTip")}
+              </p>
               <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                Profiles above 80% completion get more views from verified
-                employers in France, Germany, Spain, and Italy.
+                {t("candidate.quickTipDesc")}
               </p>
             </div>
             {incomplete.length > 0 && (
               <p className="text-xs text-muted-foreground">
-                Next: {incomplete.join(" · ")}
+                {t("candidate.next")} {incomplete.join(" · ")}
               </p>
             )}
             <Link href="/candidate/profile">
               <Button className="w-full gap-2 bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                Edit profile
+                {t("candidate.editProfile")}
                 <ArrowRight className="size-4" />
               </Button>
             </Link>
@@ -79,36 +87,38 @@ export default async function CandidateDashboardPage() {
           {
             href: siteConfig.links.jobs,
             icon: Briefcase,
-            label: "Job board",
-            value: "Browse roles",
+            label: t("nav.jobBoard"),
+            value: t("candidate.browseRoles"),
             ok: true,
           },
           {
             href: siteConfig.links.candidateMessages,
             icon: MessageSquare,
-            label: "Messages",
-            value: "Inbox",
+            label: t("candidate.messagesTitle"),
+            value: t("candidate.inbox"),
             ok: true,
           },
           {
             href: "/candidate/profile#cv",
             icon: FileText,
-            label: "CV",
-            value: data.details?.cv_path ? "Uploaded" : "Missing",
+            label: t("candidate.cvLabel"),
+            value: data.details?.cv_path
+              ? t("candidate.uploaded")
+              : t("candidate.missing"),
             ok: Boolean(data.details?.cv_path),
           },
           {
             href: "/candidate/profile#skills",
             icon: Wrench,
-            label: "Skills",
-            value: `${data.skills.length} added`,
+            label: t("candidate.skillsLabel"),
+            value: t("candidate.added", { count: data.skills.length }),
             ok: data.skills.length >= 3,
           },
           {
             href: "/candidate/profile#languages",
             icon: Languages,
-            label: "Languages",
-            value: `${data.languages.length} added`,
+            label: t("candidate.languagesLabel"),
+            value: t("candidate.added", { count: data.languages.length }),
             ok: data.languages.length >= 1,
           },
         ].map((item) => (

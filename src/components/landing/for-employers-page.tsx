@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Briefcase,
@@ -12,11 +14,7 @@ import { StripeSetupBanner } from "@/components/billing/stripe-setup-banner";
 import { MarketingCtaBand } from "@/components/landing/marketing-cta-band";
 import { BetaBanner } from "@/components/landing/beta-banner";
 import { Button } from "@/components/ui/button";
-import {
-  employerBenefits,
-  employerFaqs,
-  employerSteps,
-} from "@/config/for-employers";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 
 const benefitIcons = {
@@ -26,6 +24,8 @@ const benefitIcons = {
   message: MessageSquare,
 } as const;
 
+const benefitIconOrder = ["search", "briefcase", "clipboard", "message"] as const;
+
 type ForEmployersPageProps = {
   employerSignedIn?: boolean;
 };
@@ -33,6 +33,15 @@ type ForEmployersPageProps = {
 export function ForEmployersPage({
   employerSignedIn = false,
 }: ForEmployersPageProps) {
+  const { messages, t } = useI18n();
+  const m = messages.marketing.forEmployers;
+
+  const hubItems = [
+    { icon: Briefcase, text: m.hubItem1 },
+    { icon: Users, text: m.hubItem2 },
+    { icon: ClipboardList, text: m.hubItem3 },
+  ];
+
   return (
     <>
       <section className="relative overflow-hidden bg-[#F8FAFC] py-16 sm:py-24">
@@ -44,16 +53,14 @@ export function ForEmployersPage({
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
-                For employers
+                {m.eyebrow}
               </p>
               <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0F172A] sm:text-5xl lg:leading-[1.1]">
-                Hire North African talent.{" "}
-                <span className="text-[#2563EB]">Without the noise.</span>
+                {m.title}{" "}
+                <span className="text-[#2563EB]">{m.titleHighlight}</span>
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                Post roles, search skilled professionals, manage applications,
-                and message candidates — built for European teams hiring across
-                borders.
+                {m.subtitle}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href={siteConfig.links.employerSignup}>
@@ -61,7 +68,7 @@ export function ForEmployersPage({
                     size="lg"
                     className="h-12 min-w-[200px] bg-[#2563EB] text-base font-semibold text-white hover:bg-[#1d4ed8]"
                   >
-                    Create employer account
+                    {m.createAccount}
                   </Button>
                 </Link>
                 <Link href="#pricing">
@@ -70,13 +77,11 @@ export function ForEmployersPage({
                     variant="outline"
                     className="h-12 min-w-[200px] border-2 border-[#2563EB] text-base font-semibold text-[#2563EB] hover:bg-[#2563EB]/5"
                   >
-                    See pricing
+                    {m.seePricing}
                   </Button>
                 </Link>
               </div>
-              <p className="mt-4 text-sm text-muted-foreground">
-                Free Starter plan · Upgrade when you are ready to scale hiring
-              </p>
+              <p className="mt-4 text-sm text-muted-foreground">{m.starterNote}</p>
             </div>
             <div className="rounded-2xl border border-border/80 bg-white p-8 shadow-lg ring-1 ring-black/5">
               <div className="flex items-center gap-4 border-b border-border/60 pb-6">
@@ -84,18 +89,12 @@ export function ForEmployersPage({
                   <Building2 className="size-7" />
                 </span>
                 <div>
-                  <p className="font-semibold text-[#0F172A]">Your hiring hub</p>
-                  <p className="text-sm text-muted-foreground">
-                    Jobs · Applications · Messages
-                  </p>
+                  <p className="font-semibold text-[#0F172A]">{m.hubTitle}</p>
+                  <p className="text-sm text-muted-foreground">{m.hubSubtitle}</p>
                 </div>
               </div>
               <ul className="mt-6 space-y-4">
-                {[
-                  { icon: Briefcase, text: "Publish remote & hybrid roles" },
-                  { icon: Users, text: "Search candidates by skill & language" },
-                  { icon: ClipboardList, text: "Review applications in one inbox" },
-                ].map((item) => (
+                {hubItems.map((item) => (
                   <li key={item.text} className="flex items-center gap-3 text-sm">
                     <item.icon className="size-5 shrink-0 text-[#10B981]" />
                     <span className="text-[#0F172A]">{item.text}</span>
@@ -113,12 +112,12 @@ export function ForEmployersPage({
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-              Everything you need to hire across borders
+              {m.benefitsTitle}
             </h2>
           </div>
           <ul className="mt-14 grid gap-6 sm:grid-cols-2">
-            {employerBenefits.map((item) => {
-              const Icon = benefitIcons[item.icon];
+            {m.benefits.map((item, index) => {
+              const Icon = benefitIcons[benefitIconOrder[index]];
               return (
                 <li
                   key={item.title}
@@ -148,26 +147,24 @@ export function ForEmployersPage({
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-xl">
               <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A]">
-                How hiring works on CrossTalent
+                {m.stepsTitle}
               </h2>
-              <p className="mt-3 text-muted-foreground">
-                From company profile to published role in three steps.
-              </p>
+              <p className="mt-3 text-muted-foreground">{m.stepsSubtitle}</p>
             </div>
             <Link href={siteConfig.links.employerSignup}>
               <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                Get started free
+                {m.getStartedFree}
               </Button>
             </Link>
           </div>
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
-            {employerSteps.map((step) => (
+            {m.steps.map((step, index) => (
               <li
-                key={step.step}
+                key={step.title}
                 className="rounded-2xl border border-border/80 bg-white p-8 shadow-sm"
               >
                 <span className="text-xs font-bold tracking-widest text-[#2563EB]">
-                  STEP {step.step}
+                  {m.stepLabel} {String(index + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mt-3 text-xl font-semibold text-[#0F172A]">
                   {step.title}
@@ -185,12 +182,9 @@ export function ForEmployersPage({
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-              Simple, transparent pricing
+              {m.pricingTitle}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Candidates always join free. Choose a plan when you are ready to
-              post jobs and scale hiring.
-            </p>
+            <p className="mt-4 text-lg text-muted-foreground">{m.pricingSubtitle}</p>
           </div>
           {employerSignedIn && (
             <div className="mt-8">
@@ -201,9 +195,12 @@ export function ForEmployersPage({
             <PricingPlans employerSignedIn={employerSignedIn} />
           </div>
           <p className="mt-8 text-center text-sm text-muted-foreground">
-            Need a custom plan?{" "}
-            <Link href={siteConfig.links.contact} className="font-medium text-[#2563EB] hover:underline">
-              Contact us
+            {m.needCustomPlan}{" "}
+            <Link
+              href={siteConfig.links.contact}
+              className="font-medium text-[#2563EB] hover:underline"
+            >
+              {t("billing.contactUs")}
             </Link>
           </p>
         </div>
@@ -212,10 +209,10 @@ export function ForEmployersPage({
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-semibold text-[#0F172A]">
-            Employer FAQ
+            {m.faqTitle}
           </h2>
           <dl className="mt-12 space-y-6">
-            {employerFaqs.map((faq) => (
+            {m.faqs.map((faq) => (
               <div
                 key={faq.question}
                 className="rounded-2xl border border-border/80 bg-white p-6 shadow-sm"
@@ -231,12 +228,12 @@ export function ForEmployersPage({
       </section>
 
       <MarketingCtaBand
-        title="Start hiring on CrossTalent today"
-        description="Create your employer account in minutes. Set up your company, explore talent, and post your first role when you are ready."
+        title={m.ctaTitle}
+        description={m.ctaDesc}
         primaryHref={siteConfig.links.employerSignup}
-        primaryLabel="Create employer account"
+        primaryLabel={m.createAccount}
         secondaryHref={siteConfig.links.pricing}
-        secondaryLabel="Compare plans"
+        secondaryLabel={m.comparePlans}
       />
     </>
   );

@@ -4,23 +4,28 @@ import { Mail } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { CONTACT_PUBLIC_EMAIL } from "@/config/contact";
 import { siteConfig } from "@/config/site";
+import { getServerI18n } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with the CrossTalent team",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return {
+    title: t("footer.contact"),
+    description: t("contact.pageSubtitle"),
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { t } = await getServerI18n();
+
   return (
     <div className="bg-slate-50/50 py-12 sm:py-20">
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            Contact us
+            {t("contact.pageTitle")}
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Send a message and we&apos;ll reply to your email. You can also reach
-            us at{" "}
+            {t("contact.pageSubtitle")}{" "}
             <a
               href={`mailto:${CONTACT_PUBLIC_EMAIL}`}
               className="font-medium text-[#2563EB] hover:underline"
@@ -37,9 +42,9 @@ export default function ContactPage() {
               <Mail className="size-5" />
             </span>
             <div>
-              <p className="font-semibold text-[#0F172A]">Send a message</p>
+              <p className="font-semibold text-[#0F172A]">{t("contact.sendMessage")}</p>
               <p className="text-sm text-muted-foreground">
-                Employers, candidates, and partners welcome.
+                {t("contact.sendMessageDesc")}
               </p>
             </div>
           </div>
@@ -47,12 +52,12 @@ export default function ContactPage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
+          {t("contact.hasAccount")}{" "}
           <Link
             href={siteConfig.links.login}
             className="font-medium text-[#2563EB] hover:underline"
           >
-            Sign in
+            {t("common.signIn")}
           </Link>
         </p>
       </div>

@@ -2,9 +2,12 @@
 
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { betaMessage } from "@/config/beta";
+import { useI18n } from "@/context/i18n-provider";
 
 export function BetaBanner() {
+  const { messages } = useI18n();
+  const { beta } = messages.marketing;
+
   return (
     <section className="bg-[#0F172A] py-10 sm:py-12" aria-label="Platform status">
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
@@ -16,10 +19,10 @@ export function BetaBanner() {
         >
           <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
             <Sparkles className="size-4" aria-hidden />
-            Beta
+            {beta.label}
           </p>
           <p className="mt-4 text-lg leading-relaxed text-white/90 sm:text-xl">
-            {betaMessage}
+            {beta.message}
           </p>
         </motion.div>
       </div>

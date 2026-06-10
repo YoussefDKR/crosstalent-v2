@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Briefcase, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { getDashboardPath } from "@/lib/auth/routes";
 import { siteConfig } from "@/config/site";
 import type { Profile } from "@/types";
@@ -13,7 +14,17 @@ type CtaSectionProps = {
 };
 
 export function CtaSection({ profile = null }: CtaSectionProps) {
+  const { messages } = useI18n();
+  const c = messages.marketing.cta;
   const dashboardHref = profile ? getDashboardPath(profile.role) : null;
+
+  const title = profile ? c.loggedInTitle : c.guestTitle;
+  const description =
+    profile?.role === "candidate"
+      ? c.candidateDesc
+      : profile?.role === "employer"
+        ? c.employerDesc
+        : c.guestDesc;
 
   return (
     <section className="py-20 sm:py-28">
@@ -35,14 +46,10 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
           />
           <div className="relative">
             <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {profile ? "Pick up where you left off" : "Ready to go beyond borders?"}
+              {title}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-slate-300">
-              {profile?.role === "candidate"
-                ? "Open roles from European employers are on the job board — only Published posts appear there."
-                : profile?.role === "employer"
-                  ? "Publish roles on the job board and search candidates by skills, languages, and country."
-                  : "Whether you're building your career or your next great hire, CrossTalent is where MENA meets Europe."}
+              {description}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               {profile && dashboardHref ? (
@@ -53,7 +60,7 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
                         size="lg"
                         className="h-11 gap-2 bg-white px-6 text-[#0F172A] hover:bg-slate-100"
                       >
-                        Browse job board
+                        {c.browseJobBoard}
                         <Briefcase className="size-4" />
                       </Button>
                     </Link>
@@ -63,7 +70,7 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
                         size="lg"
                         className="h-11 gap-2 bg-white px-6 text-[#0F172A] hover:bg-slate-100"
                       >
-                        Job posts
+                        {c.jobPosts}
                         <Briefcase className="size-4" />
                       </Button>
                     </Link>
@@ -75,7 +82,7 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
                       className="h-11 border-slate-600 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white"
                     >
                       <LayoutDashboard className="size-4" />
-                      Dashboard
+                      {c.dashboard}
                     </Button>
                   </Link>
                 </>
@@ -86,7 +93,7 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
                       size="lg"
                       className="h-11 gap-2 bg-white px-6 text-[#0F172A] hover:bg-slate-100"
                     >
-                      Join as candidate
+                      {c.joinCandidate}
                       <ArrowRight className="size-4" />
                     </Button>
                   </Link>
@@ -96,7 +103,7 @@ export function CtaSection({ profile = null }: CtaSectionProps) {
                       variant="outline"
                       className="h-11 border-slate-600 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white"
                     >
-                      Start hiring
+                      {c.startHiring}
                     </Button>
                   </Link>
                 </>

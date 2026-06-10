@@ -5,45 +5,48 @@ import { CompanyCompletionCard } from "@/components/employer/company-completion-
 import { CompanyProfileForm } from "@/components/employer/company-profile-form";
 import { EmployerSectionCard } from "@/components/employer/section-card";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { calculateCompanyCompletion } from "@/lib/employer/completion";
 import { getCompanyProfileData } from "@/lib/employer/queries";
 
-export const metadata: Metadata = {
-  title: "Company profile",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: t("employer.companyProfile") };
+}
 
 export default async function EmployerCompanyPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
+  const { t } = await getServerI18n();
   const data = await getCompanyProfileData(profile);
   const completion = calculateCompanyCompletion(data);
 
   return (
     <DashboardShell
       profile={profile}
-      title="Company profile"
-      description="Showcase your company to attract talent across Morocco, Algeria, Tunisia, Egypt, and beyond."
+      title={t("employer.companyProfile")}
+      description={t("employer.companySubtitle")}
     >
       <div className="mb-8">
         <CompanyCompletionCard completion={completion} compact />
       </div>
 
       <p className="mb-6 text-sm text-muted-foreground">
-        Personal account settings (photo, email, password) are in{" "}
+        {t("employer.personalSettingsBefore")}{" "}
         <Link
           href="/employer/settings"
           className="font-medium text-[#2563EB] hover:underline"
         >
-          Settings
+          {t("employer.settingsTitle")}
         </Link>
-        .
+        {t("employer.personalSettingsAfter")}
       </p>
 
       <EmployerSectionCard
-        title="Company details"
-        description="This information appears on your job posts and employer brand page."
+        title={t("employer.companyDetails")}
+        description={t("employer.companyDetailsDesc")}
       >
         <CompanyProfileForm company={data.company} />
       </EmployerSectionCard>

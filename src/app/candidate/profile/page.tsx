@@ -15,17 +15,23 @@ import {
   getCandidateProfileData,
   getCvSignedUrl,
 } from "@/lib/candidate/queries";
+import { getServerI18n } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "My profile",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: t("candidate.profileTitle") };
+}
 
 export default async function CandidateProfilePage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "candidate") redirect("/login");
 
+  const { t, messages } = await getServerI18n();
   const data = await getCandidateProfileData(profile);
-  const completion = calculateProfileCompletion(data);
+  const completion = calculateProfileCompletion(
+    data,
+    messages.candidate.completionItems
+  );
   const cvDownloadUrl = data.details?.cv_path
     ? await getCvSignedUrl(data.details.cv_path)
     : null;
@@ -38,16 +44,16 @@ export default async function CandidateProfilePage() {
         <div className="space-y-8">
         <SectionCard
           id="about"
-          title="Professional summary"
-          description="Headline, bio, location, and links employers see on your profile."
+          title={t("candidate.sectionAboutTitle")}
+          description={t("candidate.sectionAboutDesc")}
         >
           <ProfileDetailsForm details={data.details} />
         </SectionCard>
 
         <SectionCard
           id="cv"
-          title="CV / Resume"
-          description="Upload a PDF or Word document (max 5MB). Only verified employers can view it."
+          title={t("candidate.sectionCvTitle")}
+          description={t("candidate.sectionCvDesc")}
         >
           <CvUpload
             userId={profile.id}
@@ -59,24 +65,24 @@ export default async function CandidateProfilePage() {
 
         <SectionCard
           id="skills"
-          title="Skills"
-          description="Add technical and professional skills with optional proficiency levels."
+          title={t("candidate.sectionSkillsTitle")}
+          description={t("candidate.sectionSkillsDesc")}
         >
           <SkillsSection skills={data.skills} />
         </SectionCard>
 
         <SectionCard
           id="languages"
-          title="Languages"
-          description="Cross-border roles often require Arabic, French, or English."
+          title={t("candidate.sectionLanguagesTitle")}
+          description={t("candidate.sectionLanguagesDesc")}
         >
           <LanguagesSection languages={data.languages} />
         </SectionCard>
 
         <SectionCard
           id="experience"
-          title="Work experience"
-          description="Your employment history and achievements."
+          title={t("candidate.sectionExperienceTitle")}
+          description={t("candidate.sectionExperienceDesc")}
         >
           <ExperienceSection experiences={data.experiences} />
         </SectionCard>

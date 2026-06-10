@@ -5,6 +5,7 @@ import { EmployerUpgradeGate } from "@/components/billing/employer-upgrade-gate"
 import { CandidateCard } from "@/components/employer/candidate-card";
 import { CandidateFilters } from "@/components/employer/candidate-filters";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getServerI18n } from "@/i18n/server";
 import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
@@ -12,9 +13,10 @@ import {
   searchCandidates,
 } from "@/lib/employer/candidate-search";
 
-export const metadata: Metadata = {
-  title: "Find talent",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: t("employer.findTalent") };
+}
 
 export default async function EmployerCandidatesPage({
   searchParams,
@@ -24,20 +26,21 @@ export default async function EmployerCandidatesPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
+  const { t } = await getServerI18n();
   const access = await getEmployerFeatureAccess(profile.id);
 
   if (!access.canViewCandidates) {
     return (
       <DashboardShell
         profile={profile}
-        title="Find talent"
-        description="Search North African candidates when your trial or subscription is active."
+        title={t("employer.findTalent")}
+        description={t("employer.findTalentGateSubtitle")}
       >
         <EmployerUpgradeGate
           variant="candidates"
           access={access}
-          title="Candidate search is a premium feature"
-          description="Subscribe or use your free 30-day trial to browse talent, filter by skills, and message candidates."
+          title={t("employer.candidatesPremiumTitle")}
+          description={t("employer.candidatesPremiumDesc")}
         />
       </DashboardShell>
     );
@@ -58,14 +61,20 @@ export default async function EmployerCandidatesPage({
   return (
     <DashboardShell
       profile={profile}
-      title="Find talent"
-      description="Search North African candidates by country, skills, languages, and profile strength."
+      title={t("employer.findTalent")}
+      description={t("employer.findTalentSubtitle")}
     >
       {access.isTrialActive && access.trialDaysRemaining != null && (
         <p className="mb-4 rounded-lg bg-[#EFF6FF] px-4 py-3 text-sm text-[#1d4ed8]">
-          Free trial · {access.trialDaysRemaining} day
-          {access.trialDaysRemaining === 1 ? "" : "s"} left · includes candidate
-          search and {access.publishedJobLimit} published job
+          {t(
+            access.trialDaysRemaining === 1
+              ? "employer.trialIncludesSearch"
+              : "employer.trialIncludesSearchPlural",
+            {
+              days: access.trialDaysRemaining ?? 0,
+              limit: access.publishedJobLimit ?? 0,
+            }
+          )}
         </p>
       )}
 
@@ -81,10 +90,13 @@ export default async function EmployerCandidatesPage({
 
       <p className="mt-6 text-sm text-muted-foreground">
         {candidates.length}{" "}
-        {candidates.length === 1 ? "candidate" : "candidates"} found
+        {candidates.length === 1
+          ? t("employer.candidateSingular")
+          : t("employer.candidatePlural")}{" "}
+        {t("employer.candidatesFoundSuffix")}
         {candidates.length > 0 && (
           <span className="block mt-1 text-[#0F172A]/70">
-            Sorted by profile completeness — stronger profiles appear first.
+            {t("employer.sortedByCompleteness")}
           </span>
         )}
       </p>
@@ -99,13 +111,13 @@ export default async function EmployerCandidatesPage({
         <div className="mt-8 rounded-lg border border-dashed border-border bg-white p-12 text-center">
           <p className="font-medium text-[#0F172A]">
             {hasActiveFilters
-              ? "No candidates match your filters"
-              : "No candidates registered yet"}
+              ? t("employer.noCandidatesMatch")
+              : t("employer.noCandidatesYet")}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
             {hasActiveFilters
-              ? "Try broader filters or clear them to see all talent."
-              : "When candidates sign up and build profiles, they will appear here."}
+              ? t("employer.noCandidatesMatchHint")
+              : t("employer.noCandidatesYetHint")}
           </p>
         </div>
       )}

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProfileCompletion } from "@/types/candidate";
@@ -14,6 +17,7 @@ export function ProfileCompletionCard({
   completion,
   compact = false,
 }: ProfileCompletionCardProps) {
+  const { t } = useI18n();
   const { percent, items } = completion;
 
   return (
@@ -22,12 +26,12 @@ export function ProfileCompletionCard({
         <div className="flex items-start justify-between gap-4">
           <div>
             <CardTitle className="text-lg text-[#0F172A]">
-              Profile strength
+              {t("candidate.completionTitle")}
             </CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">
               {percent >= 80
-                ? "Strong profile — employers can find you easily."
-                : "Complete your profile to stand out to European employers."}
+                ? t("candidate.completionStrong")
+                : t("candidate.completionStandOut")}
             </p>
           </div>
           <span className="text-3xl font-semibold tabular-nums text-[#2563EB]">
@@ -76,13 +80,13 @@ export function ProfileCompletionCard({
                 variant="outline"
                 className="gap-2 border-[#2563EB]/30 text-[#2563EB] hover:bg-[#2563EB]/5"
               >
-                Career profile
+                {t("candidate.careerProfile")}
                 <ArrowRight className="size-4" />
               </Button>
             </Link>
             <Link href="/candidate/settings">
               <Button variant="outline" className="text-muted-foreground">
-                Account settings
+                {t("candidate.accountSettings")}
               </Button>
             </Link>
           </div>

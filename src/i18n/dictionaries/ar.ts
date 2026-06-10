@@ -1,4 +1,8 @@
 import type { Messages } from "@/i18n/dictionaries/en";
+import { billingAr } from "@/i18n/dictionaries/billing/ar";
+import { candidateAr } from "@/i18n/dictionaries/candidate/ar";
+import { jobsAr } from "@/i18n/dictionaries/jobs/ar";
+import { marketingAr } from "@/i18n/dictionaries/marketing/ar";
 
 export const ar: Messages = {
   common: {
@@ -158,6 +162,134 @@ export const ar: Messages = {
     statusNew: "جديد",
     statusShortlisted: "في القائمة المختصرة",
     statusDeclined: "مرفوض",
+    jobsTitle: "الوظائف المنشورة",
+    jobsSubtitle:
+      "أنشئ وأدر الأدوار الظاهرة على لوحة الوظائف العامة عند النشر.",
+    trialPublished:
+      "تجربة: {count}/{limit} وظيفة منشورة على اللوحة",
+    trialPublishedPlural:
+      "تجربة: {count}/{limit} وظائف منشورة على اللوحة",
+    trialDaysLeft: "· متبقي {days} أيام",
+    trialDaysLeftSingular: "· متبقي {days} يوم",
+    draftJobsFree:
+      "مسودات الوظائف مجانية. اشترك أو استخدم تجربتك للنشر على لوحة الوظائف.",
+    postSingular: "منشور",
+    postPlural: "منشورات",
+    createFirstRole:
+      "أنشئ أول دور وانشره ليظهر على لوحة الوظائف العامة.",
+    draftNotOnBoard:
+      "غير موجود على اللوحة — استخدم نشر الوظيفة عندما تكون جاهزاً.",
+    viewOnJobBoard: "عرض على لوحة الوظائف",
+    allApplications: "كل الطلبات",
+    declined: "مرفوضة",
+    filterAll: "الكل",
+    applicationSingular: "طلب",
+    applicationPlural: "طلبات",
+    noApplicationsTitle: "لا توجد طلبات بعد",
+    noApplicationsHint:
+      "انشر وظيفة ويمكن للمرشحين التقديم من إعلانك.",
+    applicationTitle: "طلب",
+    appliedTo: "تقدّم إلى {jobTitle}",
+    backToApplications: "العودة إلى الطلبات",
+    about: "نبذة",
+    skills: "المهارات",
+    viewFullProfile: "عرض الملف الكامل للمرشح",
+    appliedToLabel: "تقدّم إلى",
+    appliedOn: "تقدّم في {date}",
+    findTalent: "البحث عن المواهب",
+    findTalentSubtitle:
+      "ابحث عن مرشحين من شمال أفريقيا حسب البلد والمهارات واللغات وقوة الملف.",
+    findTalentGateSubtitle:
+      "ابحث عن مرشحين من شمال أفريقيا عندما تكون تجربتك أو اشتراكك نشطاً.",
+    candidatesPremiumTitle: "البحث عن المرشحين ميزة مدفوعة",
+    candidatesPremiumDesc:
+      "اشترك أو استخدم تجربتك المجانية لمدة 30 يوماً لتصفح المواهب والتصفية حسب المهارات ومراسلة المرشحين.",
+    trialIncludesSearch:
+      "تجربة مجانية · متبقي {days} يوم · يشمل البحث عن المرشحين و{limit} وظيفة منشورة",
+    trialIncludesSearchPlural:
+      "تجربة مجانية · متبقي {days} أيام · يشمل البحث عن المرشحين و{limit} وظيفة منشورة",
+    candidateSingular: "مرشح",
+    candidatePlural: "مرشحون",
+    candidatesFoundSuffix: "تم العثور عليهم",
+    sortedByCompleteness:
+      "مرتبة حسب اكتمال الملف — الملفات الأقوى تظهر أولاً.",
+    noCandidatesMatch: "لا يوجد مرشحون يطابقون عوامل التصفية",
+    noCandidatesYet: "لا يوجد مرشحون مسجلون بعد",
+    noCandidatesMatchHint:
+      "جرّب عوامل تصفية أوسع أو امسحها لرؤية كل المواهب.",
+    noCandidatesYetHint:
+      "عندما يسجل المرشحون ويكملون ملفاتهم، سيظهرون هنا.",
+    candidateProfile: "ملف المرشح",
+    candidateFallback: "مرشح",
+    present: "حتى الآن",
+    profilesRequireTrial:
+      "ملفات المرشحين تتطلب تجربة أو اشتراكاً",
+    upgradeToViewProfiles:
+      "قم بالترقية لعرض الملفات الكاملة وبدء المحادثات.",
+    backToSearch: "العودة إلى البحث",
+    profileComplete: "الملف مكتمل بنسبة {percent}%",
+    experience: "الخبرة",
+    contactLinks: "التواصل والروابط",
+    linkedIn: "LinkedIn",
+    portfolio: "معرض الأعمال",
+    downloadCv: "تحميل السيرة الذاتية",
+    languages: "اللغات",
+    startConversationHint:
+      "ابدأ محادثة — تتحدث الرسائل في الوقت الفعلي لكلا الطرفين.",
+    messagesTitle: "الرسائل",
+    messagesSubtitle: "تحدث مع المرشحين في الوقت الفعلي.",
+    conversationWith: "محادثة مع {name}",
+    chatWith: "دردشة مع {name}",
+    settingsTitle: "الإعدادات",
+    settingsDescBefore:
+      "حسابك الشخصي — الصورة والاسم والبريد وكلمة المرور. تفاصيل الشركة في",
+    settingsDescAfter: ".",
+    profilePhoto: "صورة الملف الشخصي",
+    profilePhotoDesc:
+      "تظهر عند مراسلة المرشحين وفي حسابك.",
+    name: "الاسم",
+    nameDesc: "اسمك كجهة اتصال للتوظيف على CrossTalent.",
+    email: "البريد الإلكتروني",
+    emailDesc: "يُستخدم لتسجيل الدخول واستلام الإشعارات.",
+    password: "كلمة المرور",
+    passwordDesc: "اختر كلمة مرور قوية لا تستخدمها في مكان آخر.",
+    deleteAccount: "حذف الحساب",
+    deleteAccountDesc:
+      "إزالة حسابك نهائياً بعد تأكيد البريد الإلكتروني.",
+    companySubtitle:
+      "اعرض شركتك لجذب المواهب من المغرب والجزائر وتونس ومصر وما بعدها.",
+    personalSettingsBefore:
+      "إعدادات الحساب الشخصي (الصورة، البريد، كلمة المرور) في",
+    personalSettingsAfter: ".",
+    companyDetails: "تفاصيل الشركة",
+    companyDetailsDesc:
+      "تظهر هذه المعلومات في وظائفك وصفحة علامتك كصاحب عمل.",
+    billing: {
+      title: "الفوترة",
+      subtitle: "أدر اشتراكك كصاحب عمل على CrossTalent.",
+      trialActive: "تجربة مجانية لمدة {days} يوم نشطة",
+      trialIncludes:
+        "يشمل البحث عن المرشحين و{limit} وظيفة منشورة على اللوحة",
+      daysRemaining: "· متبقي {days} يوم",
+      daysRemainingPlural: "· متبقي {days} أيام",
+      jobsLive: "· {count}/{limit} وظيفة نشطة",
+      jobsLivePlural: "· {count}/{limit} وظائف نشطة",
+      noActiveTrial: "لا توجد تجربة نشطة",
+      noActiveTrialDesc:
+        "يحصل أصحاب العمل الجدد على تجربة {days} يوم تلقائياً. اشترك في Growth أو Scale للوصول المستمر للمرشحين والمزيد من الوظائف.",
+      paymentReceived:
+        "تم استلام الدفع — ستُحدَّث خطتك قريباً. حدّث الصفحة إذا لم يتغير الحالة خلال دقيقة.",
+      checkoutCanceled: "تم إلغاء الدفع. يمكنك الاشتراك في أي وقت أدناه.",
+      currentPlan: "الخطة الحالية",
+      statusLabel: "الحالة: {status}",
+      renews: "· يتجدد في {date}",
+      cancelsAtPeriodEnd: "· يُلغى في نهاية الفترة",
+      trialEnds: "تنتهي التجربة في {date}",
+      upgradePlan: "ترقية خطتك",
+      allPlans: "كل الخطط",
+      setupInstructions: "تعليمات الإعداد:",
+      stripeGuide: "دليل Stripe",
+    },
   },
   admin: {
     overview: "نظرة عامة",
@@ -242,4 +374,24 @@ export const ar: Messages = {
     pendingReview: "بانتظار المراجعة",
     candidatesEmployers: "{candidates} مرشح · {employers} صاحب عمل",
   },
+  contact: {
+    pageTitle: "اتصل بنا",
+    pageSubtitle: "أرسل رسالة وسنرد على بريدك الإلكتروني. يمكنك أيضاً التواصل معنا على",
+    sendMessage: "إرسال رسالة",
+    sendMessageDesc: "نرحب بأصحاب العمل والمرشحين والشركاء.",
+    nameOptional: "الاسم (اختياري)",
+    yourName: "اسمك",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "you@company.com",
+    message: "الرسالة",
+    messagePlaceholder: "كيف يمكننا مساعدتك؟",
+    sending: "جارٍ الإرسال…",
+    sendBtn: "إرسال الرسالة",
+    hasAccount: "لديك حساب بالفعل؟",
+    questions: "أسئلة؟",
+  },
+  marketing: marketingAr,
+  jobs: jobsAr,
+  candidate: candidateAr,
+  billing: billingAr,
 };

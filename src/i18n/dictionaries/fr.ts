@@ -1,4 +1,8 @@
 import type { Messages } from "@/i18n/dictionaries/en";
+import { billingFr } from "@/i18n/dictionaries/billing/fr";
+import { candidateFr } from "@/i18n/dictionaries/candidate/fr";
+import { jobsFr } from "@/i18n/dictionaries/jobs/fr";
+import { marketingFr } from "@/i18n/dictionaries/marketing/fr";
 
 export const fr: Messages = {
   common: {
@@ -166,6 +170,137 @@ export const fr: Messages = {
     statusNew: "Nouveau",
     statusShortlisted: "Présélectionné",
     statusDeclined: "Refusé",
+    jobsTitle: "Offres d'emploi",
+    jobsSubtitle:
+      "Créez et gérez les postes visibles sur le site public une fois publiés.",
+    trialPublished:
+      "Essai : {count}/{limit} offre publiée sur le site",
+    trialPublishedPlural:
+      "Essai : {count}/{limit} offres publiées sur le site",
+    trialDaysLeft: "· {days} jours restants",
+    trialDaysLeftSingular: "· {days} jour restant",
+    draftJobsFree:
+      "Les brouillons sont gratuits. Abonnez-vous ou utilisez votre essai pour publier sur le site.",
+    postSingular: "offre",
+    postPlural: "offres",
+    createFirstRole:
+      "Créez votre premier poste et publiez-le pour apparaître sur le site public.",
+    draftNotOnBoard:
+      "Pas sur le site — utilisez Publier l'offre quand vous êtes prêt.",
+    viewOnJobBoard: "Voir sur le site",
+    allApplications: "Toutes les candidatures",
+    declined: "Refusées",
+    filterAll: "Toutes",
+    applicationSingular: "candidature",
+    applicationPlural: "candidatures",
+    noApplicationsTitle: "Aucune candidature pour le moment",
+    noApplicationsHint:
+      "Publiez une offre et les candidats pourront postuler depuis votre annonce.",
+    applicationTitle: "Candidature",
+    appliedTo: "A postulé à {jobTitle}",
+    backToApplications: "Retour aux candidatures",
+    about: "À propos",
+    skills: "Compétences",
+    viewFullProfile: "Voir le profil complet du candidat",
+    appliedToLabel: "A postulé à",
+    appliedOn: "Candidature le {date}",
+    findTalent: "Trouver des talents",
+    findTalentSubtitle:
+      "Recherchez des candidats nord-africains par pays, compétences, langues et profil.",
+    findTalentGateSubtitle:
+      "Recherchez des candidats nord-africains lorsque votre essai ou abonnement est actif.",
+    candidatesPremiumTitle:
+      "La recherche de candidats est une fonctionnalité premium",
+    candidatesPremiumDesc:
+      "Abonnez-vous ou utilisez votre essai gratuit de 30 jours pour parcourir les talents, filtrer par compétences et envoyer des messages.",
+    trialIncludesSearch:
+      "Essai gratuit · {days} jour restant · inclut la recherche candidats et {limit} offre publiée",
+    trialIncludesSearchPlural:
+      "Essai gratuit · {days} jours restants · inclut la recherche candidats et {limit} offre publiée",
+    candidateSingular: "candidat",
+    candidatePlural: "candidats",
+    candidatesFoundSuffix: "trouvés",
+    sortedByCompleteness:
+      "Triés par complétude du profil — les profils les plus complets apparaissent en premier.",
+    noCandidatesMatch: "Aucun candidat ne correspond à vos filtres",
+    noCandidatesYet: "Aucun candidat inscrit pour le moment",
+    noCandidatesMatchHint:
+      "Essayez des filtres plus larges ou effacez-les pour voir tous les talents.",
+    noCandidatesYetHint:
+      "Lorsque les candidats s'inscrivent et complètent leur profil, ils apparaîtront ici.",
+    candidateProfile: "Profil du candidat",
+    candidateFallback: "Candidat",
+    present: "Aujourd'hui",
+    profilesRequireTrial:
+      "Les profils candidats nécessitent un essai ou un abonnement",
+    upgradeToViewProfiles:
+      "Passez à un abonnement pour voir les profils complets et démarrer des conversations.",
+    backToSearch: "Retour à la recherche",
+    profileComplete: "Profil complété à {percent} %",
+    experience: "Expérience",
+    contactLinks: "Contact et liens",
+    linkedIn: "LinkedIn",
+    portfolio: "Portfolio",
+    downloadCv: "Télécharger le CV",
+    languages: "Langues",
+    startConversationHint:
+      "Démarrez une conversation — les messages se mettent à jour en temps réel pour les deux parties.",
+    messagesTitle: "Messages",
+    messagesSubtitle: "Échangez avec les candidats en temps réel.",
+    conversationWith: "Conversation avec {name}",
+    chatWith: "Discussion avec {name}",
+    settingsTitle: "Paramètres",
+    settingsDescBefore:
+      "Votre compte personnel — photo, nom, e-mail et mot de passe. Les informations de l'entreprise sont dans",
+    settingsDescAfter: ".",
+    profilePhoto: "Photo de profil",
+    profilePhotoDesc:
+      "Affichée lorsque vous contactez des candidats et sur votre compte.",
+    name: "Nom",
+    nameDesc: "Votre nom en tant que contact recrutement sur CrossTalent.",
+    email: "E-mail",
+    emailDesc: "Utilisé pour la connexion et les notifications.",
+    password: "Mot de passe",
+    passwordDesc:
+      "Choisissez un mot de passe fort que vous n'utilisez pas ailleurs.",
+    deleteAccount: "Supprimer le compte",
+    deleteAccountDesc:
+      "Supprimez définitivement votre compte après confirmation par e-mail.",
+    companySubtitle:
+      "Présentez votre entreprise pour attirer des talents au Maroc, en Algérie, en Tunisie, en Égypte et au-delà.",
+    personalSettingsBefore:
+      "Les paramètres du compte personnel (photo, e-mail, mot de passe) sont dans",
+    personalSettingsAfter: ".",
+    companyDetails: "Informations de l'entreprise",
+    companyDetailsDesc:
+      "Ces informations apparaissent sur vos offres et votre page employeur.",
+    billing: {
+      title: "Facturation",
+      subtitle: "Gérez votre abonnement employeur CrossTalent.",
+      trialActive: "Essai gratuit de {days} jours actif",
+      trialIncludes:
+        "Inclut la recherche candidats et {limit} offre publiée sur le site",
+      daysRemaining: "· {days} jour restant",
+      daysRemainingPlural: "· {days} jours restants",
+      jobsLive: "· {count}/{limit} offre en ligne",
+      jobsLivePlural: "· {count}/{limit} offres en ligne",
+      noActiveTrial: "Aucun essai actif",
+      noActiveTrialDesc:
+        "Les nouveaux employeurs reçoivent automatiquement un essai de {days} jours. Abonnez-vous à Growth ou Scale pour un accès continu aux candidats et plus d'offres.",
+      paymentReceived:
+        "Paiement reçu — votre offre sera mise à jour sous peu. Actualisez si le statut ne change pas dans une minute.",
+      checkoutCanceled:
+        "Paiement annulé. Vous pouvez vous abonner à tout moment ci-dessous.",
+      currentPlan: "Offre actuelle",
+      statusLabel: "Statut : {status}",
+      renews: "· Renouvellement le {date}",
+      cancelsAtPeriodEnd: "· Résiliation en fin de période",
+      trialEnds: "Fin de l'essai le {date}",
+      upgradePlan: "Améliorer votre offre",
+      allPlans: "Toutes les offres",
+      setupInstructions: "Instructions de configuration :",
+      stripeGuide: "Guide Stripe",
+    },
   },
   admin: {
     overview: "Vue d'ensemble",
@@ -251,4 +386,25 @@ export const fr: Messages = {
     pendingReview: "En attente de revue",
     candidatesEmployers: "{candidates} candidats · {employers} employeurs",
   },
+  contact: {
+    pageTitle: "Contactez-nous",
+    pageSubtitle:
+      "Envoyez un message et nous vous répondrons par e-mail. Vous pouvez aussi nous joindre à",
+    sendMessage: "Envoyer un message",
+    sendMessageDesc: "Employeurs, candidats et partenaires bienvenus.",
+    nameOptional: "Nom (facultatif)",
+    yourName: "Votre nom",
+    email: "E-mail",
+    emailPlaceholder: "vous@entreprise.com",
+    message: "Message",
+    messagePlaceholder: "Comment pouvons-nous vous aider ?",
+    sending: "Envoi…",
+    sendBtn: "Envoyer le message",
+    hasAccount: "Vous avez déjà un compte ?",
+    questions: "Des questions ?",
+  },
+  marketing: marketingFr,
+  jobs: jobsFr,
+  candidate: candidateFr,
+  billing: billingFr,
 };

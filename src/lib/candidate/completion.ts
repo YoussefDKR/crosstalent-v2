@@ -1,4 +1,5 @@
 import { BIO_MIN_LENGTH } from "@/config/candidate";
+import type { CandidateMessages } from "@/i18n/dictionaries/candidate/en";
 import type {
   CandidateProfileData,
   ProfileCompletion,
@@ -9,70 +10,61 @@ function bioMeetsMinimum(bio: string | null | undefined): boolean {
   return trimmed.length >= BIO_MIN_LENGTH;
 }
 
+type CompletionItemKey = keyof CandidateMessages["completionItems"];
+
 const CHECKS: {
-  key: string;
-  label: string;
+  key: CompletionItemKey;
   weight: number;
   test: (data: CandidateProfileData) => boolean;
 }[] = [
   {
     key: "name",
-    label: "Full name (Settings)",
     weight: 8,
     test: (d) => Boolean(d.profile.fullName?.trim()),
   },
   {
     key: "photo",
-    label: "Profile photo (Settings)",
     weight: 7,
     test: (d) => Boolean(d.profile.avatarUrl?.trim()),
   },
   {
     key: "headline",
-    label: "Professional headline",
     weight: 10,
     test: (d) => Boolean(d.details?.headline?.trim()),
   },
   {
     key: "bio",
-    label: `About you (${BIO_MIN_LENGTH}+ characters)`,
     weight: 10,
     test: (d) => bioMeetsMinimum(d.details?.bio),
   },
   {
     key: "location",
-    label: "Location & country",
     weight: 10,
     test: (d) =>
       Boolean(d.details?.location?.trim() && d.details?.country_code),
   },
   {
     key: "cv",
-    label: "CV / resume upload",
     weight: 20,
     test: (d) => Boolean(d.details?.cv_path),
   },
   {
     key: "skills",
-    label: "At least 3 skills",
     weight: 15,
     test: (d) => d.skills.length >= 3,
   },
   {
     key: "languages",
-    label: "At least 1 language",
     weight: 10,
     test: (d) => d.languages.length >= 1,
   },
   {
     key: "experience",
-    label: "Work experience",
     weight: 15,
     test: (d) => d.experiences.length >= 1,
   },
   {
     key: "linkedin",
-    label: "LinkedIn or portfolio",
     weight: 10,
     test: (d) =>
       Boolean(
@@ -81,12 +73,22 @@ const CHECKS: {
   },
 ];
 
+function resolveItemLabel(
+  key: CompletionItemKey,
+  completionItems: CandidateMessages["completionItems"]
+): string {
+  return completionItems[key].replace("{min}", String(BIO_MIN_LENGTH));
+}
+
 export function calculateProfileCompletion(
-  data: CandidateProfileData
+  data: CandidateProfileData,
+  completionItems?: CandidateMessages["completionItems"]
 ): ProfileCompletion {
-  const items = CHECKS.map(({ key, label, weight, test }) => ({
+  const items = CHECKS.map(({ key, weight, test }) => ({
     key,
-    label,
+    label: completionItems
+      ? resolveItemLabel(key, completionItems)
+      : key,
     weight,
     done: test(data),
   }));

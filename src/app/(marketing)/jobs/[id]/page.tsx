@@ -16,6 +16,7 @@ import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";
 import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
+import { getServerI18n } from "@/i18n/server";
 
 type JobDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -36,6 +37,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const job = await getPublishedJob(id);
   if (!job) notFound();
 
+  const { t } = await getServerI18n();
   const profile = await getCurrentProfile();
   const application =
     profile?.role === "candidate"
@@ -52,7 +54,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"
         >
           <ArrowLeft className="size-4" />
-          Back to job board
+          {t("jobs.backToBoard")}
         </Link>
 
         <Card className="mt-8 border-border/80 shadow-sm">
@@ -72,7 +74,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               </span>
               <div>
                 <p className="text-sm font-medium text-[#2563EB]">
-                  {job.company_name ?? "European employer"}
+                  {job.company_name ?? t("jobs.europeanEmployer")}
                 </p>
                 <h1 className="mt-1 text-2xl font-semibold text-[#0F172A] sm:text-3xl">
                   {job.title}
@@ -103,7 +105,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             <div className="mt-8 space-y-6">
               <section>
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  About the role
+                  {t("jobs.aboutRole")}
                 </h2>
                 <p className="mt-3 whitespace-pre-wrap leading-relaxed text-[#0F172A]/90">
                   {job.description}
@@ -113,7 +115,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               {job.requirements && (
                 <section>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    Requirements
+                    {t("jobs.requirements")}
                   </h2>
                   <p className="mt-3 whitespace-pre-wrap leading-relaxed text-[#0F172A]/90">
                     {job.requirements}
@@ -124,7 +126,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               {job.skills.length > 0 && (
                 <section>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    Skills
+                    {t("jobs.skills")}
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {job.skills.map((skill) => (
@@ -139,7 +141,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               {job.languages.length > 0 && (
                 <section>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    Languages
+                    {t("jobs.languages")}
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {job.languages.map((lang) => (

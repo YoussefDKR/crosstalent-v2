@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { href: "/employer/dashboard", label: "Dashboard" },
-  { href: siteConfig.links.employerJobs, label: "Jobs" },
-  { href: "/employer/applications", label: "Applications" },
-  { href: siteConfig.links.employerMessages, label: "Messages" },
-  { href: siteConfig.links.employerSettings, label: "Settings" },
-];
-
 export function EmployerMobileNav() {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const links = [
+    { href: "/employer/dashboard", label: t("nav.dashboard") },
+    { href: siteConfig.links.employerJobs, label: t("nav.jobs") },
+    { href: "/employer/applications", label: t("nav.applications") },
+    { href: siteConfig.links.employerMessages, label: t("nav.messages") },
+    { href: siteConfig.links.employerSettings, label: t("nav.settings") },
+  ];
 
   return (
     <nav

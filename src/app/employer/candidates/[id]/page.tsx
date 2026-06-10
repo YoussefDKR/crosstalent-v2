@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmployerUpgradeGate } from "@/components/billing/employer-upgrade-gate";
+import { getServerI18n } from "@/i18n/server";
 import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
@@ -33,22 +34,24 @@ type CandidateDetailPageProps = {
 export async function generateMetadata({
   params,
 }: CandidateDetailPageProps): Promise<Metadata> {
+  const { t } = await getServerI18n();
   const { id } = await params;
   const candidate = await getCandidateForEmployer(id);
   return {
     title: candidate
-      ? candidate.fullName ?? "Candidate profile"
-      : "Candidate",
+      ? candidate.fullName ?? t("employer.candidateProfile")
+      : t("employer.candidateFallback"),
   };
 }
 
 function formatExperienceDates(
   start: string,
   end: string | null,
-  isCurrent: boolean
+  isCurrent: boolean,
+  presentLabel: string
 ): string {
   const startYear = start.slice(0, 4);
-  const endPart = isCurrent ? "Present" : end ? end.slice(0, 4) : "";
+  const endPart = isCurrent ? presentLabel : end ? end.slice(0, 4) : "";
   return endPart ? `${startYear} – ${endPart}` : startYear;
 }
 
@@ -58,15 +61,16 @@ export default async function EmployerCandidateDetailPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
+  const { t } = await getServerI18n();
   const access = await getEmployerFeatureAccess(profile.id);
   if (!access.canViewCandidates) {
     return (
-      <DashboardShell profile={profile} title="Candidate profile">
+      <DashboardShell profile={profile} title={t("employer.candidateProfile")}>
         <EmployerUpgradeGate
           variant="candidates"
           access={access}
-          title="Candidate profiles require a trial or subscription"
-          description="Upgrade to view full candidate profiles and start conversations."
+          title={t("employer.profilesRequireTrial")}
+          description={t("employer.upgradeToViewProfiles")}
         />
       </DashboardShell>
     );
@@ -76,20 +80,20 @@ export default async function EmployerCandidateDetailPage({
   const candidate = await getCandidateForEmployer(id);
   if (!candidate) notFound();
 
-  const displayName = candidate.fullName ?? "Candidate";
+  const displayName = candidate.fullName ?? t("employer.candidateFallback");
 
   return (
     <DashboardShell
       profile={profile}
       title={displayName}
-      description={candidate.headline ?? "Candidate profile"}
+      description={candidate.headline ?? t("employer.candidateProfile")}
     >
       <Link
         href="/employer/candidates"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"
       >
         <ArrowLeft className="size-4" />
-        Back to search
+        {t("employer.backToSearch")}
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -108,7 +112,9 @@ export default async function EmployerCandidateDetailPage({
                       {displayName}
                     </h2>
                     <Badge variant="secondary">
-                      Profile {candidate.completionPercent}% complete
+                      {t("employer.profileComplete", {
+                        percent: candidate.completionPercent,
+                      })}
                     </Badge>
                   </div>
                   {candidate.headline && (
@@ -128,7 +134,7 @@ export default async function EmployerCandidateDetailPage({
               {candidate.bio && (
                 <section className="mt-8">
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    About
+                    {t("employer.about")}
                   </h3>
                   <p className="mt-3 whitespace-pre-wrap leading-relaxed text-[#0F172A]/90">
                     {candidate.bio}
@@ -139,7 +145,7 @@ export default async function EmployerCandidateDetailPage({
               {candidate.experiences.length > 0 && (
                 <section className="mt-8">
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    Experience
+                    {t("employer.experience")}
                   </h3>
                   <ul className="mt-4 space-y-4">
                     {candidate.experiences.map((exp) => (
@@ -154,7 +160,8 @@ export default async function EmployerCandidateDetailPage({
                           {formatExperienceDates(
                             exp.startDate,
                             exp.endDate,
-                            exp.isCurrent
+                            exp.isCurrent,
+                            t("employer.present")
                           )}
                           {exp.location ? ` · ${exp.location}` : ""}
                         </p>
@@ -175,7 +182,9 @@ export default async function EmployerCandidateDetailPage({
         <div className="space-y-6">
           <Card className="border-border/80 shadow-sm">
             <CardContent className="p-6 space-y-4">
-              <h3 className="font-medium text-[#0F172A]">Contact & links</h3>
+              <h3 className="font-medium text-[#0F172A]">
+                {t("employer.contactLinks")}
+              </h3>
               {candidate.email && (
                 <p className="text-sm text-muted-foreground break-all">
                   {candidate.email}
@@ -189,7 +198,7 @@ export default async function EmployerCandidateDetailPage({
                   className="inline-flex items-center gap-2 text-sm font-medium text-[#2563EB] hover:underline"
                 >
                   <Link2 className="size-4" />
-                  LinkedIn
+                  {t("employer.linkedIn")}
                   <ExternalLink className="size-3" />
                 </a>
               )}
@@ -200,7 +209,7 @@ export default async function EmployerCandidateDetailPage({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-medium text-[#2563EB] hover:underline"
                 >
-                  Portfolio
+                  {t("employer.portfolio")}
                   <ExternalLink className="size-3" />
                 </a>
               )}
@@ -215,7 +224,7 @@ export default async function EmployerCandidateDetailPage({
                     className="w-full gap-2 border-[#10B981]/40 text-[#047857] hover:bg-[#10B981]/5"
                   >
                     <FileText className="size-4" />
-                    {candidate.cvFileName ?? "Download CV"}
+                    {candidate.cvFileName ?? t("employer.downloadCv")}
                   </Button>
                 </a>
               )}
@@ -225,7 +234,9 @@ export default async function EmployerCandidateDetailPage({
           {candidate.skills.length > 0 && (
             <Card className="border-border/80 shadow-sm">
               <CardContent className="p-6">
-                <h3 className="font-medium text-[#0F172A]">Skills</h3>
+                <h3 className="font-medium text-[#0F172A]">
+                  {t("employer.skills")}
+                </h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {candidate.skills.map((skill) => (
                     <Badge key={skill.id} variant="secondary">
@@ -243,7 +254,9 @@ export default async function EmployerCandidateDetailPage({
           {candidate.languages.length > 0 && (
             <Card className="border-border/80 shadow-sm">
               <CardContent className="p-6">
-                <h3 className="font-medium text-[#0F172A]">Languages</h3>
+                <h3 className="font-medium text-[#0F172A]">
+                  {t("employer.languages")}
+                </h3>
                 <ul className="mt-3 space-y-2 text-sm">
                   {candidate.languages.map((lang) => (
                     <li
@@ -264,8 +277,7 @@ export default async function EmployerCandidateDetailPage({
           <Card className="border-[#2563EB]/20 bg-[#2563EB]/5 shadow-sm">
             <CardContent className="p-6 space-y-3">
               <p className="text-sm text-[#0F172A]">
-                Start a conversation — messages update in real time for both
-                sides.
+                {t("employer.startConversationHint")}
               </p>
               <StartConversationButton
                 candidateId={candidate.id}

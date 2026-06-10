@@ -5,13 +5,15 @@ import { ApplicationListItem } from "@/components/home/application-list-item";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getServerI18n } from "@/i18n/server";
 import { listEmployerApplications } from "@/lib/applications/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import type { ApplicationStatus } from "@/types/applications";
 
-export const metadata: Metadata = {
-  title: "Applications",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
+  return { title: t("employer.applications") };
+}
 
 type ApplicationsPageProps = {
   searchParams: Promise<{ status?: string }>;
@@ -23,6 +25,7 @@ export default async function EmployerApplicationsPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
+  const { t } = await getServerI18n();
   const { status: statusParam } = await searchParams;
   const statusFilter =
     statusParam === "pending" ||
@@ -38,11 +41,11 @@ export default async function EmployerApplicationsPage({
 
   const title = statusFilter
     ? statusFilter === "pending"
-      ? "In review"
+      ? t("employer.inReview")
       : statusFilter === "accepted"
-        ? "Shortlisted"
-        : "Declined"
-    : "All applications";
+        ? t("employer.shortlisted")
+        : t("employer.declined")
+    : t("employer.allApplications");
 
   return (
     <DashboardShell profile={profile}>
@@ -53,13 +56,15 @@ export default async function EmployerApplicationsPage({
           </h1>
           <p className="mt-2 text-muted-foreground">
             {applications.length}{" "}
-            {applications.length === 1 ? "application" : "applications"}
+            {applications.length === 1
+              ? t("employer.applicationSingular")
+              : t("employer.applicationPlural")}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/employer/applications">
             <Button variant={!statusFilter ? "default" : "outline"} size="sm">
-              All
+              {t("employer.filterAll")}
             </Button>
           </Link>
           <Link href="/employer/applications?status=pending">
@@ -67,7 +72,7 @@ export default async function EmployerApplicationsPage({
               variant={statusFilter === "pending" ? "default" : "outline"}
               size="sm"
             >
-              In review
+              {t("employer.inReview")}
             </Button>
           </Link>
           <Link href="/employer/applications?status=accepted">
@@ -75,7 +80,7 @@ export default async function EmployerApplicationsPage({
               variant={statusFilter === "accepted" ? "default" : "outline"}
               size="sm"
             >
-              Shortlisted
+              {t("employer.shortlisted")}
             </Button>
           </Link>
         </div>
@@ -90,13 +95,15 @@ export default async function EmployerApplicationsPage({
       ) : (
         <Card className="border-dashed border-border shadow-sm">
           <CardContent className="p-12 text-center">
-            <p className="font-medium text-[#0F172A]">No applications yet</p>
+            <p className="font-medium text-[#0F172A]">
+              {t("employer.noApplicationsTitle")}
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Publish a job and candidates can apply from your listing.
+              {t("employer.noApplicationsHint")}
             </p>
             <Link href="/employer/jobs/new" className="mt-6 inline-block">
               <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-                Post a job
+                {t("employer.postAJob")}
               </Button>
             </Link>
           </CardContent>

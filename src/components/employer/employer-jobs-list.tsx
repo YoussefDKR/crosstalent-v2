@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { locationLabel, statusLabel } from "@/lib/jobs/labels";
 import type { JobRow } from "@/types/jobs";
 import { JobStatusButtons } from "./job-status-buttons";
@@ -19,16 +22,20 @@ function statusVariant(
 }
 
 export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
+  const { t } = useI18n();
+
   if (jobs.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-white p-10 text-center">
-        <p className="font-medium text-[#0F172A]">No job posts yet</p>
+        <p className="font-medium text-[#0F172A]">
+          {t("employer.noJobPostsYet")}
+        </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Create your first role and post it to appear on the public job board.
+          {t("employer.createFirstRole")}
         </p>
         <Link href="/employer/jobs/new" className="mt-6 inline-block">
           <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-            Post a job
+            {t("employer.postAJob")}
           </Button>
         </Link>
       </div>
@@ -54,7 +61,7 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
             </p>
             {job.status === "draft" && (
               <p className="mt-2 inline-block rounded-md bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
-                Not on the job board — use Post job when you are ready.
+                {t("employer.draftNotOnBoard")}
               </p>
             )}
             {job.status === "published" && (
@@ -62,7 +69,7 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
                 href={`/jobs/${job.id}`}
                 className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[#2563EB] hover:underline"
               >
-                View on job board
+                {t("employer.viewOnJobBoard")}
                 <ExternalLink className="size-3" />
               </Link>
             )}

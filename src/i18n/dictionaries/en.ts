@@ -1,3 +1,9 @@
+import { billingEn } from "@/i18n/dictionaries/billing/en";
+import { candidateEn } from "@/i18n/dictionaries/candidate/en";
+import { jobsEn } from "@/i18n/dictionaries/jobs/en";
+import { marketingEn } from "@/i18n/dictionaries/marketing/en";
+import type { DeepString } from "@/i18n/types";
+
 export const en = {
   common: {
     login: "Log in",
@@ -157,6 +163,134 @@ export const en = {
     statusNew: "New",
     statusShortlisted: "Shortlisted",
     statusDeclined: "Declined",
+    jobsTitle: "Job posts",
+    jobsSubtitle:
+      "Create and manage roles visible on the public job board when published.",
+    trialPublished:
+      "Trial: {count}/{limit} job published on the board",
+    trialPublishedPlural:
+      "Trial: {count}/{limit} jobs published on the board",
+    trialDaysLeft: "· {days} days left",
+    trialDaysLeftSingular: "· {days} day left",
+    draftJobsFree:
+      "Draft jobs are free. Subscribe or use your trial to publish on the job board.",
+    postSingular: "post",
+    postPlural: "posts",
+    createFirstRole:
+      "Create your first role and post it to appear on the public job board.",
+    draftNotOnBoard:
+      "Not on the job board — use Post job when you are ready.",
+    viewOnJobBoard: "View on job board",
+    allApplications: "All applications",
+    declined: "Declined",
+    filterAll: "All",
+    applicationSingular: "application",
+    applicationPlural: "applications",
+    noApplicationsTitle: "No applications yet",
+    noApplicationsHint:
+      "Publish a job and candidates can apply from your listing.",
+    applicationTitle: "Application",
+    appliedTo: "Applied to {jobTitle}",
+    backToApplications: "Back to applications",
+    about: "About",
+    skills: "Skills",
+    viewFullProfile: "View full candidate profile",
+    appliedToLabel: "Applied to",
+    appliedOn: "Applied {date}",
+    findTalent: "Find talent",
+    findTalentSubtitle:
+      "Search North African candidates by country, skills, languages, and profile strength.",
+    findTalentGateSubtitle:
+      "Search North African candidates when your trial or subscription is active.",
+    candidatesPremiumTitle: "Candidate search is a premium feature",
+    candidatesPremiumDesc:
+      "Subscribe or use your free 30-day trial to browse talent, filter by skills, and message candidates.",
+    trialIncludesSearch:
+      "Free trial · {days} day left · includes candidate search and {limit} published job",
+    trialIncludesSearchPlural:
+      "Free trial · {days} days left · includes candidate search and {limit} published job",
+    candidateSingular: "candidate",
+    candidatePlural: "candidates",
+    candidatesFoundSuffix: "found",
+    sortedByCompleteness:
+      "Sorted by profile completeness — stronger profiles appear first.",
+    noCandidatesMatch: "No candidates match your filters",
+    noCandidatesYet: "No candidates registered yet",
+    noCandidatesMatchHint:
+      "Try broader filters or clear them to see all talent.",
+    noCandidatesYetHint:
+      "When candidates sign up and build profiles, they will appear here.",
+    candidateProfile: "Candidate profile",
+    candidateFallback: "Candidate",
+    present: "Present",
+    profilesRequireTrial:
+      "Candidate profiles require a trial or subscription",
+    upgradeToViewProfiles:
+      "Upgrade to view full candidate profiles and start conversations.",
+    backToSearch: "Back to search",
+    profileComplete: "Profile {percent}% complete",
+    experience: "Experience",
+    contactLinks: "Contact & links",
+    linkedIn: "LinkedIn",
+    portfolio: "Portfolio",
+    downloadCv: "Download CV",
+    languages: "Languages",
+    startConversationHint:
+      "Start a conversation — messages update in real time for both sides.",
+    messagesTitle: "Messages",
+    messagesSubtitle: "Chat with candidates in real time.",
+    conversationWith: "Conversation with {name}",
+    chatWith: "Chat with {name}",
+    settingsTitle: "Settings",
+    settingsDescBefore:
+      "Your personal account — photo, name, email, and password. Company details live under",
+    settingsDescAfter: ".",
+    profilePhoto: "Profile photo",
+    profilePhotoDesc:
+      "Shown when you message candidates and in your account.",
+    name: "Name",
+    nameDesc: "Your name as the hiring contact on CrossTalent.",
+    email: "Email",
+    emailDesc: "Used to sign in and receive notifications.",
+    password: "Password",
+    passwordDesc: "Choose a strong password you do not use elsewhere.",
+    deleteAccount: "Delete account",
+    deleteAccountDesc:
+      "Permanently remove your account after email confirmation.",
+    companySubtitle:
+      "Showcase your company to attract talent across Morocco, Algeria, Tunisia, Egypt, and beyond.",
+    personalSettingsBefore:
+      "Personal account settings (photo, email, password) are in",
+    personalSettingsAfter: ".",
+    companyDetails: "Company details",
+    companyDetailsDesc:
+      "This information appears on your job posts and employer brand page.",
+    billing: {
+      title: "Billing",
+      subtitle: "Manage your CrossTalent employer subscription.",
+      trialActive: "Free {days}-day trial active",
+      trialIncludes:
+        "Includes candidate search and {limit} published job on the board",
+      daysRemaining: "· {days} day remaining",
+      daysRemainingPlural: "· {days} days remaining",
+      jobsLive: "· {count}/{limit} job live",
+      jobsLivePlural: "· {count}/{limit} jobs live",
+      noActiveTrial: "No active trial",
+      noActiveTrialDesc:
+        "New employers receive a {days}-day trial automatically. Subscribe to Growth or Scale for ongoing candidate access and more job posts.",
+      paymentReceived:
+        "Payment received — your plan will update shortly. Refresh if status does not change in a minute.",
+      checkoutCanceled: "Checkout canceled. You can subscribe anytime below.",
+      currentPlan: "Current plan",
+      statusLabel: "Status: {status}",
+      renews: "· Renews {date}",
+      cancelsAtPeriodEnd: "· Cancels at period end",
+      trialEnds: "Trial ends {date}",
+      upgradePlan: "Upgrade your plan",
+      allPlans: "All plans",
+      setupInstructions: "Setup instructions:",
+      stripeGuide: "Stripe guide",
+    },
   },
   admin: {
     overview: "Overview",
@@ -243,17 +377,27 @@ export const en = {
     pendingReview: "Pending review",
     candidatesEmployers: "{candidates} candidates · {employers} employers",
   },
+  contact: {
+    pageTitle: "Contact us",
+    pageSubtitle:
+      "Send a message and we'll reply to your email. You can also reach us at",
+    sendMessage: "Send a message",
+    sendMessageDesc: "Employers, candidates, and partners welcome.",
+    nameOptional: "Name (optional)",
+    yourName: "Your name",
+    email: "Email",
+    emailPlaceholder: "you@company.com",
+    message: "Message",
+    messagePlaceholder: "How can we help?",
+    sending: "Sending…",
+    sendBtn: "Send message",
+    hasAccount: "Already have an account?",
+    questions: "Questions?",
+  },
+  marketing: marketingEn,
+  jobs: jobsEn,
+  candidate: candidateEn,
+  billing: billingEn,
 } as const;
 
-export type Messages = {
-  common: Record<keyof typeof en.common, string>;
-  language: Record<keyof typeof en.language, string>;
-  site: Record<keyof typeof en.site, string>;
-  nav: Record<keyof typeof en.nav, string>;
-  footer: Record<keyof typeof en.footer, string>;
-  cookie: Record<keyof typeof en.cookie, string>;
-  auth: Record<keyof typeof en.auth, string>;
-  landing: Record<keyof typeof en.landing, string>;
-  employer: Record<keyof typeof en.employer, string>;
-  admin: Record<keyof typeof en.admin, string>;
-};
+export type Messages = DeepString<typeof en>;

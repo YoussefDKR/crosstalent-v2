@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Building2, GraduationCap, MapPin, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { getDashboardPath } from "@/lib/auth/routes";
 import { siteConfig } from "@/config/site";
 import type { Profile } from "@/types";
@@ -13,18 +14,22 @@ type AudienceSplitProps = {
 };
 
 export function AudienceSplit({ profile = null }: AudienceSplitProps) {
-  const candidateHref = profile?.role === "candidate"
-    ? siteConfig.links.jobs
-    : siteConfig.links.forCandidates;
-  const candidateLabel = profile?.role === "candidate"
-    ? "Browse job board"
-    : "Learn more";
-  const employerHref = profile?.role === "employer"
-    ? siteConfig.links.employerJobs
-    : siteConfig.links.forEmployers;
-  const employerLabel = profile?.role === "employer"
-    ? "Manage job posts"
-    : "Learn more";
+  const { messages } = useI18n();
+  const a = messages.marketing.audience;
+
+  const candidateHref =
+    profile?.role === "candidate"
+      ? siteConfig.links.jobs
+      : siteConfig.links.forCandidates;
+  const candidateLabel =
+    profile?.role === "candidate" ? a.browseJobBoard : a.learnMore;
+  const employerHref =
+    profile?.role === "employer"
+      ? siteConfig.links.employerJobs
+      : siteConfig.links.forEmployers;
+  const employerLabel =
+    profile?.role === "employer" ? a.manageJobPosts : a.learnMore;
+
   return (
     <section className="py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -39,21 +44,19 @@ export function AudienceSplit({ profile = null }: AudienceSplitProps) {
               <GraduationCap className="size-6" />
             </div>
             <h3 className="mt-6 text-2xl font-semibold text-[#0F172A]">
-              For candidates
+              {a.candidatesTitle}
             </h3>
             <p className="mt-3 text-muted-foreground leading-relaxed">
-              Morocco, Algeria, Tunisia, Egypt, and across MENA — showcase your
-              skills, upload your CV, and access roles with top European
-              companies. Always free.
+              {a.candidatesDesc}
             </p>
             <ul className="mt-6 space-y-3 text-sm text-[#0F172A]/80">
               <li className="flex items-center gap-2">
                 <MapPin className="size-4 text-[#10B981]" />
-                Remote & relocation-friendly roles
+                {a.candidatesBullet1}
               </li>
               <li className="flex items-center gap-2">
                 <Shield className="size-4 text-[#10B981]" />
-                Curated remote & hybrid roles
+                {a.candidatesBullet2}
               </li>
             </ul>
             <Link href={candidateHref} className="mt-8 inline-block">
@@ -66,7 +69,7 @@ export function AudienceSplit({ profile = null }: AudienceSplitProps) {
                 href={getDashboardPath("candidate")}
                 className="mt-3 block text-sm font-medium text-[#2563EB] hover:underline"
               >
-                Go to dashboard →
+                {a.goToDashboard}
               </Link>
             )}
           </motion.div>
@@ -81,20 +84,16 @@ export function AudienceSplit({ profile = null }: AudienceSplitProps) {
             <div className="flex size-12 items-center justify-center rounded-lg bg-white/10">
               <Building2 className="size-6" />
             </div>
-            <h3 className="mt-6 text-2xl font-semibold">For employers</h3>
-            <p className="mt-3 leading-relaxed text-slate-300">
-              France, Germany, Italy, Spain, and beyond — source vetted talent,
-              run advanced candidate search, and scale hiring with flexible paid
-              plans.
-            </p>
+            <h3 className="mt-6 text-2xl font-semibold">{a.employersTitle}</h3>
+            <p className="mt-3 leading-relaxed text-slate-300">{a.employersDesc}</p>
             <ul className="mt-6 space-y-3 text-sm text-slate-300">
               <li className="flex items-center gap-2">
                 <MapPin className="size-4 text-[#10B981]" />
-                Filter by country, skills & languages
+                {a.employersBullet1}
               </li>
               <li className="flex items-center gap-2">
                 <Shield className="size-4 text-[#10B981]" />
-                GDPR-ready workflows
+                {a.employersBullet2}
               </li>
             </ul>
             <Link href={employerHref} className="mt-8 inline-block">

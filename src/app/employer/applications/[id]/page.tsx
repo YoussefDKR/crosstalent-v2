@@ -7,6 +7,7 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { applicationStatusLabel } from "@/lib/applications/labels";
 import { getEmployerApplication } from "@/lib/applications/queries";
@@ -20,16 +21,17 @@ type ApplicationDetailPageProps = {
 export async function generateMetadata({
   params,
 }: ApplicationDetailPageProps): Promise<Metadata> {
+  const { t } = await getServerI18n();
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") {
-    return { title: "Application" };
+    return { title: t("employer.applicationTitle") };
   }
   const { id } = await params;
   const app = await getEmployerApplication(profile.id, id);
   return {
     title: app
       ? `${app.candidateName} — ${app.jobTitle}`
-      : "Application",
+      : t("employer.applicationTitle"),
   };
 }
 
@@ -39,24 +41,30 @@ export default async function EmployerApplicationDetailPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
+  const { t, locale } = await getServerI18n();
   const { id } = await params;
   const application = await getEmployerApplication(profile.id, id);
   if (!application) notFound();
 
   await markApplicationViewed(id, profile.id);
 
+  const appliedDate = new Date(application.createdAt).toLocaleDateString(
+    locale,
+    { dateStyle: "long" }
+  );
+
   return (
     <DashboardShell
       profile={profile}
       title={application.candidateName}
-      description={`Applied to ${application.jobTitle}`}
+      description={t("employer.appliedTo", { jobTitle: application.jobTitle })}
     >
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"
       >
         <ArrowLeft className="size-4" />
-        Back to applications
+        {t("employer.backToApplications")}
       </Link>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
@@ -95,7 +103,7 @@ export default async function EmployerApplicationDetailPage({
             {application.candidateBio && (
               <section className="mt-8">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  About
+                  {t("employer.about")}
                 </h3>
                 <p className="mt-3 whitespace-pre-wrap leading-relaxed text-[#0F172A]/90">
                   {application.candidateBio}
@@ -106,7 +114,7 @@ export default async function EmployerApplicationDetailPage({
             {application.candidateSkills.length > 0 && (
               <section className="mt-8">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Skills
+                  {t("employer.skills")}
                 </h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {application.candidateSkills.map((skill) => (
@@ -130,7 +138,7 @@ export default async function EmployerApplicationDetailPage({
               href={`/employer/candidates/${application.candidateId}`}
               className="mt-6 inline-block text-sm font-medium text-[#2563EB] hover:underline"
             >
-              View full candidate profile
+              {t("employer.viewFullProfile")}
             </Link>
           </CardContent>
         </Card>
@@ -139,7 +147,7 @@ export default async function EmployerApplicationDetailPage({
           <CardContent className="p-6">
             <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Briefcase className="size-4" />
-              Applied to
+              {t("employer.appliedToLabel")}
             </p>
             <p className="mt-2 font-semibold text-[#0F172A]">
               {application.jobTitle}
@@ -148,10 +156,7 @@ export default async function EmployerApplicationDetailPage({
               {application.jobDescription}
             </p>
             <p className="mt-4 text-xs text-muted-foreground">
-              Applied{" "}
-              {new Date(application.createdAt).toLocaleDateString(undefined, {
-                dateStyle: "long",
-              })}
+              {t("employer.appliedOn", { date: appliedDate })}
             </p>
           </CardContent>
         </Card>

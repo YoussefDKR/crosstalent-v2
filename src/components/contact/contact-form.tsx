@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/context/i18n-provider";
 
 const initial: ContactFormState = {};
 
 export function ContactForm() {
   const [state, action, pending] = useActionState(submitContactForm, initial);
+  const { t } = useI18n();
 
   return (
     <form action={action} className="space-y-5">
@@ -34,7 +36,6 @@ export function ContactForm() {
         </p>
       )}
 
-      {/* Honeypot — hidden from users */}
       <input
         type="text"
         name="companyWebsite"
@@ -45,36 +46,36 @@ export function ContactForm() {
       />
 
       <div className="space-y-2">
-        <Label htmlFor="contact-name">Name (optional)</Label>
+        <Label htmlFor="contact-name">{t("contact.nameOptional")}</Label>
         <Input
           id="contact-name"
           name="name"
           autoComplete="name"
-          placeholder="Your name"
+          placeholder={t("contact.yourName")}
           disabled={pending || Boolean(state.success)}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact-email">Email</Label>
+        <Label htmlFor="contact-email">{t("contact.email")}</Label>
         <Input
           id="contact-email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder={t("contact.emailPlaceholder")}
           required
           disabled={pending || Boolean(state.success)}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact-message">Message</Label>
+        <Label htmlFor="contact-message">{t("contact.message")}</Label>
         <Textarea
           id="contact-message"
           name="message"
           rows={6}
-          placeholder="How can we help?"
+          placeholder={t("contact.messagePlaceholder")}
           required
           minLength={10}
           maxLength={5000}
@@ -87,7 +88,7 @@ export function ContactForm() {
         disabled={pending || Boolean(state.success)}
         className="h-11 w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8] sm:w-auto sm:px-8"
       >
-        {pending ? "Sending…" : "Send message"}
+        {pending ? t("contact.sending") : t("contact.sendBtn")}
       </Button>
     </form>
   );
