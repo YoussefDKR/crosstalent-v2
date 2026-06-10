@@ -74,6 +74,35 @@ export type AdminSignupCountryStats = {
   countries: AdminCountrySignupStat[];
 };
 
+export type AdminCountryVisitStat = {
+  countryCode: string;
+  countryName: string;
+  count: number;
+  share: number;
+};
+
+export type AdminVisitStats = {
+  totalVisits: number;
+  uniqueVisitors: number;
+  visitsToday: number;
+  visitsThisWeek: number;
+  countries: AdminCountryVisitStat[];
+};
+
+export type AdminDailyTrendPoint = {
+  date: string;
+  label: string;
+  visits: number;
+  uniqueVisitors: number;
+  signups: number;
+};
+
+export type AdminAnalyticsDashboard = {
+  visits: AdminVisitStats;
+  signups: AdminSignupCountryStats;
+  trends: AdminDailyTrendPoint[];
+};
+
 export type AdminJobRow = {
   id: string;
   title: string;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { VisitTracker } from "@/components/analytics/visit-tracker";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
@@ -57,6 +58,7 @@ export default function RootLayout({
     <html lang="en" className={plusJakarta.variable}>
       <body className="min-h-screen font-sans antialiased">
         {children}
+        <VisitTracker />
         <CookieConsentBanner />
       </body>
     </html>

@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isStripeConfigured } from "@/lib/stripe/config";
 import { countryDisplayName } from "@/lib/geo/request-country";
 import type {
+  AdminAnalyticsDashboard,
   AdminApplicationRow,
   AdminJobRow,
   AdminRevenueStats,
@@ -10,6 +11,7 @@ import type {
   AdminStats,
   AdminSubscriptionRow,
   AdminUserRow,
+  AdminVisitStats,
 } from "@/lib/admin/types";
 import type { SubscriptionStatus } from "@/types/billing";
 import type { UserRole } from "@/types";
@@ -482,4 +484,127 @@ export async function getSignupCountryStats(): Promise<AdminSignupCountryStats> 
     unknownUsers,
     countries,
   };
+}
+
+const TREND_DAYS = 30;
+
+function lastNDays(days: number): string[] {
+  const result: string[] = [];
+  for (let offset = days - 1; offset >= 0; offset -= 1) {
+    const date = new Date();
+    date.setUTCDate(date.getUTCDate() - offset);
+    result.push(date.toISOString().slice(0, 10));
+  }
+  return result;
+}
+
+function formatTrendLabel(isoDate: string): string {
+  const date = new Date(`${isoDate}T12:00:00Z`);
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function aggregateVisitCountries(
+  rows: { country_code: string | null }[],
+  total: number
+): AdminVisitStats["countries"] {
+  const counts = new Map<string, number>();
+  for (const row of rows) {
+    const code = row.country_code?.trim().toUpperCase() || "UNKNOWN";
+    counts.set(code, (counts.get(code) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .filter(([code]) => code !== "UNKNOWN")
+    .map(([countryCode, count]) => ({
+      countryCode,
+      countryName: countryDisplayName(countryCode),
+      count,
+      share: total > 0 ? Math.round((count / total) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getVisitStats(): Promise<AdminVisitStats> {
+  const supabase = createAdminClient();
+  const today = startOfTodayUtc();
+  const weekAgo = daysAgoUtc(7);
+  const trendStart = daysAgoUtc(TREND_DAYS);
+
+  const { data, error } = await supabase
+    .from("site_visits")
+    .select("visitor_id, country_code, created_at")
+    .gte("created_at", trendStart);
+
+  if (error) throw new Error(error.message);
+
+  const rows = data ?? [];
+  const uniqueVisitors = new Set(rows.map((row) => row.visitor_id)).size;
+  const visitsToday = rows.filter((row) => row.created_at >= today).length;
+  const visitsThisWeek = rows.filter((row) => row.created_at >= weekAgo).length;
+
+  const { count: totalVisits } = await supabase
+    .from("site_visits")
+    .select("*", { count: "exact", head: true });
+
+  return {
+    totalVisits: totalVisits ?? rows.length,
+    uniqueVisitors,
+    visitsToday,
+    visitsThisWeek,
+    countries: aggregateVisitCountries(rows, rows.length),
+  };
+}
+
+export async function getAdminAnalyticsDashboard(): Promise<AdminAnalyticsDashboard> {
+  const supabase = createAdminClient();
+  const trendStart = daysAgoUtc(TREND_DAYS);
+  const dayKeys = lastNDays(TREND_DAYS);
+
+  const [visits, signups, { data: visitRows }, { data: signupRows }] =
+    await Promise.all([
+      getVisitStats(),
+      getSignupCountryStats(),
+      supabase
+        .from("site_visits")
+        .select("visitor_id, created_at")
+        .gte("created_at", trendStart),
+      supabase
+        .from("profiles")
+        .select("created_at")
+        .neq("role", "admin")
+        .gte("created_at", trendStart),
+    ]);
+
+  const visitsByDay = new Map<string, number>();
+  const uniquesByDay = new Map<string, Set<string>>();
+  const signupsByDay = new Map<string, number>();
+
+  for (const day of dayKeys) {
+    visitsByDay.set(day, 0);
+    uniquesByDay.set(day, new Set());
+    signupsByDay.set(day, 0);
+  }
+
+  for (const row of visitRows ?? []) {
+    const day = row.created_at.slice(0, 10);
+    if (!visitsByDay.has(day)) continue;
+    visitsByDay.set(day, (visitsByDay.get(day) ?? 0) + 1);
+    uniquesByDay.get(day)?.add(row.visitor_id);
+  }
+
+  for (const row of signupRows ?? []) {
+    const day = row.created_at.slice(0, 10);
+    if (!signupsByDay.has(day)) continue;
+    signupsByDay.set(day, (signupsByDay.get(day) ?? 0) + 1);
+  }
+
+  const trends = dayKeys.map((date) => ({
+    date,
+    label: formatTrendLabel(date),
+    visits: visitsByDay.get(date) ?? 0,
+    uniqueVisitors: uniquesByDay.get(date)?.size ?? 0,
+    signups: signupsByDay.get(date) ?? 0,
+  }));
+
+  return { visits, signups, trends };
 }

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdminAppShell } from "@/components/admin/admin-app-shell";
+import { AdminAnalyticsCharts } from "@/components/admin/admin-analytics-charts";
 import { AdminRecentSignups } from "@/components/admin/admin-recent-signups";
-import { AdminSignupCountries } from "@/components/admin/admin-signup-countries";
 import { AdminStats } from "@/components/admin/admin-stats";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
+  getAdminAnalyticsDashboard,
   getAdminStats,
-  getSignupCountryStats,
   listRecentSignups,
 } from "@/lib/admin/queries";
 
@@ -19,10 +19,10 @@ export default async function AdminDashboardPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "admin") redirect("/login");
 
-  const [stats, recentSignups, countryStats] = await Promise.all([
+  const [stats, recentSignups, analytics] = await Promise.all([
     getAdminStats(),
     listRecentSignups(),
-    getSignupCountryStats(),
+    getAdminAnalyticsDashboard(),
   ]);
 
   return (
@@ -33,11 +33,11 @@ export default async function AdminDashboardPage() {
             Platform overview
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Signups, jobs, and applications across CrossTalent.
+            Traffic, signups, jobs, and applications across CrossTalent.
           </p>
         </header>
         <AdminStats stats={stats} />
-        <AdminSignupCountries stats={countryStats} />
+        <AdminAnalyticsCharts data={analytics} />
         <AdminRecentSignups users={recentSignups} />
       </div>
     </AdminAppShell>

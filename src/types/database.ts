@@ -42,6 +42,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      site_visits: {
+        Row: {
+          id: string;
+          visitor_id: string;
+          country_code: string | null;
+          path: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          visitor_id: string;
+          country_code?: string | null;
+          path?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          visitor_id?: string;
+          country_code?: string | null;
+          path?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       candidate_profiles: {
         Row: {
           user_id: string;
