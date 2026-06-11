@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 
 const initial: AccountActionResult = {};
 
@@ -20,6 +21,8 @@ export function DeleteAccountSection({ email }: DeleteAccountSectionProps) {
     requestAccountDeletion,
     initial
   );
+  const { messages } = useI18n();
+  const a = messages.account;
 
   return (
     <form action={action} className="space-y-5">
@@ -34,14 +37,10 @@ export function DeleteAccountSection({ email }: DeleteAccountSectionProps) {
         </p>
       )}
 
-      <p className="text-sm text-muted-foreground">
-        Permanently delete your account and all associated data. This cannot be
-        undone. We&apos;ll email you a confirmation link — your account stays
-        active until you open it.
-      </p>
+      <p className="text-sm text-muted-foreground">{a.deleteWarning}</p>
 
       <div className="space-y-2">
-        <Label htmlFor="deleteAccountEmail">Confirm your email</Label>
+        <Label htmlFor="deleteAccountEmail">{a.confirmEmail}</Label>
         <Input
           id="deleteAccountEmail"
           name="email"
@@ -51,9 +50,7 @@ export function DeleteAccountSection({ email }: DeleteAccountSectionProps) {
           required
           disabled={pending}
         />
-        <p className="text-xs text-muted-foreground">
-          Type the email address on your account to request deletion.
-        </p>
+        <p className="text-xs text-muted-foreground">{a.confirmEmailHint}</p>
       </div>
 
       <Button
@@ -61,7 +58,7 @@ export function DeleteAccountSection({ email }: DeleteAccountSectionProps) {
         disabled={pending}
         className="bg-red-600 text-white hover:bg-red-700"
       >
-        {pending ? "Sending confirmation…" : "Email me a deletion link"}
+        {pending ? a.sendingConfirmation : a.deletionLinkBtn}
       </Button>
     </form>
   );

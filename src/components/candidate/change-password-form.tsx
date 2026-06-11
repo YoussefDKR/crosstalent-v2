@@ -9,6 +9,7 @@ import { PasswordStrengthMeter } from "@/components/auth/password-strength-meter
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 import { evaluatePasswordStrength } from "@/lib/auth/password-strength";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,8 @@ export function ChangePasswordForm() {
   const [state, action, pending] = useActionState(updateAccountPassword, initial);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const { messages } = useI18n();
+  const a = messages.account;
 
   const strength = useMemo(
     () => evaluatePasswordStrength(password),
@@ -43,7 +46,7 @@ export function ChangePasswordForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="newPassword">New password</Label>
+        <Label htmlFor="newPassword">{a.newPassword}</Label>
         <Input
           id="newPassword"
           name="newPassword"
@@ -58,7 +61,7 @@ export function ChangePasswordForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm new password</Label>
+        <Label htmlFor="confirmPassword">{a.confirmPassword}</Label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
@@ -77,24 +80,19 @@ export function ChangePasswordForm() {
               passwordsMatch ? "text-emerald-600" : "text-red-600"
             )}
           >
-            {passwordsMatch
-              ? "Passwords match"
-              : "Passwords do not match"}
+            {passwordsMatch ? a.passwordsMatch : a.passwordsNoMatch}
           </p>
         )}
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        If you signed up with a magic link only, set a password here to sign in
-        with email next time.
-      </p>
+      <p className="text-xs text-muted-foreground">{a.passwordMagicLinkNote}</p>
 
       <Button
         type="submit"
         disabled={!canSubmit}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8] disabled:opacity-50"
       >
-        {pending ? "Updating…" : "Update password"}
+        {pending ? a.updating : a.updatePassword}
       </Button>
     </form>
   );

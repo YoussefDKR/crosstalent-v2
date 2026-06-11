@@ -6,6 +6,7 @@ import Cropper, { type Area } from "react-easy-crop";
 import { Loader2 } from "lucide-react";
 import { blobToFile, getCroppedImageBlob } from "@/lib/images/crop";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 
 type ImageCropDialogProps = {
   open: boolean;
@@ -26,6 +27,8 @@ export function ImageCropDialog({
   onClose,
   onConfirm,
 }: ImageCropDialogProps) {
+  const { messages } = useI18n();
+  const a = messages.account;
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
@@ -47,7 +50,7 @@ export function ImageCropDialog({
       onConfirm(file);
       onClose();
     } catch {
-      alert("Could not crop image. Try another file.");
+      alert(a.cropFailed);
     } finally {
       setSaving(false);
     }
@@ -67,9 +70,7 @@ export function ImageCropDialog({
           <h2 id="crop-dialog-title" className="font-semibold text-[#0F172A]">
             {title}
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Drag to reposition · Scroll or slider to zoom
-          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">{a.cropHint}</p>
         </div>
 
         <div className="relative h-[min(60vh,360px)] bg-[#0F172A]">
@@ -88,7 +89,7 @@ export function ImageCropDialog({
 
         <div className="space-y-2 border-t border-border px-4 py-3">
           <label className="text-xs font-medium text-muted-foreground">
-            Zoom
+            {a.cropZoom}
           </label>
           <input
             type="range"
@@ -103,7 +104,7 @@ export function ImageCropDialog({
 
         <div className="flex justify-end gap-2 border-t border-border px-4 py-4">
           <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
-            Cancel
+            {a.cropCancel}
           </Button>
           <Button
             type="button"
@@ -114,10 +115,10 @@ export function ImageCropDialog({
             {saving ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                Processing…
+                {a.cropProcessing}
               </>
             ) : (
-              "Use this image"
+              a.cropUseImage
             )}
           </Button>
         </div>

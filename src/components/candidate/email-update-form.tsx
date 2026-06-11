@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 
 const initial: AccountActionResult = {};
 
@@ -17,6 +18,8 @@ type EmailUpdateFormProps = {
 
 export function EmailUpdateForm({ email }: EmailUpdateFormProps) {
   const [state, action, pending] = useActionState(updateAccountEmail, initial);
+  const { messages } = useI18n();
+  const a = messages.account;
 
   return (
     <form key={email ?? "email"} action={action} className="space-y-4">
@@ -31,7 +34,7 @@ export function EmailUpdateForm({ email }: EmailUpdateFormProps) {
         </p>
       )}
       <div className="space-y-2">
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email">{a.emailAddress}</Label>
         <Input
           id="email"
           name="email"
@@ -41,17 +44,14 @@ export function EmailUpdateForm({ email }: EmailUpdateFormProps) {
           disabled={pending}
           autoComplete="email"
         />
-        <p className="text-xs text-muted-foreground">
-          Changing your email may require confirmation via a link we send to the
-          new address.
-        </p>
+        <p className="text-xs text-muted-foreground">{a.emailConfirmNote}</p>
       </div>
       <Button
         type="submit"
         disabled={pending}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
-        {pending ? "Saving…" : "Update email"}
+        {pending ? a.saving : a.updateEmail}
       </Button>
     </form>
   );

@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 
 const initial: AccountActionResult = {};
 
@@ -17,6 +18,8 @@ type AccountInfoFormProps = {
 
 export function AccountInfoForm({ fullName }: AccountInfoFormProps) {
   const [state, action, pending] = useActionState(updateAccountName, initial);
+  const { messages } = useI18n();
+  const a = messages.account;
 
   return (
     <form key={fullName ?? "account"} action={action} className="space-y-4">
@@ -31,7 +34,7 @@ export function AccountInfoForm({ fullName }: AccountInfoFormProps) {
         </p>
       )}
       <div className="space-y-2">
-        <Label htmlFor="fullName">Full name</Label>
+        <Label htmlFor="fullName">{a.fullName}</Label>
         <Input
           id="fullName"
           name="fullName"
@@ -45,7 +48,7 @@ export function AccountInfoForm({ fullName }: AccountInfoFormProps) {
         disabled={pending}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
-        {pending ? "Saving…" : "Save name"}
+        {pending ? a.saving : a.saveName}
       </Button>
     </form>
   );

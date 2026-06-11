@@ -8,6 +8,7 @@ import { IMAGE_ACCEPT } from "@/config/images";
 import { resolveImageUrl } from "@/lib/images/urls";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import { cn } from "@/lib/utils";
 
 type ImageUploadProps = {
@@ -25,8 +26,11 @@ export function ImageUpload({
   pathOrUrl,
   displayName,
   label,
-  hint = "JPG, PNG, or WebP · Max 8MB · Crop before upload · Saved as WebP",
+  hint,
 }: ImageUploadProps) {
+  const { messages } = useI18n();
+  const a = messages.account;
+  const displayHint = hint ?? a.uploadHint;
   const router = useRouter();
   const [preview, setPreview] = useState<string | null>(
     resolveImageUrl(pathOrUrl)
@@ -54,14 +58,12 @@ export function ImageUpload({
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error ?? "Upload failed");
+      setError(data.error ?? a.uploadFailed);
       return;
     }
 
     setPreview(data.url ?? resolveImageUrl(data.path));
-    setSuccess(
-      kind === "avatar" ? "Profile photo updated." : "Company logo updated."
-    );
+    setSuccess(kind === "avatar" ? a.avatarUpdated : a.logoUpdated);
     router.refresh();
   }
 
@@ -85,11 +87,11 @@ export function ImageUpload({
       const res = await fetch(uploadUrl, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Could not remove image");
+        setError(data.error ?? a.removeFailed);
         return;
       }
       setPreview(null);
-      setSuccess(kind === "avatar" ? "Photo removed." : "Logo removed.");
+      setSuccess(kind === "avatar" ? a.avatarRemoved : a.logoRemoved);
       router.refresh();
     });
   }
@@ -105,7 +107,7 @@ export function ImageUpload({
           imageSrc={cropSrc}
           aspect={aspect}
           cropShape={cropShape}
-          title={kind === "avatar" ? "Crop profile photo" : "Crop company logo"}
+          title={kind === "avatar" ? a.cropAvatar : a.cropLogo}
           onClose={closeCropper}
           onConfirm={(file) => {
             startTransition(() => upload(file));
@@ -142,7 +144,7 @@ export function ImageUpload({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={preview}
-                alt="Company logo"
+                alt={a.companyLogoAlt}
                 className="max-h-full max-w-full object-contain"
               />
             ) : (
@@ -153,11 +155,11 @@ export function ImageUpload({
 
         <div className="flex flex-1 flex-col gap-2">
           <p className="text-sm font-medium text-[#0F172A]">{label}</p>
-          <p className="text-xs text-muted-foreground">{hint}</p>
+          <p className="text-xs text-muted-foreground">{displayHint}</p>
           <div className="flex flex-wrap gap-2">
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted">
               <ImagePlus className="size-4" />
-              {preview ? "Replace" : "Upload"}
+              {preview ? a.replace : a.upload}
               <input
                 type="file"
                 accept={IMAGE_ACCEPT}
@@ -184,7 +186,7 @@ export function ImageUpload({
                 ) : (
                   <Trash2 className="size-4" />
                 )}
-                Remove
+                {a.remove}
               </Button>
             )}
           </div>
@@ -194,7 +196,7 @@ export function ImageUpload({
       {pending && (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          Compressing & uploading…
+          {a.uploading}
         </p>
       )}
     </div>

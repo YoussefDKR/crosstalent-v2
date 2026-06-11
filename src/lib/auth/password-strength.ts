@@ -98,10 +98,8 @@ export function evaluatePasswordStrength(password: string): PasswordStrength {
   };
 }
 
-export function validatePasswordForSubmit(password: string): string | null {
-  const { meetsMinimum, requirements } = evaluatePasswordStrength(password);
-  if (meetsMinimum) return null;
-
-  const missing = requirements.filter((r) => !r.met).map((r) => r.label);
-  return `Password must include: ${missing.join(", ")}.`;
+export function getMissingPasswordRequirementIds(password: string): string[] {
+  return evaluatePasswordStrength(password)
+    .requirements.filter((r) => !r.met)
+    .map((r) => r.id);
 }
