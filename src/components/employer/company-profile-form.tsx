@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/context/i18n-provider";
 import { cn } from "@/lib/utils";
 import { ImageUpload } from "@/components/shared/image-upload";
 import type { CompanyProfileRow } from "@/types/employer";
@@ -30,6 +31,13 @@ type CompanyProfileFormProps = {
 };
 
 export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
+  const { messages, t } = useI18n();
+  const f = messages.employer.companyForm;
+  const sizes = messages.employer.companySizes;
+  const industries = messages.employer.industries;
+  const countries = messages.employer.hqCountries;
+  const regions = messages.employer.hiringRegions;
+
   const [state, action, pending] = useActionState(
     updateCompanyProfile,
     initial
@@ -38,6 +46,11 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
     (company?.description ?? "").trim().length
   );
   const descComplete = descLength >= COMPANY_DESCRIPTION_MIN_LENGTH;
+
+  const charHint = t("employer.companyForm.charCount", {
+    current: descLength,
+    min: COMPANY_DESCRIPTION_MIN_LENGTH,
+  });
 
   return (
     <form
@@ -58,22 +71,24 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="companyName">Company name *</Label>
+          <Label htmlFor="companyName">
+            {f.companyName} *
+          </Label>
           <Input
             id="companyName"
             name="companyName"
-            placeholder="e.g. NordScale GmbH"
+            placeholder={f.companyNamePlaceholder}
             defaultValue={company?.company_name ?? ""}
             required
             disabled={pending}
           />
         </div>
         <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="tagline">Tagline</Label>
+          <Label htmlFor="tagline">{f.tagline}</Label>
           <Input
             id="tagline"
             name="tagline"
-            placeholder="e.g. Building European teams with MENA talent"
+            placeholder={f.taglinePlaceholder}
             defaultValue={company?.tagline ?? ""}
             disabled={pending}
           />
@@ -81,12 +96,12 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">About the company</Label>
+        <Label htmlFor="description">{f.about}</Label>
         <Textarea
           id="description"
           name="description"
           rows={5}
-          placeholder="Describe your mission, culture, and why candidates should join…"
+          placeholder={f.aboutPlaceholder}
           defaultValue={company?.description ?? ""}
           disabled={pending}
           onChange={(e) => setDescLength(e.target.value.trim().length)}
@@ -97,16 +112,18 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
             descComplete ? "text-[#10B981]" : "text-muted-foreground"
           )}
         >
-          {descLength}/{COMPANY_DESCRIPTION_MIN_LENGTH} characters
+          {charHint}
           {descComplete
-            ? " — counts toward profile strength"
-            : ` — ${COMPANY_DESCRIPTION_MIN_LENGTH - descLength} more needed for checkmark`}
+            ? f.charCountsToward
+            : t("employer.companyForm.charMoreNeeded", {
+                remaining: COMPANY_DESCRIPTION_MIN_LENGTH - descLength,
+              })}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="industry">Industry</Label>
+          <Label htmlFor="industry">{f.industry}</Label>
           <select
             id="industry"
             name="industry"
@@ -114,16 +131,16 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
             disabled={pending}
             className={selectClassName}
           >
-            <option value="">Select industry</option>
+            <option value="">{f.selectIndustry}</option>
             {INDUSTRIES.map((ind) => (
               <option key={ind} value={ind}>
-                {ind}
+                {industries[ind as keyof typeof industries] ?? ind}
               </option>
             ))}
           </select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="companySize">Company size</Label>
+          <Label htmlFor="companySize">{f.companySize}</Label>
           <select
             id="companySize"
             name="companySize"
@@ -131,10 +148,10 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
             disabled={pending}
             className={selectClassName}
           >
-            <option value="">Select size</option>
+            <option value="">{f.selectSize}</option>
             {COMPANY_SIZES.map((s) => (
               <option key={s.value} value={s.value}>
-                {s.label}
+                {sizes[s.value as keyof typeof sizes] ?? s.label}
               </option>
             ))}
           </select>
@@ -143,17 +160,17 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="headquartersCity">HQ city</Label>
+          <Label htmlFor="headquartersCity">{f.hqCity}</Label>
           <Input
             id="headquartersCity"
             name="headquartersCity"
-            placeholder="Berlin, Paris, Madrid…"
+            placeholder={f.hqCityPlaceholder}
             defaultValue={company?.headquarters_city ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="headquartersCountry">HQ country</Label>
+          <Label htmlFor="headquartersCountry">{f.hqCountry}</Label>
           <select
             id="headquartersCountry"
             name="headquartersCountry"
@@ -161,10 +178,10 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
             disabled={pending}
             className={selectClassName}
           >
-            <option value="">Select country</option>
+            <option value="">{f.selectCountry}</option>
             {EU_HQ_COUNTRIES.map((c) => (
               <option key={c.code} value={c.code}>
-                {c.label}
+                {countries[c.code as keyof typeof countries] ?? c.label}
               </option>
             ))}
           </select>
@@ -172,7 +189,7 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="hiringInRegions">Hiring talent from</Label>
+        <Label htmlFor="hiringInRegions">{f.hiringFrom}</Label>
         <select
           id="hiringInRegions"
           name="hiringInRegions"
@@ -180,10 +197,10 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
           disabled={pending}
           className={selectClassName}
         >
-          <option value="">Select primary region</option>
+          <option value="">{f.selectRegion}</option>
           {HIRING_REGIONS.map((region) => (
             <option key={region} value={region}>
-              {region}
+              {regions[region as keyof typeof regions] ?? region}
             </option>
           ))}
         </select>
@@ -191,23 +208,23 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="website">Website</Label>
+          <Label htmlFor="website">{f.website}</Label>
           <Input
             id="website"
             name="website"
             type="url"
-            placeholder="https://yourcompany.com"
+            placeholder={f.websitePlaceholder}
             defaultValue={company?.website ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="linkedinUrl">LinkedIn</Label>
+          <Label htmlFor="linkedinUrl">{f.linkedin}</Label>
           <Input
             id="linkedinUrl"
             name="linkedinUrl"
             type="url"
-            placeholder="https://linkedin.com/company/…"
+            placeholder={f.linkedinPlaceholder}
             defaultValue={company?.linkedin_url ?? ""}
             disabled={pending}
           />
@@ -219,24 +236,24 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
         uploadUrl="/api/upload/company-logo"
         pathOrUrl={company?.logo_url ?? null}
         displayName={company?.company_name}
-        label="Company logo"
-        hint="Square or wide logo works best · Compressed to WebP on upload"
+        label={f.logo}
+        hint={f.logoHint}
       />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="contactEmail">Contact email</Label>
+          <Label htmlFor="contactEmail">{f.contactEmail}</Label>
           <Input
             id="contactEmail"
             name="contactEmail"
             type="email"
-            placeholder="hiring@company.com"
+            placeholder={f.contactEmailPlaceholder}
             defaultValue={company?.contact_email ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="contactPhone">Contact phone</Label>
+          <Label htmlFor="contactPhone">{f.contactPhone}</Label>
           <Input
             id="contactPhone"
             name="contactPhone"
@@ -252,7 +269,7 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
         disabled={pending}
         className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
-        {pending ? "Saving…" : "Save company profile"}
+        {pending ? f.saving : f.save}
       </Button>
     </form>
   );

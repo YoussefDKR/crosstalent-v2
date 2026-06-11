@@ -1,50 +1,46 @@
 import { COMPANY_DESCRIPTION_MIN_LENGTH } from "@/config/employer";
+import type { Messages } from "@/i18n/dictionaries/en";
 import type { CompanyCompletion, CompanyProfileData } from "@/types/employer";
 
 function descriptionMeetsMinimum(text: string | null | undefined): boolean {
   return (text?.trim() ?? "").length >= COMPANY_DESCRIPTION_MIN_LENGTH;
 }
 
+type CompletionItemKey = keyof Messages["employer"]["companyCompletionItems"];
+
 const CHECKS: {
-  key: string;
-  label: string;
+  key: CompletionItemKey;
   weight: number;
   test: (data: CompanyProfileData) => boolean;
 }[] = [
   {
     key: "name",
-    label: "Contact name",
     weight: 10,
     test: (d) => Boolean(d.profile.fullName?.trim()),
   },
   {
     key: "company_name",
-    label: "Company name",
     weight: 15,
     test: (d) => Boolean(d.company?.company_name?.trim()),
   },
   {
     key: "tagline",
-    label: "Company tagline",
     weight: 10,
     test: (d) => Boolean(d.company?.tagline?.trim()),
   },
   {
     key: "description",
-    label: `About the company (${COMPANY_DESCRIPTION_MIN_LENGTH}+ characters)`,
     weight: 15,
     test: (d) => descriptionMeetsMinimum(d.company?.description),
   },
   {
     key: "industry",
-    label: "Industry & company size",
     weight: 10,
     test: (d) =>
       Boolean(d.company?.industry?.trim() && d.company?.company_size),
   },
   {
     key: "headquarters",
-    label: "HQ city & country",
     weight: 10,
     test: (d) =>
       Boolean(
@@ -54,13 +50,11 @@ const CHECKS: {
   },
   {
     key: "hiring",
-    label: "Hiring regions",
     weight: 10,
     test: (d) => Boolean(d.company?.hiring_in_regions?.trim()),
   },
   {
     key: "website",
-    label: "Website or LinkedIn",
     weight: 10,
     test: (d) =>
       Boolean(
@@ -69,24 +63,33 @@ const CHECKS: {
   },
   {
     key: "contact",
-    label: "Contact email",
     weight: 10,
     test: (d) => Boolean(d.company?.contact_email?.trim()),
   },
   {
     key: "logo",
-    label: "Company logo",
     weight: 10,
     test: (d) => Boolean(d.company?.logo_url?.trim()),
   },
 ];
 
+function resolveItemLabel(
+  key: CompletionItemKey,
+  completionItems: Messages["employer"]["companyCompletionItems"]
+): string {
+  return completionItems[key].replace(
+    "{min}",
+    String(COMPANY_DESCRIPTION_MIN_LENGTH)
+  );
+}
+
 export function calculateCompanyCompletion(
-  data: CompanyProfileData
+  data: CompanyProfileData,
+  completionItems?: Messages["employer"]["companyCompletionItems"]
 ): CompanyCompletion {
-  const items = CHECKS.map(({ key, label, weight, test }) => ({
+  const items = CHECKS.map(({ key, weight, test }) => ({
     key,
-    label,
+    label: completionItems ? resolveItemLabel(key, completionItems) : key,
     weight,
     done: test(data),
   }));

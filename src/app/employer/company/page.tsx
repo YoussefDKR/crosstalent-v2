@@ -19,9 +19,12 @@ export default async function EmployerCompanyPage() {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
-  const { t } = await getServerI18n();
+  const { t, messages } = await getServerI18n();
   const data = await getCompanyProfileData(profile);
-  const completion = calculateCompanyCompletion(data);
+  const completion = calculateCompanyCompletion(
+    data,
+    messages.employer.companyCompletionItems
+  );
 
   return (
     <DashboardShell

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { ensureCompanyProfileRow } from "@/lib/employer/queries";
 import { createClient } from "@/lib/supabase/server";
@@ -33,6 +34,8 @@ export async function updateCompanyProfile(
   _prev: EmployerActionResult,
   formData: FormData
 ): Promise<EmployerActionResult> {
+  const { messages } = await getServerI18n();
+  const f = messages.employer.companyForm;
   try {
     const userId = await requireEmployerId();
 
@@ -62,7 +65,7 @@ export async function updateCompanyProfile(
     };
 
     if (!payload.company_name) {
-      return { error: "Company name is required." };
+      return { error: f.errCompanyNameRequired };
     }
 
     const supabase = await createClient();
@@ -74,8 +77,8 @@ export async function updateCompanyProfile(
     if (error) return { error: error.message };
 
     revalidateEmployer();
-    return { success: "Company profile saved." };
+    return { success: f.successSaved };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: f.errGeneric };
   }
 }
