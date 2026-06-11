@@ -12,10 +12,10 @@ import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getEmployerFeatureAccess } from "@/lib/billing/access";
 import {
-  getEmployerBillingState,
-  planDisplayName,
-  statusLabel,
-} from "@/lib/billing/queries";
+  localizedPlanName,
+  localizedSubscriptionStatus,
+} from "@/lib/billing/labels";
+import { getEmployerBillingState } from "@/lib/billing/queries";
 import { TRIAL_DURATION_DAYS, TRIAL_PUBLISHED_JOB_LIMIT } from "@/config/billing";
 import {
   isPlanCheckoutReady,
@@ -38,7 +38,8 @@ export default async function EmployerBillingPage({
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") redirect("/login");
 
-  const { t, locale } = await getServerI18n();
+  const { t, locale, messages } = await getServerI18n();
+  const b = messages.billing;
   const [billing, access] = await Promise.all([
     getEmployerBillingState(profile.id),
     getEmployerFeatureAccess(profile.id),
@@ -130,11 +131,11 @@ export default async function EmployerBillingPage({
                 {t("employer.billing.currentPlan")}
               </p>
               <p className="text-xl font-semibold text-[#0F172A]">
-                {planDisplayName(billing.planId)}
+                {localizedPlanName(billing.planId, b)}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {t("employer.billing.statusLabel", {
-                  status: statusLabel(billing.status),
+                  status: localizedSubscriptionStatus(billing.status, b),
                 })}
                 {billing.currentPeriodEnd && billing.hasPaidSubscription && (
                   <>
@@ -168,33 +169,40 @@ export default async function EmployerBillingPage({
             {t("employer.billing.upgradePlan")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            {EMPLOYER_PLANS.map((plan) => (
-              <Card key={plan.id} className="border-border/80">
-                <CardContent className="p-6">
-                  <p className="font-semibold text-[#0F172A]">{plan.name}</p>
-                  <p className="text-2xl font-semibold mt-1">
-                    €{plan.monthlyPrice}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      {t("billing.perMonth")}
-                    </span>
-                  </p>
-                  <div className="mt-4">
-                    <CheckoutButton
-                      planId={plan.id}
-                      label={plan.cta}
-                      disabled={
-                        !stripeReady || !isPlanCheckoutReady(plan.id)
-                      }
-                      disabledReason={
-                        !stripeReady
-                          ? "Configure Stripe in .env.local"
-                          : `Set STRIPE_PRICE_${plan.id.toUpperCase()}`
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {EMPLOYER_PLANS.map((plan) => {
+              const planCopy = b.plans[plan.id as "growth" | "scale"];
+              return (
+                <Card key={plan.id} className="border-border/80">
+                  <CardContent className="p-6">
+                    <p className="font-semibold text-[#0F172A]">
+                      {planCopy.name}
+                    </p>
+                    <p className="text-2xl font-semibold mt-1">
+                      €{plan.monthlyPrice}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        {t("billing.perMonth")}
+                      </span>
+                    </p>
+                    <div className="mt-4">
+                      <CheckoutButton
+                        planId={plan.id}
+                        label={planCopy.cta}
+                        disabled={
+                          !stripeReady || !isPlanCheckoutReady(plan.id)
+                        }
+                        disabledReason={
+                          !stripeReady
+                            ? b.configureStripeEnv
+                            : t("billing.missingPriceEnv", {
+                                plan: plan.id.toUpperCase(),
+                              })
+                        }
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       )}

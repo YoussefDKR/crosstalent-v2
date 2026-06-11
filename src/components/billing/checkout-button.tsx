@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import type { EmployerPlanId } from "@/config/billing";
 
 type CheckoutButtonProps = {
@@ -22,6 +23,8 @@ export function CheckoutButton({
   variant = "default",
   className,
 }: CheckoutButtonProps) {
+  const { messages } = useI18n();
+  const b = messages.billing;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,14 +39,14 @@ export function CheckoutButton({
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Checkout failed");
+        setError(data.error ?? b.checkoutFailed);
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       }
     } catch {
-      setError("Network error. Try again.");
+      setError(b.checkoutNetworkError);
     } finally {
       setLoading(false);
     }
@@ -65,7 +68,7 @@ export function CheckoutButton({
         {loading ? (
           <>
             <Loader2 className="size-4 animate-spin" />
-            Redirecting…
+            {b.checkoutRedirecting}
           </>
         ) : (
           label
