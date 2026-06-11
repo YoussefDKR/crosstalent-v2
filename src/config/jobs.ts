@@ -48,6 +48,7 @@ export const COMMON_JOB_SKILLS = [
   "DevOps",
   "AWS",
   "Product Management",
+  "Architect",
   "UX Design",
   "Data Analysis",
 ] as const;

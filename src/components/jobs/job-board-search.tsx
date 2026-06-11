@@ -20,6 +20,7 @@ const POPULAR_TAGS = [
   "Sales",
   "Marketing",
   "IT & Development",
+  "Architect",
   "Data",
   "Finance",
 ] as const;
