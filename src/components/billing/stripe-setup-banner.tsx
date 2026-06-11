@@ -1,14 +1,16 @@
+"use client";
+
 import { AlertCircle, BookOpen } from "lucide-react";
 import Link from "next/link";
-import { getServerI18n } from "@/i18n/server";
+import { useI18n } from "@/context/i18n-provider";
 import {
   isStripeConfigured,
   isStripeWebhookConfigured,
 } from "@/lib/stripe/config";
 import { EMPLOYER_PLANS } from "@/config/billing";
 
-export async function StripeSetupBanner() {
-  const { messages } = await getServerI18n();
+export function StripeSetupBanner() {
+  const { messages } = useI18n();
   const b = messages.billing;
 
   if (isStripeConfigured()) {
