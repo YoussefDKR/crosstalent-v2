@@ -387,6 +387,13 @@ export const ar: Messages = {
     pendingReview: "بانتظار المراجعة",
     candidatesEmployers: "{candidates} مرشح · {employers} صاحب عمل",
   },
+  messaging: {
+    noConversationsYet: "لا توجد محادثات بعد",
+    emptyCandidate: "عندما يراسلك صاحب عمل، ستظهر المحادثة هنا.",
+    emptyEmployer: "راسل مرشحاً من ملفه في البحث عن المواهب.",
+    noMessagesYet: "لا توجد رسائل بعد — قل مرحباً",
+    youPrefix: "أنت: ",
+  },
   contact: {
     pageTitle: "اتصل بنا",
     pageSubtitle: "أرسل رسالة وسنرد على بريدك الإلكتروني. يمكنك أيضاً التواصل معنا على",

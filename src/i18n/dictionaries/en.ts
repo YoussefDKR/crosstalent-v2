@@ -390,6 +390,13 @@ export const en = {
     pendingReview: "Pending review",
     candidatesEmployers: "{candidates} candidates · {employers} employers",
   },
+  messaging: {
+    noConversationsYet: "No conversations yet",
+    emptyCandidate: "When an employer messages you, it will appear here.",
+    emptyEmployer: "Message a candidate from their profile in Find talent.",
+    noMessagesYet: "No messages yet — say hello",
+    youPrefix: "You: ",
+  },
   contact: {
     pageTitle: "Contact us",
     pageSubtitle:

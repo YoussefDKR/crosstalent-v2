@@ -33,6 +33,8 @@ export const candidateAr: CandidateMessages = {
   completionStandOut: "أكمل ملفك للتميز أمام أصحاب العمل الأوروبيين.",
   completionComplete: "ملفك مكتمل",
   completionIncomplete: "أكمل ملفك للتميز",
+  sidebarAlmostThere: "أوشكت على الانتهاء! أكمل ملفك لمزيد من الفرص.",
+  improveProfile: "تحسين الملف",
   careerProfile: "الملف المهني",
   accountSettings: "إعدادات الحساب",
   sectionAboutTitle: "الملخص المهني",

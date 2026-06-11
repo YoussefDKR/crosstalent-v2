@@ -402,6 +402,15 @@ export const fr: Messages = {
     pendingReview: "En attente de revue",
     candidatesEmployers: "{candidates} candidats · {employers} employeurs",
   },
+  messaging: {
+    noConversationsYet: "Aucune conversation pour le moment",
+    emptyCandidate:
+      "Lorsqu'un employeur vous écrira, la conversation apparaîtra ici.",
+    emptyEmployer:
+      "Contactez un candidat depuis son profil dans Trouver des talents.",
+    noMessagesYet: "Pas encore de messages — dites bonjour",
+    youPrefix: "Vous : ",
+  },
   contact: {
     pageTitle: "Contactez-nous",
     pageSubtitle:

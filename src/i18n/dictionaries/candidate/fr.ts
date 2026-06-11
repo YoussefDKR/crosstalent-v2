@@ -38,6 +38,9 @@ export const candidateFr: CandidateMessages = {
     "Complétez votre profil pour vous démarquer auprès des employeurs européens.",
   completionComplete: "Votre profil est complet",
   completionIncomplete: "Complétez votre profil pour vous démarquer",
+  sidebarAlmostThere:
+    "Presque terminé ! Complétez votre profil pour plus d'opportunités.",
+  improveProfile: "Améliorer le profil",
   careerProfile: "Profil professionnel",
   accountSettings: "Paramètres du compte",
   sectionAboutTitle: "Résumé professionnel",

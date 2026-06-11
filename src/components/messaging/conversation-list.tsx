@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { MessageSquare } from "lucide-react";
+import { useI18n } from "@/context/i18n-provider";
 import { formatMessageTime } from "@/lib/messaging/format";
 import { messagesThreadPath } from "@/lib/messaging/paths";
 import type { ConversationListItem } from "@/types/messaging";
@@ -14,15 +17,16 @@ export function ConversationList({
   conversations,
   role,
 }: ConversationListProps) {
+  const { messages } = useI18n();
+  const m = messages.messaging;
+
   if (conversations.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-white p-12 text-center">
         <MessageSquare className="mx-auto size-10 text-muted-foreground" />
-        <p className="mt-4 font-medium text-[#0F172A]">No conversations yet</p>
+        <p className="mt-4 font-medium text-[#0F172A]">{m.noConversationsYet}</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          {role === "employer"
-            ? "Message a candidate from their profile in Find talent."
-            : "When an employer messages you, it will appear here."}
+          {role === "employer" ? m.emptyEmployer : m.emptyCandidate}
         </p>
       </div>
     );
@@ -62,8 +66,8 @@ export function ConversationList({
               </div>
               <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                 {c.lastMessageBody
-                  ? `${c.lastMessageIsMine ? "You: " : ""}${c.lastMessageBody}`
-                  : "No messages yet — say hello"}
+                  ? `${c.lastMessageIsMine ? m.youPrefix : ""}${c.lastMessageBody}`
+                  : m.noMessagesYet}
               </p>
             </div>
           </Link>

@@ -33,6 +33,9 @@ export const candidateEn = {
   completionStandOut: "Complete your profile to stand out to European employers.",
   completionComplete: "Your profile is complete",
   completionIncomplete: "Complete your profile to stand out",
+  sidebarAlmostThere:
+    "Almost there! Complete your profile for more opportunities.",
+  improveProfile: "Improve profile",
   careerProfile: "Career profile",
   accountSettings: "Account settings",
   sectionAboutTitle: "Professional summary",
