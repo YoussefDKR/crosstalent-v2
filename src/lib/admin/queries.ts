@@ -10,6 +10,7 @@ import type {
   AdminSignupCountryStats,
   AdminStats,
   AdminSubscriptionRow,
+  AdminUserProfile,
   AdminUserRow,
   AdminVisitStats,
 } from "@/lib/admin/types";
@@ -486,53 +487,46 @@ export async function getSignupCountryStats(): Promise<AdminSignupCountryStats> 
   };
 }
 
-const TREND_DAYS = 30;
+const DEFAULT_TREND_DAYS = 90;
+const MAX_TREND_DAYS = 90;
 
-function lastNDays(days: number): string[] {
-  const result: string[] = [];
-  for (let offset = days - 1; offset >= 0; offset -= 1) {
-    const date = new Date();
-    date.setUTCDate(date.getUTCDate() - offset);
-    result.push(date.toISOString().slice(0, 10));
-  }
-  return result;
+export function resolveTrendDays(value: string | undefined): number {
+  const parsed = Number(value);
+  if (parsed === 7 || parsed === 30 || parsed === 90) return parsed;
+  return DEFAULT_TREND_DAYS;
 }
 
-function formatTrendLabel(isoDate: string): string {
-  const date = new Date(`${isoDate}T12:00:00Z`);
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
-
-function aggregateVisitCountries(
-  rows: { country_code: string | null }[],
+function aggregateTopPages(
+  rows: { path: string | null }[],
   total: number
-): AdminVisitStats["countries"] {
+): AdminVisitStats["topPages"] {
   const counts = new Map<string, number>();
   for (const row of rows) {
-    const code = row.country_code?.trim().toUpperCase() || "UNKNOWN";
-    counts.set(code, (counts.get(code) ?? 0) + 1);
+    const path = row.path?.trim() || "/";
+    counts.set(path, (counts.get(path) ?? 0) + 1);
   }
 
   return [...counts.entries()]
-    .filter(([code]) => code !== "UNKNOWN")
-    .map(([countryCode, count]) => ({
-      countryCode,
-      countryName: countryDisplayName(countryCode),
+    .map(([path, count]) => ({
+      path,
       count,
       share: total > 0 ? Math.round((count / total) * 100) : 0,
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 12);
 }
 
-export async function getVisitStats(): Promise<AdminVisitStats> {
+export async function getVisitStats(
+  trendDays = DEFAULT_TREND_DAYS
+): Promise<AdminVisitStats> {
   const supabase = createAdminClient();
   const today = startOfTodayUtc();
   const weekAgo = daysAgoUtc(7);
-  const trendStart = daysAgoUtc(TREND_DAYS);
+  const trendStart = daysAgoUtc(trendDays);
 
   const { data, error } = await supabase
     .from("site_visits")
-    .select("visitor_id, country_code, created_at")
+    .select("visitor_id, country_code, path, created_at")
     .gte("created_at", trendStart);
 
   if (error) throw new Error(error.message);
@@ -552,17 +546,24 @@ export async function getVisitStats(): Promise<AdminVisitStats> {
     visitsToday,
     visitsThisWeek,
     countries: aggregateVisitCountries(rows, rows.length),
+    topPages: aggregateTopPages(rows, rows.length),
   };
 }
 
-export async function getAdminAnalyticsDashboard(): Promise<AdminAnalyticsDashboard> {
+export async function getAdminAnalyticsDashboard(
+  trendDaysInput?: number
+): Promise<AdminAnalyticsDashboard> {
+  const trendDays = Math.min(
+    Math.max(trendDaysInput ?? DEFAULT_TREND_DAYS, 7),
+    MAX_TREND_DAYS
+  );
   const supabase = createAdminClient();
-  const trendStart = daysAgoUtc(TREND_DAYS);
-  const dayKeys = lastNDays(TREND_DAYS);
+  const trendStart = daysAgoUtc(trendDays);
+  const dayKeys = lastNDays(trendDays);
 
   const [visits, signups, { data: visitRows }, { data: signupRows }] =
     await Promise.all([
-      getVisitStats(),
+      getVisitStats(trendDays),
       getSignupCountryStats(),
       supabase
         .from("site_visits")
@@ -606,5 +607,125 @@ export async function getAdminAnalyticsDashboard(): Promise<AdminAnalyticsDashbo
     signups: signupsByDay.get(date) ?? 0,
   }));
 
-  return { visits, signups, trends };
+  return { visits, signups, trends, trendDays };
+}
+
+function lastNDays(days: number): string[] {
+  const result: string[] = [];
+  for (let offset = days - 1; offset >= 0; offset -= 1) {
+    const date = new Date();
+    date.setUTCDate(date.getUTCDate() - offset);
+    result.push(date.toISOString().slice(0, 10));
+  }
+  return result;
+}
+
+function formatTrendLabel(isoDate: string): string {
+  const date = new Date(`${isoDate}T12:00:00Z`);
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function aggregateVisitCountries(
+  rows: { country_code: string | null }[],
+  total: number
+): AdminVisitStats["countries"] {
+  const counts = new Map<string, number>();
+  for (const row of rows) {
+    const code = row.country_code?.trim().toUpperCase() || "UNKNOWN";
+    counts.set(code, (counts.get(code) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .filter(([code]) => code !== "UNKNOWN")
+    .map(([countryCode, count]) => ({
+      countryCode,
+      countryName: countryDisplayName(countryCode),
+      count,
+      share: total > 0 ? Math.round((count / total) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getAdminUserProfile(
+  userId: string
+): Promise<AdminUserProfile | null> {
+  const supabase = createAdminClient();
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("id, full_name, email, role, created_at, avatar_url, signup_country")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!profile) return null;
+
+  const base: AdminUserProfile = {
+    profile: profile as AdminUserRow,
+    candidate: null,
+    company: null,
+  };
+
+  if (profile.role === "candidate") {
+    const [detailsRes, skillsRes, languagesRes, experiencesRes] =
+      await Promise.all([
+        supabase
+          .from("candidate_profiles")
+          .select(
+            "headline, bio, location, country_code, phone, linkedin_url, portfolio_url, cv_file_name"
+          )
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("candidate_skills")
+          .select("name, level")
+          .eq("user_id", userId)
+          .order("created_at"),
+        supabase
+          .from("candidate_languages")
+          .select("language, proficiency")
+          .eq("user_id", userId)
+          .order("created_at"),
+        supabase
+          .from("candidate_experiences")
+          .select(
+            "title, company, location, start_date, end_date, is_current"
+          )
+          .eq("user_id", userId)
+          .order("sort_order"),
+      ]);
+
+    base.candidate = {
+      headline: detailsRes.data?.headline ?? null,
+      bio: detailsRes.data?.bio ?? null,
+      location: detailsRes.data?.location ?? null,
+      country_code: detailsRes.data?.country_code ?? null,
+      phone: detailsRes.data?.phone ?? null,
+      linkedin_url: detailsRes.data?.linkedin_url ?? null,
+      portfolio_url: detailsRes.data?.portfolio_url ?? null,
+      cv_file_name: detailsRes.data?.cv_file_name ?? null,
+      skills: (skillsRes.data ?? []).map((s) => ({
+        name: s.name,
+        level: s.level,
+      })),
+      languages: (languagesRes.data ?? []).map((l) => ({
+        name: l.language,
+        proficiency: l.proficiency,
+      })),
+      experiences: experiencesRes.data ?? [],
+    };
+  }
+
+  if (profile.role === "employer") {
+    const { data: company } = await supabase
+      .from("company_profiles")
+      .select(
+        "company_name, tagline, description, website, logo_url, industry, company_size, headquarters_city, headquarters_country, hiring_in_regions, linkedin_url, contact_email, contact_phone"
+      )
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    base.company = company ?? null;
+  }
+
+  return base;
 }

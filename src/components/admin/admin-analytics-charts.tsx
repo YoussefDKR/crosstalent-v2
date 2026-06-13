@@ -76,8 +76,109 @@ function EmptyChart({ message }: { message: string }) {
   );
 }
 
+export function AdminDailyVisitsTable({
+  trends,
+}: {
+  trends: AdminAnalyticsDashboard["trends"];
+}) {
+  const recent = [...trends].reverse().slice(0, 14);
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  return (
+    <ChartCard
+      title="Daily visits"
+      description="Visits and unique visitors per day"
+    >
+      {recent.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[420px] text-left text-sm">
+            <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 font-medium">Date</th>
+                <th className="px-3 py-2 font-medium">Visits</th>
+                <th className="px-3 py-2 font-medium">Unique</th>
+                <th className="px-3 py-2 font-medium">Signups</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {recent.map((row) => (
+                <tr
+                  key={row.date}
+                  className={
+                    row.date === todayKey ? "bg-[#EFF6FF]/60" : undefined
+                  }
+                >
+                  <td className="px-3 py-2.5 font-medium text-[#0F172A]">
+                    {row.label}
+                    {row.date === todayKey && (
+                      <span className="ml-2 text-xs font-normal text-[#2563EB]">
+                        Today
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 tabular-nums">{row.visits}</td>
+                  <td className="px-3 py-2.5 tabular-nums">
+                    {row.uniqueVisitors}
+                  </td>
+                  <td className="px-3 py-2.5 tabular-nums">{row.signups}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <EmptyChart message="Daily visit data will appear as traffic comes in." />
+      )}
+    </ChartCard>
+  );
+}
+
+export function AdminTopPagesTable({
+  pages,
+  days,
+}: {
+  pages: AdminAnalyticsDashboard["visits"]["topPages"];
+  days: number;
+}) {
+  return (
+    <ChartCard
+      title="Top pages"
+      description={`Most visited paths in the last ${days} days`}
+    >
+      {pages.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[420px] text-left text-sm">
+            <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-3 py-2 font-medium">Path</th>
+                <th className="px-3 py-2 font-medium">Visits</th>
+                <th className="px-3 py-2 font-medium">Share</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {pages.map((page) => (
+                <tr key={page.path}>
+                  <td className="px-3 py-2.5 font-mono text-xs text-[#0F172A]">
+                    {page.path}
+                  </td>
+                  <td className="px-3 py-2.5 tabular-nums">{page.count}</td>
+                  <td className="px-3 py-2.5 tabular-nums text-muted-foreground">
+                    {page.share}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <EmptyChart message="Page visit data will appear after visitors browse the site." />
+      )}
+    </ChartCard>
+  );
+}
+
 export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
-  const { visits, signups, trends } = data;
+  const { visits, signups, trends, trendDays } = data;
   const hasTrendData = trends.some(
     (point) => point.visits > 0 || point.signups > 0
   );
@@ -86,13 +187,6 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-[#0F172A]">Traffic & growth</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Website visits and signups over the last 30 days.
-        </p>
-      </div>
-
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="Total visits"
@@ -102,7 +196,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
         <MetricCard
           label="Unique visitors"
           value={visits.uniqueVisitors}
-          hint="Last 30 days"
+          hint={`Last ${trendDays} days`}
         />
         <MetricCard
           label="Visits today"
@@ -118,7 +212,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
 
       <ChartCard
         title="Visits & signups over time"
-        description="Daily trend for the last 30 days"
+        description={`Daily trend for the last ${trendDays} days`}
       >
         {hasTrendData ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -191,7 +285,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard
           title="Visits by country"
-          description="Where visitors are browsing from (last 30 days)"
+          description={`Where visitors are browsing from (last ${trendDays} days)`}
         >
           {topVisitCountries.length > 0 ? (
             <ResponsiveContainer width="100%" height={Math.max(280, topVisitCountries.length * 42)}>

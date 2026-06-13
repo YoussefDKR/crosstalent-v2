@@ -3,6 +3,7 @@ import { redirectApexToWww } from "@/lib/canonical-host";
 import { updateSession } from "@/lib/supabase/middleware";
 import {
   AUTH_ROUTES,
+  EMPLOYER_ONBOARDING_PATH,
   getDashboardPath,
   isAdminPath,
   isAuthPath,
@@ -90,6 +91,24 @@ export async function middleware(request: NextRequest) {
         const url = request.nextUrl.clone();
         url.pathname = getDashboardPath(role);
         return redirectWithSession(url, supabaseResponse);
+      }
+
+      if (
+        role === "employer" &&
+        isEmployerPath(pathname) &&
+        pathname !== EMPLOYER_ONBOARDING_PATH
+      ) {
+        const { data: company } = await supabase
+          .from("company_profiles")
+          .select("company_name, website")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!company?.company_name?.trim() || !company?.website?.trim()) {
+          const url = request.nextUrl.clone();
+          url.pathname = EMPLOYER_ONBOARDING_PATH;
+          return redirectWithSession(url, supabaseResponse);
+        }
       }
     }
 

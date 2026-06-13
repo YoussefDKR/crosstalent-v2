@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { formatJobPostedAt } from "@/lib/jobs/format";
 import type { AdminUserRow } from "@/lib/admin/types";
@@ -36,6 +38,7 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
               <th className="px-5 py-3 font-medium">User</th>
               <th className="px-5 py-3 font-medium">Role</th>
               <th className="px-5 py-3 font-medium">Joined</th>
+              <th className="px-5 py-3 font-medium">Profile</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -65,6 +68,15 @@ export function AdminUsersTable({ users }: AdminUsersTableProps) {
                 </td>
                 <td className="px-5 py-4 text-muted-foreground">
                   {formatJobPostedAt(user.created_at)}
+                </td>
+                <td className="px-5 py-4">
+                  {(user.role === "candidate" || user.role === "employer") && (
+                    <Link href={`/admin/users/${user.id}`}>
+                      <Button variant="outline" size="sm">
+                        View profile
+                      </Button>
+                    </Link>
+                  )}
                 </td>
               </tr>
             ))}

@@ -5,6 +5,11 @@ import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { createClient } from "@/lib/supabase/server";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
+import { ensureCompanyProfileRow } from "@/lib/employer/queries";
+import {
+  isValidWebsiteUrl,
+  normalizeWebsiteUrl,
+} from "@/lib/employer/onboarding";
 import type { UserRole } from "@/types";
 
 export type AuthActionState = {
@@ -48,6 +53,22 @@ export async function signUp(
     return { error: "Please select whether you are a candidate or employer." };
   }
 
+  let companyName = "";
+  let website = "";
+  if (role === "employer") {
+    companyName = String(formData.get("companyName") ?? "").trim();
+    const websiteRaw = String(formData.get("website") ?? "").trim();
+    if (!companyName) {
+      return { error: "Company name is required for employer accounts." };
+    }
+    if (!isValidWebsiteUrl(websiteRaw)) {
+      return {
+        error: "Enter a valid company website (e.g. yourcompany.com).",
+      };
+    }
+    website = normalizeWebsiteUrl(websiteRaw);
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -60,6 +81,22 @@ export async function signUp(
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (role === "employer" && data.user) {
+    await ensureCompanyProfileRow(data.user.id);
+    const { error: companyError } = await supabase.from("company_profiles").upsert(
+      {
+        user_id: data.user.id,
+        company_name: companyName,
+        website,
+      },
+      { onConflict: "user_id" }
+    );
+
+    if (companyError) {
+      return { error: companyError.message };
+    }
   }
 
   if (data.session && data.user) {

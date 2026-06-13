@@ -69,6 +69,32 @@ export function SignupForm({ defaultRole = "candidate" }: SignupFormProps) {
           </div>
         )}
 
+        {role === "employer" && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="companyName">{t("auth.companyName")}</Label>
+              <Input
+                id="companyName"
+                name="companyName"
+                placeholder={t("auth.companyNamePlaceholder")}
+                required
+                disabled={pending || !!state.success}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">{t("auth.companyWebsite")}</Label>
+              <Input
+                id="website"
+                name="website"
+                type="url"
+                placeholder={t("auth.companyWebsitePlaceholder")}
+                required
+                disabled={pending || !!state.success}
+              />
+            </div>
+          </>
+        )}
+
         <div className="space-y-2">
           <Label htmlFor="fullName">{t("auth.fullName")}</Label>
           <Input

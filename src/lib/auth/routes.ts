@@ -52,6 +52,8 @@ export function isCandidatePath(pathname: string): boolean {
   return pathname.startsWith("/candidate");
 }
 
+export const EMPLOYER_ONBOARDING_PATH = "/employer/onboarding";
+
 export function isEmployerPath(pathname: string): boolean {
   return pathname.startsWith("/employer");
 }

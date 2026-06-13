@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { AdminAppShell } from "@/components/admin/admin-app-shell";
-import { AdminAnalyticsCharts } from "@/components/admin/admin-analytics-charts";
+import { AdminAnalyticsSection } from "@/components/admin/admin-analytics-section";
 import { AdminRecentSignups } from "@/components/admin/admin-recent-signups";
 import { AdminStats } from "@/components/admin/admin-stats";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -9,6 +10,7 @@ import {
   getAdminAnalyticsDashboard,
   getAdminStats,
   listRecentSignups,
+  resolveTrendDays,
 } from "@/lib/admin/queries";
 import { getServerI18n } from "@/i18n/server";
 
@@ -16,15 +18,22 @@ export const metadata: Metadata = {
   title: "Admin dashboard",
 };
 
-export default async function AdminDashboardPage() {
+type PageProps = {
+  searchParams: Promise<{ days?: string }>;
+};
+
+export default async function AdminDashboardPage({ searchParams }: PageProps) {
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "admin") redirect("/login");
+
+  const params = await searchParams;
+  const trendDays = resolveTrendDays(params.days);
 
   const { t } = await getServerI18n();
   const [stats, recentSignups, analytics] = await Promise.all([
     getAdminStats(),
     listRecentSignups(),
-    getAdminAnalyticsDashboard(),
+    getAdminAnalyticsDashboard(trendDays),
   ]);
 
   return (
@@ -39,7 +48,9 @@ export default async function AdminDashboardPage() {
           </p>
         </header>
         <AdminStats stats={stats} />
-        <AdminAnalyticsCharts data={analytics} />
+        <Suspense fallback={<div className="h-40 rounded-2xl bg-white" />}>
+          <AdminAnalyticsSection data={analytics} />
+        </Suspense>
         <AdminRecentSignups users={recentSignups} />
       </div>
     </AdminAppShell>

@@ -81,12 +81,19 @@ export type AdminCountryVisitStat = {
   share: number;
 };
 
+export type AdminPageVisitStat = {
+  path: string;
+  count: number;
+  share: number;
+};
+
 export type AdminVisitStats = {
   totalVisits: number;
   uniqueVisitors: number;
   visitsToday: number;
   visitsThisWeek: number;
   countries: AdminCountryVisitStat[];
+  topPages: AdminPageVisitStat[];
 };
 
 export type AdminDailyTrendPoint = {
@@ -101,6 +108,46 @@ export type AdminAnalyticsDashboard = {
   visits: AdminVisitStats;
   signups: AdminSignupCountryStats;
   trends: AdminDailyTrendPoint[];
+  trendDays: number;
+};
+
+export type AdminUserProfile = {
+  profile: AdminUserRow;
+  candidate: {
+    headline: string | null;
+    bio: string | null;
+    location: string | null;
+    country_code: string | null;
+    phone: string | null;
+    linkedin_url: string | null;
+    portfolio_url: string | null;
+    cv_file_name: string | null;
+    skills: { name: string; level: string | null }[];
+    languages: { name: string; proficiency: string | null }[];
+    experiences: {
+      title: string;
+      company: string;
+      location: string | null;
+      start_date: string;
+      end_date: string | null;
+      is_current: boolean;
+    }[];
+  } | null;
+  company: {
+    company_name: string | null;
+    tagline: string | null;
+    description: string | null;
+    website: string | null;
+    logo_url: string | null;
+    industry: string | null;
+    company_size: string | null;
+    headquarters_city: string | null;
+    headquarters_country: string | null;
+    hiring_in_regions: string | null;
+    linkedin_url: string | null;
+    contact_email: string | null;
+    contact_phone: string | null;
+  } | null;
 };
 
 export type AdminJobRow = {
