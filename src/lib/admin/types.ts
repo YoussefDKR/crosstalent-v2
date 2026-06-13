@@ -58,6 +58,18 @@ export type AdminUserRow = {
   created_at: string;
   avatar_url: string | null;
   signup_country: string | null;
+  is_banned: boolean;
+  ban_reason: string | null;
+  banned_at: string | null;
+};
+
+export type AdminUserSubscription = {
+  plan_id: string;
+  status: SubscriptionStatus;
+  trial_ends_at: string | null;
+  stripe_subscription_id: string | null;
+  stripe_customer_id: string | null;
+  current_period_end: string | null;
 };
 
 export type AdminCountrySignupStat = {
@@ -113,6 +125,7 @@ export type AdminAnalyticsDashboard = {
 
 export type AdminUserProfile = {
   profile: AdminUserRow;
+  subscription: AdminUserSubscription | null;
   candidate: {
     headline: string | null;
     bio: string | null;

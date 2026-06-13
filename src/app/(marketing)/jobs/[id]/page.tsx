@@ -15,7 +15,9 @@ import { formatSalaryRange } from "@/lib/jobs/format";
 import { getPublishedJob } from "@/lib/jobs/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
+import { getSavedJobIds } from "@/lib/candidate/saved-jobs";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";
+import { SaveJobButton } from "@/components/jobs/save-job-button";
 import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
 import { getServerI18n } from "@/i18n/server";
 
@@ -44,6 +46,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     profile?.role === "candidate"
       ? await getCandidateApplicationForJob(profile.id, id)
       : { applied: false, status: null, applicationId: null };
+  const savedJobIds =
+    profile?.role === "candidate"
+      ? await getSavedJobIds(profile.id)
+      : new Set<string>();
   const salary = formatSalaryRange(job);
   const logoUrl = resolveImageUrl(job.company_logo_url);
 
@@ -161,6 +167,14 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               externalUrl={isRssJob(job) ? job.external_url : null}
               externalSourceLabel={rssSourceLabel(job.external_source)}
               application={application}
+              saveJobSlot={
+                profile?.role === "candidate" ? (
+                  <SaveJobButton
+                    jobId={id}
+                    initialSaved={savedJobIds.has(id)}
+                  />
+                ) : null
+              }
             />
           </CardContent>
         </Card>

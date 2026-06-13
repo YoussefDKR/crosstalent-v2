@@ -43,7 +43,7 @@ type CompanySnippet = {
   headquarters_country: string | null;
 };
 
-async function attachCompanies(jobs: JobRow[]): Promise<JobWithCompany[]> {
+export async function attachCompanies(jobs: JobRow[]): Promise<JobWithCompany[]> {
   if (jobs.length === 0) return [];
 
   const supabase = await createClient();

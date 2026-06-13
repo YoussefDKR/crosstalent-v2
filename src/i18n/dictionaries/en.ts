@@ -109,6 +109,10 @@ export const en = {
       "By continuing, you agree to our Terms and Privacy Policy. Role cannot be changed after registration.",
     authCallbackFailed:
       "Google or email sign-in could not be completed. Please try again.",
+    accountSuspended: "Account suspended",
+    accountSuspendedDesc:
+      "Your account has been suspended. Contact support if you believe this is a mistake.",
+    contactSupport: "Contact support",
     premiumTagline: "Premium cross-border hiring",
   },
   landing: {
@@ -468,6 +472,25 @@ export const en = {
     settingsTitle: "Admin profile",
     settingsSubtitle:
       "Your personal account — photo, name, email, and password.",
+    userActionsTitle: "Account actions",
+    banUser: "Suspend account",
+    unbanUser: "Reinstate account",
+    banReason: "Reason (optional)",
+    banConfirm: "Suspend this user? They will be signed out and blocked from the app.",
+    extendTrial: "Extend trial",
+    extendTrialDays: "Extra days",
+    extendTrialBtn: "Extend trial",
+    subscriptionOverride: "Subscription override",
+    planLabel: "Plan",
+    statusLabel: "Status",
+    trialEndsLabel: "Trial ends",
+    saveSubscription: "Save subscription",
+    stripeManagedWarning:
+      "This employer has an active Stripe subscription. Manual overrides may be overwritten by webhooks.",
+    banSuccess: "User suspended",
+    unbanSuccess: "User reinstated",
+    trialExtended: "Trial extended",
+    subscriptionUpdated: "Subscription updated",
     signupsSection: "Signups",
     jobsSection: "Jobs",
     revenueSection: "Revenue",

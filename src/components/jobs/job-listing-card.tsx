@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BadgeCheck, MapPin } from "lucide-react";
+import { SaveJobButton } from "@/components/jobs/save-job-button";
 import { resolveImageUrl } from "@/lib/images/urls";
 import {
   employmentLabel,
@@ -18,9 +19,10 @@ import type { JobWithCompany } from "@/types/jobs";
 
 type JobListingCardProps = {
   job: JobWithCompany;
+  savedJobIds?: Set<string>;
 };
 
-export function JobListingCard({ job }: JobListingCardProps) {
+export function JobListingCard({ job, savedJobIds }: JobListingCardProps) {
   const salary = formatSalaryRange(job);
   const logoUrl = resolveImageUrl(job.company_logo_url);
   const company = job.company_name ?? "European employer";
@@ -58,6 +60,13 @@ export function JobListingCard({ job }: JobListingCardProps) {
               </p>
             </div>
             <div className="text-right">
+              {savedJobIds && (
+                <SaveJobButton
+                  jobId={job.id}
+                  initialSaved={savedJobIds.has(job.id)}
+                  variant="icon"
+                />
+              )}
               {salary && (
                 <p className="text-sm font-semibold text-[#0F172A]">{salary}</p>
               )}

@@ -60,16 +60,14 @@ export function CandidateSidebar({ footer }: CandidateSidebarProps) {
       badge: t("common.soon"),
     },
     {
-      href: "#",
+      href: "/candidate/saved-jobs",
       label: t("nav.savedJobs"),
       icon: Bookmark,
-      disabled: true,
     },
     {
-      href: "#",
+      href: "/candidate/job-alerts",
       label: t("nav.jobAlerts"),
       icon: Bell,
-      disabled: true,
     },
     {
       href: siteConfig.links.candidateMessages,

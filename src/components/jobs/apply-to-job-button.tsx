@@ -95,6 +95,7 @@ type JobApplySectionProps = {
     applied: boolean;
     status: ApplicationStatus | null;
   };
+  saveJobSlot?: React.ReactNode;
 };
 
 export function JobApplySection({
@@ -103,6 +104,7 @@ export function JobApplySection({
   externalUrl,
   externalSourceLabel,
   application,
+  saveJobSlot,
 }: JobApplySectionProps) {
   const { t } = useI18n();
 
@@ -115,16 +117,18 @@ export function JobApplySection({
             source: externalSourceLabel ?? t("jobs.partnerBoard"),
           })}
         </p>
-        <a
-          href={externalUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-block"
-        >
-          <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
-            {t("jobs.viewApplyExternally")}
-          </Button>
-        </a>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+              {t("jobs.viewApplyExternally")}
+            </Button>
+          </a>
+          {saveJobSlot}
+        </div>
       </div>
     );
   }
@@ -134,12 +138,13 @@ export function JobApplySection({
       <div className="mt-10 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-6">
         <p className="text-sm font-medium text-[#0F172A]">{t("jobs.readyToApply")}</p>
         <p className="mt-1 text-sm text-muted-foreground">{t("jobs.submitProfile")}</p>
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <ApplyToJobButton
             jobId={jobId}
             applied={application.applied}
             status={application.status}
           />
+          {saveJobSlot}
         </div>
       </div>
     );

@@ -652,7 +652,9 @@ export async function getAdminUserProfile(
   const supabase = createAdminClient();
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id, full_name, email, role, created_at, avatar_url, signup_country")
+    .select(
+      "id, full_name, email, role, created_at, avatar_url, signup_country, is_banned, ban_reason, banned_at"
+    )
     .eq("id", userId)
     .maybeSingle();
 
@@ -661,6 +663,7 @@ export async function getAdminUserProfile(
 
   const base: AdminUserProfile = {
     profile: profile as AdminUserRow,
+    subscription: null,
     candidate: null,
     company: null,
   };
@@ -716,15 +719,34 @@ export async function getAdminUserProfile(
   }
 
   if (profile.role === "employer") {
-    const { data: company } = await supabase
-      .from("company_profiles")
-      .select(
-        "company_name, tagline, description, website, logo_url, industry, company_size, headquarters_city, headquarters_country, hiring_in_regions, linkedin_url, contact_email, contact_phone"
-      )
-      .eq("user_id", userId)
-      .maybeSingle();
+    const [{ data: company }, { data: subscription }] = await Promise.all([
+      supabase
+        .from("company_profiles")
+        .select(
+          "company_name, tagline, description, website, logo_url, industry, company_size, headquarters_city, headquarters_country, hiring_in_regions, linkedin_url, contact_email, contact_phone"
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
+      supabase
+        .from("employer_subscriptions")
+        .select(
+          "plan_id, status, trial_ends_at, stripe_subscription_id, stripe_customer_id, current_period_end"
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
+    ]);
 
     base.company = company ?? null;
+    base.subscription = subscription
+      ? {
+          plan_id: subscription.plan_id,
+          status: subscription.status as SubscriptionStatus,
+          trial_ends_at: subscription.trial_ends_at,
+          stripe_subscription_id: subscription.stripe_subscription_id,
+          stripe_customer_id: subscription.stripe_customer_id,
+          current_period_end: subscription.current_period_end,
+        }
+      : null;
   }
 
   return base;

@@ -146,6 +146,19 @@ export async function signIn(
     };
   }
 
+  const { data: profileRow } = await supabase
+    .from("profiles")
+    .select("is_banned")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  if (profileRow?.is_banned) {
+    await supabase.auth.signOut();
+    return {
+      error: "Your account has been suspended. Contact support for help.",
+    };
+  }
+
   await recordSignupCountry(data.user.id);
   redirectByRole(role, redirectTo || undefined);
 }

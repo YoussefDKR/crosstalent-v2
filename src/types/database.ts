@@ -17,6 +17,9 @@ export type Database = {
           email: string | null;
           avatar_url: string | null;
           signup_country: string | null;
+          is_banned: boolean;
+          ban_reason: string | null;
+          banned_at: string | null;
           created_at: string;
           updated_at: string;
         };

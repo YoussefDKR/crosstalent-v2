@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Link from "next/link";
 import { Bell } from "lucide-react";
 import { JobBoardSearch } from "@/components/jobs/job-board-search";
 import { JobListingCard } from "@/components/jobs/job-listing-card";
@@ -13,6 +14,8 @@ type JobBoardPanelProps = {
   listError?: string | null;
   hasActiveFilters: boolean;
   basePath?: string;
+  savedJobIds?: Set<string>;
+  alertsHref?: string;
 };
 
 export function JobBoardPanel({
@@ -20,6 +23,8 @@ export function JobBoardPanel({
   listError,
   hasActiveFilters,
   basePath = "/",
+  savedJobIds,
+  alertsHref = "/candidate/job-alerts",
 }: JobBoardPanelProps) {
   const { t } = useI18n();
 
@@ -40,14 +45,16 @@ export function JobBoardPanel({
           </p>
         </div>
         <Button
-          type="button"
+          asChild
           variant="outline"
           className="gap-2 shrink-0"
-          disabled
-          title={t("jobs.comingSoon")}
         >
-          <Bell className="size-4" />
-          {t("jobs.jobAlerts")}
+          <Link href={alertsHref}>
+            <Bell className="size-4" />
+            {hasActiveFilters
+              ? t("jobs.saveAlertFromFilters")
+              : t("jobs.manageAlerts")}
+          </Link>
         </Button>
       </div>
 
@@ -79,7 +86,7 @@ export function JobBoardPanel({
         <ul className="space-y-4">
           {jobs.map((job) => (
             <li key={job.id}>
-              <JobListingCard job={job} />
+              <JobListingCard job={job} savedJobIds={savedJobIds} />
             </li>
           ))}
         </ul>

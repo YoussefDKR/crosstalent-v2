@@ -58,15 +58,23 @@ export async function middleware(request: NextRequest) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, is_banned")
       .eq("id", user.id)
       .maybeSingle();
 
     let role = profile?.role as UserRole | undefined;
+    const isBanned = Boolean(profile?.is_banned);
 
     if (!role) {
       const { data: ensured } = await supabase.rpc("ensure_user_profile");
       role = ensured?.role as UserRole | undefined;
+    }
+
+    if (isBanned && pathname !== "/account/suspended" && pathname !== "/auth/signout") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/account/suspended";
+      url.search = "";
+      return redirectWithSession(url, supabaseResponse);
     }
 
     if (isAuthPath(pathname) && role) {

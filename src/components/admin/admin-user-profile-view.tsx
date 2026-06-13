@@ -7,6 +7,7 @@ import { ProfileAvatar } from "@/components/shared/profile-avatar";
 import { countryDisplayName } from "@/lib/geo/request-country";
 import { formatJobPostedAt } from "@/lib/jobs/format";
 import type { AdminUserProfile } from "@/lib/admin/types";
+import { AdminUserActions } from "@/components/admin/admin-user-actions";
 
 type AdminUserProfileViewProps = {
   data: AdminUserProfile;
@@ -90,11 +91,18 @@ export function AdminUserProfileView({ data }: AdminUserProfileViewProps) {
                     · Signup: {countryDisplayName(profile.signup_country)}
                   </span>
                 )}
+                {profile.is_banned && (
+                  <span className="rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Suspended
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <AdminUserActions data={data} />
 
       {profile.role === "candidate" && candidate && (
         <div className="grid gap-6 lg:grid-cols-2">
