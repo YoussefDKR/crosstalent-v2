@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Bell } from "lucide-react";
 import { JobBoardSearch } from "@/components/jobs/job-board-search";
 import { JobListingCard } from "@/components/jobs/job-listing-card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useI18n } from "@/context/i18n-provider";
 import type { JobWithCompany } from "@/types/jobs";
 
@@ -44,18 +45,18 @@ export function JobBoardPanel({
             {t("jobs.boardSubtitle")}
           </p>
         </div>
-        <Button
-          asChild
-          variant="outline"
-          className="gap-2 shrink-0"
+        <Link
+          href={alertsHref}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "gap-2 shrink-0"
+          )}
         >
-          <Link href={alertsHref}>
-            <Bell className="size-4" />
-            {hasActiveFilters
-              ? t("jobs.saveAlertFromFilters")
-              : t("jobs.manageAlerts")}
-          </Link>
-        </Button>
+          <Bell className="size-4" />
+          {hasActiveFilters
+            ? t("jobs.saveAlertFromFilters")
+            : t("jobs.manageAlerts")}
+        </Link>
       </div>
 
       <Suspense fallback={<div className="h-32 animate-pulse rounded-2xl bg-white" />}>
