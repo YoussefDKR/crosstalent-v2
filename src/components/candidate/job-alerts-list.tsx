@@ -11,8 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useI18n } from "@/context/i18n-provider";
-import type { JobAlertRow } from "@/lib/candidate/job-alerts";
-import { hasAlertCriteria } from "@/lib/candidate/job-alerts";
+import type { JobAlertRow } from "@/lib/candidate/job-alert-utils";
+import { hasAlertCriteria } from "@/lib/candidate/job-alert-utils";
 
 type JobAlertsListProps = {
   alerts: JobAlertRow[];

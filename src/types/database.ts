@@ -30,6 +30,9 @@ export type Database = {
           email?: string | null;
           avatar_url?: string | null;
           signup_country?: string | null;
+          is_banned?: boolean;
+          ban_reason?: string | null;
+          banned_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -40,6 +43,9 @@ export type Database = {
           email?: string | null;
           avatar_url?: string | null;
           signup_country?: string | null;
+          is_banned?: boolean;
+          ban_reason?: string | null;
+          banned_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -251,6 +257,56 @@ export type Database = {
           published_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["jobs"]["Insert"]>;
+        Relationships: [];
+      };
+      saved_jobs: {
+        Row: {
+          id: string;
+          user_id: string;
+          job_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          job_id: string;
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["saved_jobs"]["Insert"]>;
+        Relationships: [];
+      };
+      job_alerts: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          q: string | null;
+          country: string | null;
+          employment_type: string | null;
+          remote_type: string | null;
+          experience_level: string | null;
+          skill: string | null;
+          salary_min: number | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          name?: string;
+          q?: string | null;
+          country?: string | null;
+          employment_type?: string | null;
+          remote_type?: string | null;
+          experience_level?: string | null;
+          skill?: string | null;
+          salary_min?: number | null;
+          is_active?: boolean;
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["job_alerts"]["Insert"]>;
         Relationships: [];
       };
       job_applications: {
