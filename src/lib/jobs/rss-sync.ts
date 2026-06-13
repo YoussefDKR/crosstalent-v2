@@ -1,9 +1,12 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { RSS_FEEDS, type RssFeedSource } from "@/lib/jobs/rss-feeds";
-import { fetchFeedJobs } from "@/lib/jobs/rss-parser";
+import { fetchJobsFromSource } from "@/lib/jobs/job-import";
+import {
+  JOB_IMPORT_SOURCES,
+  type JobImportSourceId,
+} from "@/lib/jobs/job-sources";
 
 export type RssSyncResult = {
-  source: RssFeedSource;
+  source: JobImportSourceId;
   fetched: number;
   upserted: number;
   error?: string;
@@ -18,11 +21,11 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
   const supabase = createAdminClient();
   const results: RssSyncResult[] = [];
 
-  for (const feed of RSS_FEEDS) {
+  for (const source of JOB_IMPORT_SOURCES) {
     try {
-      const jobs = await fetchFeedJobs(feed);
+      const jobs = await fetchJobsFromSource(source);
       if (jobs.length === 0) {
-        results.push({ source: feed.id, fetched: 0, upserted: 0 });
+        results.push({ source: source.id, fetched: 0, upserted: 0 });
         continue;
       }
 
@@ -32,7 +35,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
         title: job.title,
         description: job.description,
         requirements: null,
-        employment_type: "full_time",
+        employment_type: job.employment_type,
         experience_level: "mid",
         remote_type: "remote",
         location_city: job.location_city,
@@ -42,7 +45,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
         status: "published" as const,
         published_at: job.published_at ?? new Date().toISOString(),
         external_url: job.external_url,
-        external_source: feed.id,
+        external_source: source.id,
         external_guid: job.external_guid,
         rss_company_name: job.company,
       }));
@@ -52,12 +55,12 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
         .from("jobs")
         .select("id, external_guid")
         .eq("source_type", "rss")
-        .eq("external_source", feed.id)
+        .eq("external_source", source.id)
         .in("external_guid", guids);
 
       if (lookupError) {
         results.push({
-          source: feed.id,
+          source: source.id,
           fetched: jobs.length,
           upserted: 0,
           error: lookupError.message,
@@ -76,7 +79,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
         const { error: insertError } = await supabase.from("jobs").insert(toInsert);
         if (insertError) {
           results.push({
-            source: feed.id,
+            source: source.id,
             fetched: jobs.length,
             upserted: 0,
             error: insertError.message,
@@ -96,6 +99,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
           .update({
             title: row.title,
             description: row.description,
+            employment_type: row.employment_type,
             location_city: row.location_city,
             location_country: row.location_country,
             skills: row.skills,
@@ -115,7 +119,7 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
 
       if (updateFailed) {
         results.push({
-          source: feed.id,
+          source: source.id,
           fetched: jobs.length,
           upserted,
           error: updateFailed,
@@ -124,13 +128,13 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
       }
 
       results.push({
-        source: feed.id,
+        source: source.id,
         fetched: jobs.length,
         upserted,
       });
     } catch (err) {
       results.push({
-        source: feed.id,
+        source: source.id,
         fetched: 0,
         upserted: 0,
         error: err instanceof Error ? err.message : "Unknown error",

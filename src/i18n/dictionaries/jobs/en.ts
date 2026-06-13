@@ -7,7 +7,7 @@ export const jobsEn = {
   rolesFound: "{count} roles found",
   noListed: "No jobs listed yet",
   rssHint:
-    "Curated listings sync from We Work Remotely, Remotive, and Himalayas every few hours after the RSS migration is enabled.",
+    "Curated listings sync daily from Jobicy, We Work Remotely, Remotive, and RemoteOK.",
   boardTitle: "Find your next opportunity",
   boardSubtitle: "Remote and hybrid jobs with European companies.",
   jobAlerts: "Set up job alerts",

@@ -42,7 +42,7 @@ After step 16, set `CRON_SECRET` in Vercel and run a one-time job sync:
 curl -X POST "https://www.crosstalent.io/api/jobs/sync-rss" -H "Authorization: Bearer YOUR_CRON_SECRET"
 ```
 
-Feeds: We Work Remotely, Remotive, Himalayas (see `src/lib/jobs/rss-feeds.ts`).
+Sources: Jobicy, We Work Remotely, Remotive, RemoteOK (see `src/lib/jobs/job-sources.ts`).
 
 ### Promote an admin (after steps 17–18)
 

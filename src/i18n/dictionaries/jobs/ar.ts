@@ -9,7 +9,7 @@ export const jobsAr: JobsMessages = {
   rolesFound: "{count} وظائف",
   noListed: "لا توجد وظائف مدرجة بعد",
   rssHint:
-    "تتزامن الإعلانات المجمّعة من We Work Remotely وRemotive وHimalayas كل بضع ساعات بعد تفعيل ترحيل RSS.",
+    "تتزامن الإعلانات المجمّعة يومياً من Jobicy وWe Work Remotely وRemotive وRemoteOK.",
   boardTitle: "اعثر على فرصتك القادمة",
   boardSubtitle: "وظائف عن بُعد وهجينة مع شركات أوروبية.",
   jobAlerts: "إعداد تنبيهات الوظائف",

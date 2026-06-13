@@ -9,7 +9,7 @@ export const jobsFr: JobsMessages = {
   rolesFound: "{count} offres trouvées",
   noListed: "Aucune offre listée pour le moment",
   rssHint:
-    "Les offres agrégées se synchronisent depuis We Work Remotely, Remotive et Himalayas toutes les quelques heures une fois la migration RSS activée.",
+    "Les offres agrégées se synchronisent chaque jour depuis Jobicy, We Work Remotely, Remotive et RemoteOK.",
   boardTitle: "Trouvez votre prochaine opportunité",
   boardSubtitle: "Emplois à distance et hybrides avec des entreprises européennes.",
   jobAlerts: "Configurer des alertes",
