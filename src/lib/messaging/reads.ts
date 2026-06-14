@@ -1,18 +1,4 @@
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-
-const NOTIFICATION_REVALIDATE_PATHS = [
-  "/employer/dashboard",
-  "/employer/messages",
-  "/employer/applications",
-  "/candidate/dashboard",
-  "/candidate/messages",
-  "/",
-];
-
-function revalidateNotifications() {
-  NOTIFICATION_REVALIDATE_PATHS.forEach((path) => revalidatePath(path));
-}
 
 export function isMessageUnread(
   lastMessageAt: string | null,
@@ -45,7 +31,8 @@ export async function getConversationReadMap(
   return map;
 }
 
-export async function markConversationRead(
+/** Persist read state only — safe to call during render. */
+export async function persistConversationRead(
   conversationId: string,
   userId: string
 ): Promise<void> {
@@ -72,6 +59,4 @@ export async function markConversationRead(
       last_read_at: now,
     });
   }
-
-  revalidateNotifications();
 }

@@ -116,11 +116,17 @@ export async function openMessageFromApplication(
     const supabase = await createClient();
     const { data: app } = await supabase
       .from("job_applications")
-      .select("candidate_id, job_id")
+      .select("candidate_id, job_id, status")
       .eq("id", applicationId)
       .maybeSingle();
 
     if (!app) return { error: "Application not found." };
+
+    if (app.status !== "accepted") {
+      return {
+        error: "Accept this application before messaging the candidate.",
+      };
+    }
 
     const { data: job } = await supabase
       .from("jobs")

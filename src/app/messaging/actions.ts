@@ -4,16 +4,62 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { hasAcceptedApplicationBetween } from "@/lib/messaging/access";
 import { findConversationWithCandidate } from "@/lib/messaging/queries";
+import { persistConversationRead } from "@/lib/messaging/reads";
 import { createClient } from "@/lib/supabase/server";
+
 export type MessageActionResult = {
   error?: string;
 };
 
 const MESSAGE_PATHS = ["/employer/messages", "/candidate/messages"];
 
+const NOTIFICATION_REVALIDATE_PATHS = [
+  "/employer/dashboard",
+  "/employer/messages",
+  "/employer/applications",
+  "/candidate/dashboard",
+  "/candidate/messages",
+  "/",
+];
+
 function revalidateMessagePaths() {
   MESSAGE_PATHS.forEach((p) => revalidatePath(p));
+}
+
+function revalidateNotifications() {
+  NOTIFICATION_REVALIDATE_PATHS.forEach((path) => revalidatePath(path));
+}
+
+export async function markConversationReadAction(
+  conversationId: string
+): Promise<void> {
+  const profile = await getCurrentProfile();
+  if (!profile) return;
+
+  const supabase = await createClient();
+  const { data: conversation } = await supabase
+    .from("conversations")
+    .select("id, employer_id, candidate_id")
+    .eq("id", conversationId)
+    .maybeSingle();
+
+  if (!conversation) return;
+
+  const isParticipant =
+    conversation.employer_id === profile.id ||
+    conversation.candidate_id === profile.id;
+  if (!isParticipant) return;
+
+  const allowed = await hasAcceptedApplicationBetween(
+    conversation.employer_id,
+    conversation.candidate_id
+  );
+  if (!allowed) return;
+
+  await persistConversationRead(conversationId, profile.id);
+  revalidateNotifications();
 }
 
 export async function startConversationWithCandidate(
@@ -23,6 +69,14 @@ export async function startConversationWithCandidate(
     const profile = await getCurrentProfile();
     if (!profile || profile.role !== "employer") {
       return { error: "Only employers can start conversations." };
+    }
+
+    const allowed = await hasAcceptedApplicationBetween(profile.id, candidateId);
+    if (!allowed) {
+      return {
+        error:
+          "Messaging opens after you accept a candidate's application.",
+      };
     }
 
     const existing = await findConversationWithCandidate(
@@ -89,6 +143,16 @@ export async function sendMessage(
     conversation.candidate_id === profile.id;
   if (!isParticipant) return { error: "Unauthorized." };
 
+  const allowed = await hasAcceptedApplicationBetween(
+    conversation.employer_id,
+    conversation.candidate_id
+  );
+  if (!allowed) {
+    return {
+      error: "Messaging is only available for accepted applications.",
+    };
+  }
+
   const { error } = await supabase.from("messages").insert({
     conversation_id: conversationId,
     sender_id: profile.id,
@@ -106,4 +170,3 @@ export async function sendMessage(
 
   return {};
 }
-

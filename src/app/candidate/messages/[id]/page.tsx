@@ -4,7 +4,6 @@ import { ThreadLayout } from "@/components/messaging/thread-layout";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getConversationThread } from "@/lib/messaging/queries";
-import { markConversationRead } from "@/lib/messaging/reads";
 import { getServerI18n } from "@/i18n/server";
 
 type PageProps = {
@@ -34,8 +33,6 @@ export default async function CandidateMessageThreadPage({ params }: PageProps) 
   const { id } = await params;
   const thread = await getConversationThread(id, profile);
   if (!thread) notFound();
-
-  await markConversationRead(id, profile.id);
 
   return (
     <DashboardShell

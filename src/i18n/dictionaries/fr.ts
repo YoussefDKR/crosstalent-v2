@@ -269,6 +269,11 @@ export const fr: Messages = {
     languages: "Langues",
     startConversationHint:
       "Démarrez une conversation — les messages se mettent à jour en temps réel pour les deux parties.",
+    messagingLockedHint:
+      "La messagerie s'ouvre après avoir accepté la candidature de ce candidat.",
+    messagingUnlockedHint:
+      "Vous avez accepté une candidature de ce candidat. Écrivez-lui depuis Candidatures.",
+    openAcceptedApplications: "Voir les candidatures acceptées",
     messagesTitle: "Messages",
     messagesSubtitle: "Échangez avec les candidats en temps réel.",
     conversationWith: "Conversation avec {name}",

@@ -257,6 +257,11 @@ export const ar: Messages = {
     languages: "اللغات",
     startConversationHint:
       "ابدأ محادثة — تتحدث الرسائل في الوقت الفعلي لكلا الطرفين.",
+    messagingLockedHint:
+      "تُفتح الرسائل بعد قبول طلب هذا المرشح على إحدى وظائفك.",
+    messagingUnlockedHint:
+      "قبلت طلباً من هذا المرشح. راسله من صفحة الطلبات.",
+    openAcceptedApplications: "عرض الطلبات المقبولة",
     messagesTitle: "الرسائل",
     messagesSubtitle: "تحدث مع المرشحين في الوقت الفعلي.",
     conversationWith: "محادثة مع {name}",

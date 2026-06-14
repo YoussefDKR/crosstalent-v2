@@ -43,7 +43,38 @@ export function ApplicationActions({
     });
   }
 
-  if (status !== "pending") {
+  if (status === "accepted") {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Status:{" "}
+          <span className="font-medium text-emerald-700">
+            {applicationStatusLabel(status)}
+          </span>
+        </p>
+        <Button
+          type="button"
+          disabled={pending}
+          onClick={() => {
+            setMessage(null);
+            startTransition(async () => {
+              const result = await openMessageFromApplication(applicationId);
+              if (result?.error) setMessage(result.error);
+            });
+          }}
+          className="gap-2 bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        >
+          <MessageSquare className="size-4" />
+          Message {candidateName.split(" ")[0] ?? "candidate"}
+        </Button>
+        {message && (
+          <p className="text-sm text-muted-foreground">{message}</p>
+        )}
+      </div>
+    );
+  }
+
+  if (status === "rejected") {
     return (
       <p className="text-sm text-muted-foreground">
         Status:{" "}
@@ -84,23 +115,10 @@ export function ApplicationActions({
           <X className="size-4" />
           Decline
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          disabled={pending}
-          onClick={() => {
-            setMessage(null);
-            startTransition(async () => {
-              const result = await openMessageFromApplication(applicationId);
-              if (result?.error) setMessage(result.error);
-            });
-          }}
-          className="gap-2"
-        >
-          <MessageSquare className="size-4" />
-          Message {candidateName.split(" ")[0] ?? "candidate"}
-        </Button>
       </div>
+      <p className="text-sm text-muted-foreground">
+        Messaging unlocks after you accept this application.
+      </p>
       {message && (
         <p className="text-sm text-muted-foreground">{message}</p>
       )}

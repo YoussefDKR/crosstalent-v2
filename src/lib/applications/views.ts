@@ -1,4 +1,3 @@
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function getViewedApplicationIds(
@@ -49,10 +48,4 @@ export async function markApplicationViewed(
       viewed_at: now,
     });
   }
-
-  [
-    "/employer/dashboard",
-    "/employer/applications",
-    "/",
-  ].forEach((path) => revalidatePath(path));
 }

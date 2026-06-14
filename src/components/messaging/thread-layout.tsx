@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { MessageComposer } from "@/components/messaging/message-composer";
+import { MarkConversationRead } from "@/components/messaging/mark-conversation-read";
 import { MessageThread } from "@/components/messaging/message-thread";
 import { messagesBasePath } from "@/lib/messaging/paths";
 import type { ConversationThread } from "@/types/messaging";
@@ -14,6 +15,7 @@ type ThreadLayoutProps = {
 export function ThreadLayout({ profile, thread }: ThreadLayoutProps) {
   return (
     <div className="flex min-h-[min(70vh,640px)] flex-col overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+      <MarkConversationRead conversationId={thread.id} />
       <div className="border-b border-border px-4 py-4 sm:px-6">
         <Link
           href={messagesBasePath(profile.role)}

@@ -9,7 +9,6 @@ import {
   MapPin,
 } from "lucide-react";
 import { ProfileAvatar } from "@/components/shared/profile-avatar";
-import { StartConversationButton } from "@/components/employer/start-conversation-button";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
   countryLabel,
   getCandidateForEmployer,
 } from "@/lib/employer/candidate-search";
+import { hasAcceptedApplicationBetween } from "@/lib/messaging/access";
 import {
   languageProficiencyLabel,
   skillLevelLabel,
@@ -79,6 +79,8 @@ export default async function EmployerCandidateDetailPage({
   const { id } = await params;
   const candidate = await getCandidateForEmployer(id);
   if (!candidate) notFound();
+
+  const canMessage = await hasAcceptedApplicationBetween(profile.id, candidate.id);
 
   const displayName = candidate.fullName ?? t("employer.candidateFallback");
 
@@ -277,12 +279,17 @@ export default async function EmployerCandidateDetailPage({
           <Card className="border-[#2563EB]/20 bg-[#2563EB]/5 shadow-sm">
             <CardContent className="p-6 space-y-3">
               <p className="text-sm text-[#0F172A]">
-                {t("employer.startConversationHint")}
+                {canMessage
+                  ? t("employer.messagingUnlockedHint")
+                  : t("employer.messagingLockedHint")}
               </p>
-              <StartConversationButton
-                candidateId={candidate.id}
-                candidateName={displayName}
-              />
+              {canMessage && (
+                <Link href="/employer/applications?status=accepted">
+                  <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+                    {t("employer.openAcceptedApplications")}
+                  </Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
         </div>

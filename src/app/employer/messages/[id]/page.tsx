@@ -5,7 +5,6 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getConversationThread } from "@/lib/messaging/queries";
-import { markConversationRead } from "@/lib/messaging/reads";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -34,8 +33,6 @@ export default async function EmployerMessageThreadPage({ params }: PageProps) {
   const { id } = await params;
   const thread = await getConversationThread(id, profile);
   if (!thread) notFound();
-
-  await markConversationRead(id, profile.id);
 
   return (
     <DashboardShell

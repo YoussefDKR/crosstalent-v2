@@ -258,6 +258,11 @@ export const en = {
     languages: "Languages",
     startConversationHint:
       "Start a conversation — messages update in real time for both sides.",
+    messagingLockedHint:
+      "Messaging unlocks after you accept this candidate's application to one of your jobs.",
+    messagingUnlockedHint:
+      "You've accepted an application from this candidate. Message them from Applications.",
+    openAcceptedApplications: "View accepted applications",
     messagesTitle: "Messages",
     messagesSubtitle: "Chat with candidates in real time.",
     conversationWith: "Conversation with {name}",

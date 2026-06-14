@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { hasAcceptedApplicationBetween } from "@/lib/messaging/access";
 import type {
   ConversationListItem,
   ConversationThread,
@@ -112,12 +113,23 @@ export async function listConversationsForUser(
   const { data: conversations, error } = await query;
   if (error || !conversations?.length) return [];
 
-  const otherIds = conversations.map((c) =>
+  const allowedConversations = [];
+  for (const c of conversations) {
+    const allowed = await hasAcceptedApplicationBetween(
+      c.employer_id,
+      c.candidate_id
+    );
+    if (allowed) allowedConversations.push(c);
+  }
+
+  if (allowedConversations.length === 0) return [];
+
+  const otherIds = allowedConversations.map((c) =>
     profile.role === "employer" ? c.candidate_id : c.employer_id
   );
   const names = await profileNames(otherIds, profile.role);
 
-  const conversationIds = conversations.map((c) => c.id);
+  const conversationIds = allowedConversations.map((c) => c.id);
   const { data: recentMessages } = await supabase
     .from("messages")
     .select("id, conversation_id, sender_id, body, created_at")
@@ -131,7 +143,7 @@ export async function listConversationsForUser(
     }
   }
 
-  return conversations.map((c) => {
+  return allowedConversations.map((c) => {
     const otherId =
       profile.role === "employer" ? c.candidate_id : c.employer_id;
     const other = names.get(otherId);
@@ -169,6 +181,12 @@ export async function getConversationThread(
     conversation.employer_id === profile.id ||
     conversation.candidate_id === profile.id;
   if (!isParticipant) return null;
+
+  const messagingAllowed = await hasAcceptedApplicationBetween(
+    conversation.employer_id,
+    conversation.candidate_id
+  );
+  if (!messagingAllowed) return null;
 
   const otherId =
     profile.role === "employer"
