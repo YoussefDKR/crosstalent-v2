@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { getContactFromEmail, isContactEmailConfigured } from "@/config/contact";
+import { escapeHtml, renderBrandedEmail } from "@/lib/email/html";
 import { siteConfig } from "@/config/site";
 
 export async function sendAccountDeletionEmail(
@@ -33,16 +34,17 @@ export async function sendAccountDeletionEmail(
     to: [toEmail],
     subject,
     text,
-    html: `
-      <p>You requested to delete your <strong>${escapeHtml(siteConfig.name)}</strong> account.</p>
-      <p>This action is <strong>permanent</strong>. Your profile, messages, and applications will be removed.</p>
-      <p style="margin:1.5rem 0">
-        <a href="${escapeHtml(confirmUrl)}" style="display:inline-block;background:#dc2626;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">
-          Confirm account deletion
-        </a>
-      </p>
-      <p style="font-size:14px;color:#64748b">This link expires in 24 hours. If you did not request this, you can ignore this email.</p>
-    `,
+    html: renderBrandedEmail({
+      title: "Confirm account deletion",
+      bodyHtml: `
+        <p style="margin:0 0 12px">You requested to delete your <strong>${escapeHtml(siteConfig.name)}</strong> account.</p>
+        <p style="margin:0 0 12px">This action is <strong>permanent</strong>. Your profile, messages, and applications will be removed.</p>
+        <p style="margin:0 0 12px;font-size:14px;color:#64748b">This link expires in 24 hours. If you did not request this, you can ignore this email.</p>
+      `,
+      ctaLabel: "Confirm account deletion",
+      ctaUrl: confirmUrl,
+      ctaColor: "#dc2626",
+    }),
   });
 
   if (error) {
@@ -50,12 +52,4 @@ export async function sendAccountDeletionEmail(
   }
 
   return { ok: true };
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

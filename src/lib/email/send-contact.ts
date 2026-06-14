@@ -4,6 +4,7 @@ import {
   getContactInboxEmail,
   isContactEmailConfigured,
 } from "@/config/contact";
+import { escapeHtml, renderBrandedEmail } from "@/lib/email/html";
 
 export type ContactEmailPayload = {
   senderEmail: string;
@@ -40,10 +41,13 @@ export async function sendContactEmail(
     replyTo: payload.senderEmail,
     subject,
     text,
-    html: `
-      <p><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(payload.senderEmail)}&gt;</p>
-      <p style="white-space:pre-wrap;margin-top:1rem">${escapeHtml(payload.message.trim())}</p>
-    `,
+    html: renderBrandedEmail({
+      title: "New contact message",
+      bodyHtml: `
+        <p style="margin:0 0 12px"><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(payload.senderEmail)}&gt;</p>
+        <p style="margin:0;white-space:pre-wrap">${escapeHtml(payload.message.trim())}</p>
+      `,
+    }),
   });
 
   if (error) {
@@ -51,12 +55,4 @@ export async function sendContactEmail(
   }
 
   return { ok: true };
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
