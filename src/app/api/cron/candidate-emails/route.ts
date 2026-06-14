@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { runCandidateEmailCampaigns } from "@/lib/candidate/email-campaigns";
 import { isCronAuthorized } from "@/lib/cron/auth";
+import { isContactEmailConfigured } from "@/config/contact";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/admin";
-import { syncRssJobs } from "@/lib/jobs/rss-sync";
 
 export async function GET(request: Request) {
   if (!isSupabaseAdminConfigured()) {
@@ -11,11 +12,18 @@ export async function GET(request: Request) {
     );
   }
 
+  if (!isContactEmailConfigured()) {
+    return NextResponse.json(
+      { error: "RESEND_API_KEY is not configured" },
+      { status: 503 }
+    );
+  }
+
   if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const summary = await syncRssJobs();
+  const summary = await runCandidateEmailCampaigns();
   return NextResponse.json(summary);
 }
 

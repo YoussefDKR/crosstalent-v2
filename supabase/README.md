@@ -37,13 +37,20 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 21. `migrations/20250616100000_site_visits.sql` — admin analytics (daily visits, top pages)
 22. `migrations/20250617000000_saved_jobs_and_alerts.sql` — candidate saved jobs & job alerts
 23. `migrations/20250617100000_profile_moderation.sql` — admin suspend/ban flag on profiles
+24. `migrations/20250617200000_candidate_email_log.sql` — throttle profile nudge & job digest emails
 
 > **Supabase SQL Editor:** PostgreSQL cannot use a new enum value in the same transaction that adds it. Run step 17, wait for success, then run step 18 in a **new** query tab.
 
-After step 16, set `CRON_SECRET` in Vercel and run a one-time job sync:
+After step 16, set `CRON_SECRET` and `RESEND_API_KEY` in Vercel, then run a one-time job sync:
 
 ```bash
 curl -X POST "https://www.crosstalent.io/api/jobs/sync-rss" -H "Authorization: Bearer YOUR_CRON_SECRET"
+```
+
+**Candidate emails** (profile reminders + weekly job digest) run automatically **Mondays at 09:00 UTC** via `/api/cron/candidate-emails` (same `CRON_SECRET`). Manual test:
+
+```bash
+curl -X POST "https://www.crosstalent.io/api/cron/candidate-emails" -H "Authorization: Bearer YOUR_CRON_SECRET"
 ```
 
 Sources: Jobicy, We Work Remotely, Remotive, RemoteOK (see `src/lib/jobs/job-sources.ts`).

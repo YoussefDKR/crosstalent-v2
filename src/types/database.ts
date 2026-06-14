@@ -309,6 +309,22 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["job_alerts"]["Insert"]>;
         Relationships: [];
       };
+      candidate_email_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          email_type: string;
+          sent_at: string;
+        };
+        Insert: {
+          user_id: string;
+          email_type: string;
+          id?: string;
+          sent_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["candidate_email_log"]["Insert"]>;
+        Relationships: [];
+      };
       job_applications: {
         Row: {
           id: string;
