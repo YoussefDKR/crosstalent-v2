@@ -162,10 +162,7 @@ export async function getPublishedJob(
 
   if (error || !data) return null;
 
-  const row = data as JobRow;
-  if (!isVisiblePublishedJob(row)) return null;
-
-  const [job] = await attachCompanies([row]);
+  const [job] = await attachCompanies([data as JobRow]);
   return job ?? null;
 }
 

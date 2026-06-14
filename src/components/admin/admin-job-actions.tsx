@@ -18,12 +18,14 @@ type AdminJobActionsProps = {
   jobId: string;
   status: JobStatus;
   sourceType: "platform" | "rss";
+  externalUrl?: string | null;
 };
 
 export function AdminJobActions({
   jobId,
   status,
   sourceType,
+  externalUrl,
 }: AdminJobActionsProps) {
   const router = useRouter();
   const { t } = useI18n();
@@ -47,6 +49,11 @@ export function AdminJobActions({
     run(() => adminDeleteJob(jobId));
   }
 
+  const viewHref =
+    sourceType === "rss" && externalUrl?.trim()
+      ? externalUrl.trim()
+      : `/jobs/${jobId}`;
+
   return (
     <div className="flex flex-wrap gap-2">
       {status !== "published" && (
@@ -63,7 +70,7 @@ export function AdminJobActions({
       )}
       {status === "published" && (
         <>
-          <Link href={`/jobs/${jobId}`} target="_blank">
+          <Link href={viewHref} target="_blank" rel="noopener noreferrer">
             <Button type="button" size="sm" variant="outline" className="gap-1.5">
               <ExternalLink className="size-3.5" />
               {t("admin.view")}

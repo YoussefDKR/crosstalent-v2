@@ -286,7 +286,7 @@ export async function listAdminJobs(options?: {
   let query = supabase
     .from("jobs")
     .select(
-      "id, title, status, source_type, employer_id, rss_company_name, external_source, location_city, location_country, created_at, published_at"
+      "id, title, status, source_type, employer_id, rss_company_name, external_source, external_url, location_city, location_country, created_at, published_at"
     )
     .order("created_at", { ascending: false })
     .limit(200);

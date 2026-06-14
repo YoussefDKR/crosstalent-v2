@@ -173,6 +173,7 @@ export type AdminJobRow = {
   employer_email: string | null;
   rss_company_name: string | null;
   external_source: string | null;
+  external_url: string | null;
   location_city: string | null;
   location_country: string | null;
   created_at: string;

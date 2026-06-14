@@ -106,6 +106,7 @@ export function AdminJobsTable({ jobs }: AdminJobsTableProps) {
                 jobId={job.id}
                 status={job.status}
                 sourceType={job.source_type}
+                externalUrl={job.external_url}
               />
             </div>
           </li>
