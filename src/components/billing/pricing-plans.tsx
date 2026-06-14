@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Check } from "lucide-react";
+import { motion } from "framer-motion";
 import { CheckoutButton } from "@/components/billing/checkout-button";
 import { EMPLOYER_PLANS } from "@/config/billing";
 import { isPlanCheckoutReady, isStripeConfigured } from "@/lib/stripe/config";
@@ -14,6 +15,47 @@ import { siteConfig } from "@/config/site";
 type PricingPlansProps = {
   employerSignedIn?: boolean;
 };
+
+const cardShadow = {
+  default: "0 4px 14px rgba(15, 23, 42, 0.08)",
+  highlighted: "0 12px 32px rgba(37, 99, 235, 0.18)",
+  hover: "0 28px 56px -14px rgba(37, 99, 235, 0.42)",
+} as const;
+
+function PricingPlanCard({
+  highlighted,
+  children,
+}: {
+  highlighted?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      className="group h-full cursor-pointer rounded-xl"
+      initial={{
+        y: 0,
+        scale: 1,
+        boxShadow: highlighted ? cardShadow.highlighted : cardShadow.default,
+      }}
+      whileHover={{
+        y: -12,
+        scale: 1.03,
+        boxShadow: cardShadow.hover,
+      }}
+      transition={{ type: "spring", stiffness: 380, damping: 22 }}
+    >
+      <Card
+        className={cn(
+          "h-full overflow-visible py-0 ring-1 ring-foreground/10 transition-colors duration-300",
+          "group-hover:ring-2 group-hover:ring-[#2563EB] group-hover:bg-gradient-to-b group-hover:from-white group-hover:to-[#DBEAFE]",
+          highlighted && "ring-2 ring-[#2563EB]/55"
+        )}
+      >
+        {children}
+      </Card>
+    </motion.div>
+  );
+}
 
 export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
   const { messages, t } = useI18n();
@@ -28,10 +70,10 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-3">
-      <Card className="border-border/80 shadow-sm">
+      <PricingPlanCard>
         <CardContent className="flex h-full flex-col p-8">
           <p className="text-sm font-medium text-[#2563EB]">{b.freeToStart}</p>
-          <h3 className="mt-2 text-2xl font-semibold text-[#0F172A]">
+          <h3 className="mt-2 text-2xl font-semibold text-[#0F172A] transition-colors duration-300 group-hover:text-[#2563EB]">
             {b.plans.starter.name}
           </h3>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -63,7 +105,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
             )}
           </div>
         </CardContent>
-      </Card>
+      </PricingPlanCard>
 
       {EMPLOYER_PLANS.map((plan) => {
         const planCopy = planMessages[plan.id as keyof typeof planMessages];
@@ -71,19 +113,12 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
         const disabledReason = !stripeReady ? b.stripeNotReady : undefined;
 
         return (
-          <Card
-            key={plan.id}
-            className={cn(
-              "border-border/80 shadow-sm",
-              plan.highlighted &&
-                "ring-2 ring-[#2563EB]/40 shadow-md shadow-[#2563EB]/10"
-            )}
-          >
+          <PricingPlanCard key={plan.id} highlighted={plan.highlighted}>
             <CardContent className="flex h-full flex-col p-8">
               {plan.highlighted && (
                 <p className="text-sm font-medium text-[#2563EB]">{b.mostPopular}</p>
               )}
-              <h3 className="mt-2 text-2xl font-semibold text-[#0F172A]">
+              <h3 className="mt-2 text-2xl font-semibold text-[#0F172A] transition-colors duration-300 group-hover:text-[#2563EB]">
                 {planCopy.name}
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -127,7 +162,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
                 )}
               </div>
             </CardContent>
-          </Card>
+          </PricingPlanCard>
         );
       })}
     </div>
