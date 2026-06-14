@@ -13,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminAnalyticsDashboard } from "@/lib/admin/types";
+import { todayDayKey } from "@/lib/datetime";
 
 type AdminAnalyticsChartsProps = {
   data: AdminAnalyticsDashboard;
@@ -82,7 +83,7 @@ export function AdminDailyVisitsTable({
   trends: AdminAnalyticsDashboard["trends"];
 }) {
   const recent = [...trends].reverse().slice(0, 14);
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = todayDayKey();
 
   return (
     <ChartCard

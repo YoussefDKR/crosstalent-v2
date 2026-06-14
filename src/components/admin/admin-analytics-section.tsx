@@ -9,6 +9,7 @@ import {
   AdminDailyVisitsTable,
   AdminTopPagesTable,
 } from "@/components/admin/admin-analytics-charts";
+import { formatAppTimezoneLabel } from "@/lib/datetime";
 
 const PERIOD_OPTIONS = [
   { days: 7, label: "7 days" },
@@ -30,7 +31,8 @@ export function AdminAnalyticsSection({ data }: AdminAnalyticsSectionProps) {
         <div>
           <h2 className="text-xl font-semibold text-[#0F172A]">Traffic & growth</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Daily visits, top pages, and signups.
+            Daily visits, top pages, and signups. Dates use{" "}
+            {formatAppTimezoneLabel()}.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { shouldTrackVisitPath } from "@/config/analytics";
+import { todayDayKey } from "@/lib/datetime";
 
 const SESSION_KEY = "ct_visit_logged";
 
@@ -12,7 +13,7 @@ export function VisitTracker() {
   useEffect(() => {
     if (!pathname || !shouldTrackVisitPath(pathname)) return;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayDayKey();
     if (sessionStorage.getItem(SESSION_KEY) === today) return;
 
     fetch("/api/analytics/visit", {

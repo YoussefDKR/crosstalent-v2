@@ -2,6 +2,14 @@ import { EMPLOYER_PLANS, STARTER_PLAN } from "@/config/billing";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isStripeConfigured } from "@/lib/stripe/config";
 import { countryDisplayName } from "@/lib/geo/request-country";
+import {
+  formatDayKeyLabel,
+  isTodayInAppTz,
+  lastNDayKeys,
+  startOfDayDaysAgoIso,
+  startOfTodayIso,
+  toDayKey,
+} from "@/lib/datetime";
 import type {
   AdminAnalyticsDashboard,
   AdminApplicationRow,
@@ -28,16 +36,11 @@ function countsTowardMrr(status: SubscriptionStatus): boolean {
 }
 
 function startOfTodayUtc(): string {
-  const d = new Date();
-  d.setUTCHours(0, 0, 0, 0);
-  return d.toISOString();
+  return startOfTodayIso();
 }
 
 function daysAgoUtc(days: number): string {
-  const d = new Date();
-  d.setUTCDate(d.getUTCDate() - days);
-  d.setUTCHours(0, 0, 0, 0);
-  return d.toISOString();
+  return startOfDayDaysAgoIso(days);
 }
 
 export async function getAdminStats(): Promise<AdminStats> {
@@ -520,7 +523,6 @@ export async function getVisitStats(
   trendDays = DEFAULT_TREND_DAYS
 ): Promise<AdminVisitStats> {
   const supabase = createAdminClient();
-  const today = startOfTodayUtc();
   const weekAgo = daysAgoUtc(7);
   const trendStart = daysAgoUtc(trendDays);
 
@@ -533,7 +535,9 @@ export async function getVisitStats(
 
   const rows = data ?? [];
   const uniqueVisitors = new Set(rows.map((row) => row.visitor_id)).size;
-  const visitsToday = rows.filter((row) => row.created_at >= today).length;
+  const visitsToday = rows.filter((row) =>
+    isTodayInAppTz(row.created_at)
+  ).length;
   const visitsThisWeek = rows.filter((row) => row.created_at >= weekAgo).length;
 
   const { count: totalVisits } = await supabase
@@ -559,7 +563,7 @@ export async function getAdminAnalyticsDashboard(
   );
   const supabase = createAdminClient();
   const trendStart = daysAgoUtc(trendDays);
-  const dayKeys = lastNDays(trendDays);
+  const dayKeys = lastNDayKeys(trendDays);
 
   const [visits, signups, { data: visitRows }, { data: signupRows }] =
     await Promise.all([
@@ -587,42 +591,27 @@ export async function getAdminAnalyticsDashboard(
   }
 
   for (const row of visitRows ?? []) {
-    const day = row.created_at.slice(0, 10);
+    const day = toDayKey(row.created_at);
     if (!visitsByDay.has(day)) continue;
     visitsByDay.set(day, (visitsByDay.get(day) ?? 0) + 1);
     uniquesByDay.get(day)?.add(row.visitor_id);
   }
 
   for (const row of signupRows ?? []) {
-    const day = row.created_at.slice(0, 10);
+    const day = toDayKey(row.created_at);
     if (!signupsByDay.has(day)) continue;
     signupsByDay.set(day, (signupsByDay.get(day) ?? 0) + 1);
   }
 
   const trends = dayKeys.map((date) => ({
     date,
-    label: formatTrendLabel(date),
+    label: formatDayKeyLabel(date),
     visits: visitsByDay.get(date) ?? 0,
     uniqueVisitors: uniquesByDay.get(date)?.size ?? 0,
     signups: signupsByDay.get(date) ?? 0,
   }));
 
   return { visits, signups, trends, trendDays };
-}
-
-function lastNDays(days: number): string[] {
-  const result: string[] = [];
-  for (let offset = days - 1; offset >= 0; offset -= 1) {
-    const date = new Date();
-    date.setUTCDate(date.getUTCDate() - offset);
-    result.push(date.toISOString().slice(0, 10));
-  }
-  return result;
-}
-
-function formatTrendLabel(isoDate: string): string {
-  const date = new Date(`${isoDate}T12:00:00Z`);
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
 function aggregateVisitCountries(

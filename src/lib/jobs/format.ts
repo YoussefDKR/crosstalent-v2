@@ -1,4 +1,5 @@
 import { JOB_LOCATION_COUNTRIES } from "@/config/jobs";
+import { APP_TIMEZONE } from "@/lib/datetime";
 import type { JobRow } from "@/types/jobs";
 
 const countryByCode = new Map(
@@ -31,7 +32,10 @@ export function formatJobPostedAt(iso: string | null): string {
   if (hours < 48) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   if (days < 14) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" });
+  return new Date(iso).toLocaleDateString(undefined, {
+    dateStyle: "medium",
+    timeZone: APP_TIMEZONE,
+  });
 }
 
 export function companyInitials(name: string | null | undefined): string {
