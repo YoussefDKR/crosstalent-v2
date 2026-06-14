@@ -37,7 +37,7 @@ function parseJobicyJob(job: Record<string, unknown>): ParsedImportedJob | null 
       ? stripHtml(job.jobDescription)
       : "";
   const description =
-    (excerpt || fullDesc).slice(0, 12_000) || `${title} — apply on Jobicy.`;
+    (fullDesc || excerpt).slice(0, 12_000) || `${title} — apply on Jobicy.`;
 
   const jobType = Array.isArray(job.jobType)
     ? String(job.jobType[0] ?? "")

@@ -12,6 +12,7 @@ import {
 } from "@/lib/jobs/labels";
 import { resolveImageUrl } from "@/lib/images/urls";
 import { formatSalaryRange } from "@/lib/jobs/format";
+import { formatJobDescription } from "@/lib/jobs/import-helpers";
 import { getPublishedJob } from "@/lib/jobs/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
@@ -52,6 +53,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
       : new Set<string>();
   const salary = formatSalaryRange(job);
   const logoUrl = resolveImageUrl(job.company_logo_url);
+  const description = formatJobDescription(job.description);
 
   return (
     <div className="bg-slate-50/50 py-12 sm:py-16">
@@ -115,7 +117,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                   {t("jobs.aboutRole")}
                 </h2>
                 <p className="mt-3 whitespace-pre-wrap leading-relaxed text-[#0F172A]/90">
-                  {job.description}
+                  {description}
                 </p>
               </section>
 
