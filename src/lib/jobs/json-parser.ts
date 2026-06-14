@@ -5,6 +5,7 @@ import {
   parseSkills,
   stripHtml,
 } from "@/lib/jobs/import-helpers";
+import { isLowQualityImportedListing } from "@/lib/jobs/import-quality";
 import type { JobSourceConfig } from "@/lib/jobs/job-sources";
 
 const DEFAULT_USER_AGENT = "CrossTalent/1.0 (+https://crosstalent.io)";
@@ -116,10 +117,11 @@ function parseRemoteOkJob(job: Record<string, unknown>): ParsedImportedJob | nul
   const description = stripHtml(String(job.description ?? "")).slice(0, 12_000);
 
   if (!description && !title) return null;
+  if (isLowQualityImportedListing(title, description)) return null;
 
   const location =
     typeof job.location === "string" && job.location.trim()
-      ? job.location.trim()
+      ? job.location.trim().replace(/,\s*$/, "")
       : null;
 
   return {
@@ -128,7 +130,7 @@ function parseRemoteOkJob(job: Record<string, unknown>): ParsedImportedJob | nul
     title,
     company,
     description: description || `${title} — apply on RemoteOK.`,
-    skills: parseSkills(job.tags),
+    skills: [],
     location_country: location,
     location_city: null,
     published_at: parseDate(typeof job.date === "string" ? job.date : null),

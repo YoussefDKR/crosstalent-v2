@@ -314,6 +314,9 @@ export async function adminSyncExternalJobs(): Promise<AdminActionResult> {
   if (summary.closedNonEuropean > 0) {
     parts.push(`${summary.closedNonEuropean} non-EU listings hidden`);
   }
+  if (summary.closedLowQuality > 0) {
+    parts.push(`${summary.closedLowQuality} low-quality listings hidden`);
+  }
 
   return { success: parts.join(" · ") };
 }

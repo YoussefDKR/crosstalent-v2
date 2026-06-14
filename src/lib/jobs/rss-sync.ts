@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchJobsFromSource } from "@/lib/jobs/job-import";
 import type { ParsedImportedJob } from "@/lib/jobs/import-types";
 import { prepareImportedJob, isOpenToEuropeanCandidates } from "@/lib/jobs/location-normalize";
+import { isLowQualityImportedListing } from "@/lib/jobs/import-quality";
 import {
   JOB_IMPORT_SOURCES,
   type JobImportSourceId,
@@ -18,6 +19,7 @@ export type RssSyncSummary = {
   results: RssSyncResult[];
   totalUpserted: number;
   closedNonEuropean: number;
+  closedLowQuality: number;
 };
 
 export async function syncRssJobs(): Promise<RssSyncSummary> {
@@ -150,11 +152,13 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
   }
 
   const closed = await closeNonEuropeanRssJobs();
+  const closedLowQuality = await closeLowQualityRssJobs();
 
   return {
     results,
     totalUpserted: results.reduce((sum, r) => sum + r.upserted, 0),
     closedNonEuropean: closed,
+    closedLowQuality,
   };
 }
 
@@ -172,6 +176,35 @@ export async function closeNonEuropeanRssJobs(): Promise<number> {
   const toClose = data.filter(
     (job) =>
       !isOpenToEuropeanCandidates(job.location_country, job.location_city)
+  );
+
+  if (toClose.length === 0) return 0;
+
+  const { error: updateError } = await supabase
+    .from("jobs")
+    .update({ status: "closed" })
+    .in(
+      "id",
+      toClose.map((j) => j.id)
+    );
+
+  if (updateError) return 0;
+  return toClose.length;
+}
+
+/** Hide scraped LinkedIn reposts and other low-quality RSS imports. */
+export async function closeLowQualityRssJobs(): Promise<number> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("id, title, description")
+    .eq("source_type", "rss")
+    .eq("status", "published");
+
+  if (error || !data?.length) return 0;
+
+  const toClose = data.filter((job) =>
+    isLowQualityImportedListing(job.title, job.description)
   );
 
   if (toClose.length === 0) return 0;

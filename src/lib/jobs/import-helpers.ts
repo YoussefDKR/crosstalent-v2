@@ -35,6 +35,32 @@ export function decodeHtmlEntities(text: string): string {
     });
 }
 
+/** Fix UTF-8 text that was misread as Latin-1 (e.g. Weâ€™re → We're). */
+export function fixMojibake(text: string): string {
+  if (!/[âÃï¿½]/.test(text)) return text;
+
+  try {
+    const bytes = Uint8Array.from(text, (char) => char.charCodeAt(0) & 0xff);
+    const fixed = new TextDecoder("utf-8").decode(bytes);
+    if (fixed && !fixed.includes("\uFFFD")) return fixed;
+  } catch {
+    // fall through to manual replacements
+  }
+
+  return text
+    .replace(/â€™/g, "'")
+    .replace(/â€˜/g, "'")
+    .replace(/â€œ/g, '"')
+    .replace(/â€\u009d/g, '"')
+    .replace(/â€"/g, "–")
+    .replace(/â€"/g, "—")
+    .replace(/â€¦/g, "…");
+}
+
+export function normalizeImportedText(text: string): string {
+  return fixMojibake(decodeHtmlEntities(text));
+}
+
 export function stripHtml(html: string): string {
   const withBreaks = html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
@@ -44,7 +70,7 @@ export function stripHtml(html: string): string {
     .replace(/<li[^>]*>/gi, "\n• ")
     .replace(/<[^>]+>/g, " ");
 
-  const decoded = decodeHtmlEntities(withBreaks);
+  const decoded = normalizeImportedText(withBreaks);
 
   return decoded
     .split("\n")
@@ -60,9 +86,9 @@ export function formatJobDescription(text: string): string {
 
   const hasHtml = /<[^>]+>/.test(text);
   const hasEntities = /&(?:#\d+|#x[0-9a-f]+|[a-z]+);/i.test(text);
-  const cleaned = hasHtml || hasEntities ? stripHtml(text) : decodeHtmlEntities(text);
+  const cleaned = hasHtml || hasEntities ? stripHtml(text) : normalizeImportedText(text);
 
-  return cleaned.replace(/\n{3,}/g, "\n\n").trim();
+  return fixMojibake(cleaned).replace(/\n{3,}/g, "\n\n").trim();
 }
 
 export function parseSkills(raw: unknown): string[] {

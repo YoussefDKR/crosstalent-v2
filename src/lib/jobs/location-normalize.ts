@@ -1,5 +1,6 @@
 import type { ParsedImportedJob } from "@/lib/jobs/import-types";
 import type { JobImportSourceId } from "@/lib/jobs/job-sources";
+import { isLowQualityImportedListing } from "@/lib/jobs/import-quality";
 
 /** ISO-style codes used in JOB_LOCATION_COUNTRIES + REMOTE for EU-wide remote */
 const COUNTRY_ALIASES: Record<string, string> = {
@@ -64,7 +65,7 @@ export function normalizeLocationCountry(
 ): string | null {
   if (!raw?.trim()) return null;
 
-  const trimmed = raw.trim();
+  const trimmed = raw.trim().replace(/,+\s*$/, "");
   const lower = trimmed.toLowerCase();
 
   const direct = COUNTRY_ALIASES[lower];
@@ -121,6 +122,10 @@ export function prepareImportedJob(
     if (!isOpenToEuropeanCandidates(location_country, location_city)) {
       return null;
     }
+  }
+
+  if (isLowQualityImportedListing(job.title, job.description)) {
+    return null;
   }
 
   return {
