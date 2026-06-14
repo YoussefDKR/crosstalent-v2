@@ -7,6 +7,7 @@ import {
   ClipboardList,
   CreditCard,
   LayoutDashboard,
+  Mail,
   Settings,
   Shield,
   Users,
@@ -36,6 +37,11 @@ export function AdminSidebar() {
       href: "/admin/subscriptions",
       label: t("nav.subscriptions"),
       icon: CreditCard,
+    },
+    {
+      href: "/admin/email-preview",
+      label: "Email previews",
+      icon: Mail,
     },
     { href: "/admin/settings", label: t("admin.profile"), icon: Settings },
   ];
