@@ -317,12 +317,14 @@ export type Database = {
           user_id: string;
           email_type: string;
           sent_at: string;
+          recipient_email: string | null;
         };
         Insert: {
           user_id: string;
           email_type: string;
           id?: string;
           sent_at?: string;
+          recipient_email?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["candidate_email_log"]["Insert"]>;
         Relationships: [];

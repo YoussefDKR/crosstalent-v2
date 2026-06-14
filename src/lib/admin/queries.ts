@@ -13,6 +13,8 @@ import {
 import type {
   AdminAnalyticsDashboard,
   AdminApplicationRow,
+  AdminEmailLogRow,
+  AdminEmailLogSummary,
   AdminJobRow,
   AdminRevenueStats,
   AdminSignupCountryStats,
@@ -41,6 +43,11 @@ function startOfTodayUtc(): string {
 
 function daysAgoUtc(days: number): string {
   return startOfDayDaysAgoIso(days);
+}
+
+function trendPeriodStartIso(trendDays: number): string {
+  if (trendDays <= 1) return startOfTodayIso();
+  return startOfDayDaysAgoIso(trendDays - 1);
 }
 
 export async function getAdminStats(): Promise<AdminStats> {
@@ -419,12 +426,20 @@ function resolveProfileCountry(
   );
 }
 
-export async function getSignupCountryStats(): Promise<AdminSignupCountryStats> {
+export async function getSignupCountryStats(
+  sinceIso?: string
+): Promise<AdminSignupCountryStats> {
   const supabase = createAdminClient();
-  const { data: profiles, error } = await supabase
+  let query = supabase
     .from("profiles")
     .select("id, signup_country")
     .neq("role", "admin");
+
+  if (sinceIso) {
+    query = query.gte("created_at", sinceIso);
+  }
+
+  const { data: profiles, error } = await query;
 
   if (error) throw new Error(error.message);
 
@@ -495,7 +510,9 @@ const MAX_TREND_DAYS = 90;
 
 export function resolveTrendDays(value: string | undefined): number {
   const parsed = Number(value);
-  if (parsed === 7 || parsed === 30 || parsed === 90) return parsed;
+  if (parsed === 1 || parsed === 7 || parsed === 30 || parsed === 90) {
+    return parsed;
+  }
   return DEFAULT_TREND_DAYS;
 }
 
@@ -524,7 +541,7 @@ export async function getVisitStats(
 ): Promise<AdminVisitStats> {
   const supabase = createAdminClient();
   const weekAgo = daysAgoUtc(7);
-  const trendStart = daysAgoUtc(trendDays);
+  const trendStart = trendPeriodStartIso(trendDays);
 
   const { data, error } = await supabase
     .from("site_visits")
@@ -549,6 +566,7 @@ export async function getVisitStats(
     uniqueVisitors,
     visitsToday,
     visitsThisWeek,
+    visitsInPeriod: rows.length,
     countries: aggregateVisitCountries(rows, rows.length),
     topPages: aggregateTopPages(rows, rows.length),
   };
@@ -558,17 +576,17 @@ export async function getAdminAnalyticsDashboard(
   trendDaysInput?: number
 ): Promise<AdminAnalyticsDashboard> {
   const trendDays = Math.min(
-    Math.max(trendDaysInput ?? DEFAULT_TREND_DAYS, 7),
+    Math.max(trendDaysInput ?? DEFAULT_TREND_DAYS, 1),
     MAX_TREND_DAYS
   );
   const supabase = createAdminClient();
-  const trendStart = daysAgoUtc(trendDays);
+  const trendStart = trendPeriodStartIso(trendDays);
   const dayKeys = lastNDayKeys(trendDays);
 
   const [visits, signups, { data: visitRows }, { data: signupRows }] =
     await Promise.all([
       getVisitStats(trendDays),
-      getSignupCountryStats(),
+      getSignupCountryStats(trendStart),
       supabase
         .from("site_visits")
         .select("visitor_id, created_at")
@@ -739,4 +757,84 @@ export async function getAdminUserProfile(
   }
 
   return base;
+}
+
+const EMAIL_LOG_PAGE_SIZE = 100;
+
+export async function listCandidateEmailLog(
+  limit = EMAIL_LOG_PAGE_SIZE
+): Promise<AdminEmailLogRow[]> {
+  const supabase = createAdminClient();
+  const { data: logs, error } = await supabase
+    .from("candidate_email_log")
+    .select("id, user_id, email_type, sent_at, recipient_email")
+    .order("sent_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    if (error.message.includes("candidate_email_log")) return [];
+    throw new Error(error.message);
+  }
+  if (!logs?.length) return [];
+
+  const userIds = [...new Set(logs.map((l) => l.user_id))];
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .in("id", userIds);
+
+  const profileById = new Map(
+    (profiles ?? []).map((p) => [
+      p.id,
+      p as { full_name: string | null; email: string | null },
+    ])
+  );
+
+  return logs.map((row) => {
+    const profile = profileById.get(row.user_id);
+    return {
+      id: row.id,
+      user_id: row.user_id,
+      recipient_email: row.recipient_email ?? profile?.email ?? null,
+      recipient_name: profile?.full_name ?? null,
+      email_type: row.email_type,
+      sent_at: row.sent_at,
+    };
+  });
+}
+
+export async function getCandidateEmailLogSummary(): Promise<AdminEmailLogSummary> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("candidate_email_log")
+    .select("email_type, sent_at")
+    .order("sent_at", { ascending: false });
+
+  if (error) {
+    if (error.message.includes("candidate_email_log")) {
+      return {
+        total: 0,
+        profileNudges: 0,
+        jobDigests: 0,
+        lastSentAt: null,
+      };
+    }
+    throw new Error(error.message);
+  }
+
+  const rows = data ?? [];
+  let profileNudges = 0;
+  let jobDigests = 0;
+
+  for (const row of rows) {
+    if (row.email_type === "profile_nudge") profileNudges += 1;
+    if (row.email_type === "job_digest") jobDigests += 1;
+  }
+
+  return {
+    total: rows.length,
+    profileNudges,
+    jobDigests,
+    lastSentAt: rows[0]?.sent_at ?? null,
+  };
 }

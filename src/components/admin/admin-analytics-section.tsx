@@ -12,6 +12,7 @@ import {
 import { formatAppTimezoneLabel } from "@/lib/datetime";
 
 const PERIOD_OPTIONS = [
+  { days: 1, label: "Today" },
   { days: 7, label: "7 days" },
   { days: 30, label: "30 days" },
   { days: 90, label: "90 days" },

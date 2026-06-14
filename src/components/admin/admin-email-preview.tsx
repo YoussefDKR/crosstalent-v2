@@ -4,6 +4,8 @@ import {
   SAMPLE_JOB_DIGEST,
   SAMPLE_PROFILE_NUDGE,
 } from "@/lib/email/candidate-templates";
+import { AdminEmailLogTable } from "@/components/admin/admin-email-log-table";
+import type { AdminEmailLogRow, AdminEmailLogSummary } from "@/lib/admin/types";
 
 type EmailPreviewFrameProps = {
   title: string;
@@ -32,31 +34,46 @@ function EmailPreviewFrame({ title, subject, html }: EmailPreviewFrameProps) {
   );
 }
 
-export function AdminEmailPreview() {
+type AdminEmailPreviewProps = {
+  logs: AdminEmailLogRow[];
+  summary: AdminEmailLogSummary;
+};
+
+export function AdminEmailPreview({ logs, summary }: AdminEmailPreviewProps) {
   const profileNudge = renderProfileNudgeEmail(SAMPLE_PROFILE_NUDGE);
   const jobDigest = renderJobDigestEmail(SAMPLE_JOB_DIGEST);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <div>
-        <h1 className="text-2xl font-semibold text-[#0F172A]">Candidate email previews</h1>
+        <h1 className="text-2xl font-semibold text-[#0F172A]">Candidate emails</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          This is exactly what candidates receive. Real emails go out automatically every
-          Monday at 09:00 UTC. Nothing sends from this page — it is preview only.
+          Preview templates and review who received each automated send. Real
+          emails go out every Monday at 09:00 UTC via the candidate-email cron.
         </p>
       </div>
 
-      <EmailPreviewFrame
-        title="1. Profile completion reminder"
-        subject={profileNudge.subject}
-        html={profileNudge.html}
-      />
+      <AdminEmailLogTable logs={logs} summary={summary} />
 
-      <EmailPreviewFrame
-        title="2. Weekly new jobs digest"
-        subject={jobDigest.subject}
-        html={jobDigest.html}
-      />
+      <div className="border-t border-border pt-10">
+        <h2 className="text-lg font-semibold text-[#0F172A]">Template previews</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Nothing sends from this section — preview only.
+        </p>
+        <div className="mt-8 space-y-8">
+          <EmailPreviewFrame
+            title="1. Profile completion reminder"
+            subject={profileNudge.subject}
+            html={profileNudge.html}
+          />
+
+          <EmailPreviewFrame
+            title="2. Weekly new jobs digest"
+            subject={jobDigest.subject}
+            html={jobDigest.html}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -177,6 +177,17 @@ export function isSameAppDay(
   return toDayKey(iso, timeZone) === dayKey;
 }
 
+export function formatDateTimeInAppTz(
+  iso: string,
+  timeZone: string = APP_TIMEZONE
+): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone,
+  }).format(new Date(iso));
+}
+
 export function isTodayInAppTz(
   iso: string,
   timeZone: string = APP_TIMEZONE

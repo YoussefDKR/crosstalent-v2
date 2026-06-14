@@ -41,7 +41,7 @@ export function AdminSidebar() {
     },
     {
       href: "/admin/email-preview",
-      label: "Email previews",
+      label: "Emails",
       icon: Mail,
     },
     { href: "/admin/settings", label: t("admin.profile"), icon: Settings },

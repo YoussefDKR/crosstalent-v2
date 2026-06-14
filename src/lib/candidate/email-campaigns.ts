@@ -65,12 +65,14 @@ async function wasEmailSentRecently(
 
 async function logEmailSent(
   userId: string,
-  emailType: CandidateEmailType
+  emailType: CandidateEmailType,
+  recipientEmail: string
 ): Promise<void> {
   const supabase = createAdminClient();
   await supabase.from("candidate_email_log").insert({
     user_id: userId,
     email_type: emailType,
+    recipient_email: recipientEmail,
   });
 }
 
@@ -216,7 +218,7 @@ export async function runCandidateEmailCampaigns(): Promise<CandidateEmailCampai
         });
 
         if (result.ok) {
-          await logEmailSent(row.id, "profile_nudge");
+          await logEmailSent(row.id, "profile_nudge", email);
           summary.profileNudgesSent += 1;
         } else {
           summary.errors.push(`profile_nudge:${row.id}: ${result.error}`);
@@ -264,7 +266,7 @@ export async function runCandidateEmailCampaigns(): Promise<CandidateEmailCampai
       });
 
       if (result.ok) {
-        await logEmailSent(row.id, "job_digest");
+        await logEmailSent(row.id, "job_digest", email);
         summary.jobDigestsSent += 1;
       } else {
         summary.errors.push(`job_digest:${row.id}: ${result.error}`);

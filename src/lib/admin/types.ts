@@ -104,6 +104,7 @@ export type AdminVisitStats = {
   uniqueVisitors: number;
   visitsToday: number;
   visitsThisWeek: number;
+  visitsInPeriod: number;
   countries: AdminCountryVisitStat[];
   topPages: AdminPageVisitStat[];
 };
@@ -121,6 +122,22 @@ export type AdminAnalyticsDashboard = {
   signups: AdminSignupCountryStats;
   trends: AdminDailyTrendPoint[];
   trendDays: number;
+};
+
+export type AdminEmailLogRow = {
+  id: string;
+  user_id: string;
+  recipient_email: string | null;
+  recipient_name: string | null;
+  email_type: string;
+  sent_at: string;
+};
+
+export type AdminEmailLogSummary = {
+  total: number;
+  profileNudges: number;
+  jobDigests: number;
+  lastSentAt: string | null;
 };
 
 export type AdminUserProfile = {

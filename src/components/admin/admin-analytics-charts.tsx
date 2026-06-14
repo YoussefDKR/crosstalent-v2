@@ -13,6 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminAnalyticsDashboard } from "@/lib/admin/types";
+import { adminAnalyticsPeriodLabel } from "@/lib/admin/analytics-ui";
 import { todayDayKey } from "@/lib/datetime";
 
 type AdminAnalyticsChartsProps = {
@@ -141,10 +142,13 @@ export function AdminTopPagesTable({
   pages: AdminAnalyticsDashboard["visits"]["topPages"];
   days: number;
 }) {
+  const period =
+    days === 1 ? "today" : `the last ${days} days`;
+
   return (
     <ChartCard
       title="Top pages"
-      description={`Most visited paths in the last ${days} days`}
+      description={`Most visited paths in ${period}`}
     >
       {pages.length > 0 ? (
         <div className="overflow-x-auto">
@@ -180,6 +184,7 @@ export function AdminTopPagesTable({
 
 export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
   const { visits, signups, trends, trendDays } = data;
+  const period = adminAnalyticsPeriodLabel(trendDays);
   const hasTrendData = trends.some(
     (point) => point.visits > 0 || point.signups > 0
   );
@@ -190,14 +195,18 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Total visits"
-          value={visits.totalVisits}
-          hint="All recorded sessions"
+          label={trendDays === 1 ? "Visits today" : "Visits in period"}
+          value={visits.visitsInPeriod}
+          hint={
+            trendDays === 1
+              ? `${visits.uniqueVisitors} unique visitors`
+              : `${visits.totalVisits.toLocaleString("en-EU")} all time`
+          }
         />
         <MetricCard
           label="Unique visitors"
           value={visits.uniqueVisitors}
-          hint={`Last ${trendDays} days`}
+          hint={period}
         />
         <MetricCard
           label="Visits today"
@@ -205,7 +214,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
           hint={`${visits.visitsThisWeek.toLocaleString("en-EU")} this week`}
         />
         <MetricCard
-          label="Total signups"
+          label={trendDays === 1 ? "Signups today" : "Signups in period"}
           value={signups.totalUsers}
           hint={`${signups.trackedUsers.toLocaleString("en-EU")} with country`}
         />
@@ -213,7 +222,11 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
 
       <ChartCard
         title="Visits & signups over time"
-        description={`Daily trend for the last ${trendDays} days`}
+        description={
+          trendDays === 1
+            ? "Today's traffic and signups"
+            : `Daily trend — ${period.toLowerCase()}`
+        }
       >
         {hasTrendData ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -286,7 +299,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard
           title="Visits by country"
-          description={`Where visitors are browsing from (last ${trendDays} days)`}
+          description={`Where visitors are browsing from (${period.toLowerCase()})`}
         >
           {topVisitCountries.length > 0 ? (
             <ResponsiveContainer width="100%" height={Math.max(280, topVisitCountries.length * 42)}>
@@ -326,7 +339,7 @@ export function AdminAnalyticsCharts({ data }: AdminAnalyticsChartsProps) {
 
         <ChartCard
           title="Signups by country"
-          description="Where new users registered from"
+          description={`Where new users registered (${period.toLowerCase()})`}
         >
           {topSignupCountries.length > 0 ? (
             <ResponsiveContainer
