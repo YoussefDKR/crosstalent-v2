@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
-import { motion } from "framer-motion";
+import { animate, motion, useInView } from "framer-motion";
 import { CheckoutButton } from "@/components/billing/checkout-button";
 import { EMPLOYER_PLANS } from "@/config/billing";
 import { isPlanCheckoutReady, isStripeConfigured } from "@/lib/stripe/config";
@@ -21,6 +22,42 @@ const cardShadow = {
   highlighted: "0 12px 32px rgba(37, 99, 235, 0.18)",
   hover: "0 28px 56px -14px rgba(37, 99, 235, 0.42)",
 } as const;
+
+function AnimatedPrice({
+  value,
+  delay = 0,
+}: {
+  value: number;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.6 });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let controls: { stop: () => void } | undefined;
+    const timeout = window.setTimeout(() => {
+      controls = animate(0, value, {
+        duration: value >= 100 ? 1.4 : 0.9,
+        ease: [0.22, 1, 0.36, 1],
+        onUpdate: (latest) => setDisplay(Math.round(latest)),
+      });
+    }, delay * 1000);
+
+    return () => {
+      window.clearTimeout(timeout);
+      controls?.stop();
+    };
+  }, [isInView, value, delay]);
+
+  return (
+    <span ref={ref} className="text-4xl font-semibold text-[#0F172A] tabular-nums">
+      €{display}
+    </span>
+  );
+}
 
 function PricingPlanCard({
   highlighted,
@@ -80,7 +117,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
             {b.plans.starter.description}
           </p>
           <p className="mt-6">
-            <span className="text-4xl font-semibold text-[#0F172A]">€0</span>
+            <AnimatedPrice value={0} delay={0} />
             <span className="text-muted-foreground">{b.perMonth}</span>
           </p>
           <ul className="mt-6 flex-1 space-y-3">
@@ -107,10 +144,11 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
         </CardContent>
       </PricingPlanCard>
 
-      {EMPLOYER_PLANS.map((plan) => {
+      {EMPLOYER_PLANS.map((plan, index) => {
         const planCopy = planMessages[plan.id as keyof typeof planMessages];
         const checkoutReady = stripeReady && isPlanCheckoutReady(plan.id);
         const disabledReason = !stripeReady ? b.stripeNotReady : undefined;
+        const price = plan.monthlyPrice ?? 0;
 
         return (
           <PricingPlanCard key={plan.id} highlighted={plan.highlighted}>
@@ -125,9 +163,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
                 {planCopy.description}
               </p>
               <p className="mt-6">
-                <span className="text-4xl font-semibold text-[#0F172A]">
-                  €{plan.monthlyPrice}
-                </span>
+                <AnimatedPrice value={price} delay={0.15 + index * 0.12} />
                 <span className="text-muted-foreground">{b.perMonth}</span>
               </p>
               <ul className="mt-6 flex-1 space-y-3">
