@@ -13,6 +13,8 @@ export type JobSourceConfig = {
   format: JobSourceFormat;
   maxItems: number;
   userAgent?: string;
+  /** Source API already returns Europe-focused listings */
+  europePreFiltered?: boolean;
 };
 
 export const JOB_IMPORT_SOURCES: JobSourceConfig[] = [
@@ -20,29 +22,23 @@ export const JOB_IMPORT_SOURCES: JobSourceConfig[] = [
     id: "jobicy",
     label: "Jobicy",
     format: "json",
-    url: "https://jobicy.com/api/v2/remote-jobs?count=50&geo=europe",
-    maxItems: 50,
-  },
-  {
-    id: "weworkremotely",
-    label: "We Work Remotely",
-    format: "rss",
-    url: "https://weworkremotely.com/remote-jobs.rss",
-    maxItems: 50,
+    url: "https://jobicy.com/api/v2/remote-jobs?count=100&geo=europe",
+    maxItems: 100,
+    europePreFiltered: true,
   },
   {
     id: "remotive",
     label: "Remotive",
     format: "json",
-    url: "https://remotive.com/api/remote-jobs?limit=50",
-    maxItems: 50,
+    url: "https://remotive.com/api/remote-jobs?limit=100",
+    maxItems: 100,
   },
   {
     id: "remoteok",
     label: "RemoteOK",
     format: "json",
     url: "https://remoteok.com/api",
-    maxItems: 50,
+    maxItems: 100,
     userAgent: "CrossTalent/1.0 (+https://crosstalent.io)",
   },
 ];

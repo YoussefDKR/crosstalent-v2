@@ -436,6 +436,8 @@ export const en = {
     employerFallback: "Employer",
     notOnJobBoard: "Not on the job board — publish when ready.",
     syncedFromRss: "Synced from RSS — manage via job sync, not delete here.",
+    syncJobs: "Sync European jobs",
+    syncJobsRunning: "Syncing…",
     created: "Created",
     publishedAt: "Published",
     statusDraft: "Draft",

@@ -296,3 +296,24 @@ export async function adminUpdateEmployerSubscription(
   revalidatePath("/admin/subscriptions");
   return { success: "Subscription updated" };
 }
+
+export async function adminSyncExternalJobs(): Promise<AdminActionResult> {
+  await requireAdminProfile();
+
+  const { isSupabaseAdminConfigured } = await import("@/lib/supabase/admin");
+  if (!isSupabaseAdminConfigured()) {
+    return { error: "SUPABASE_SERVICE_ROLE_KEY is not configured." };
+  }
+
+  const { syncRssJobs } = await import("@/lib/jobs/rss-sync");
+  const summary = await syncRssJobs();
+
+  revalidateAdminPaths();
+
+  const parts = [`${summary.totalUpserted} jobs synced`];
+  if (summary.closedNonEuropean > 0) {
+    parts.push(`${summary.closedNonEuropean} non-EU listings hidden`);
+  }
+
+  return { success: parts.join(" · ") };
+}

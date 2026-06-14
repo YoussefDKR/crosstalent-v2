@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AdminAppShell } from "@/components/admin/admin-app-shell";
 import { AdminFilters } from "@/components/admin/admin-filters";
 import { AdminJobsTable } from "@/components/admin/admin-jobs-table";
+import { AdminSyncJobsButton } from "@/components/admin/admin-sync-jobs-button";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { listAdminJobs } from "@/lib/admin/queries";
 import { getServerI18n } from "@/i18n/server";
@@ -31,11 +32,14 @@ export default async function AdminJobsPage({ searchParams }: PageProps) {
   return (
     <AdminAppShell profile={profile}>
       <div className="space-y-8">
-        <header>
-          <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A]">
-            {t("admin.jobsTitle")}
-          </h1>
-          <p className="mt-2 text-muted-foreground">{t("admin.jobsSubtitle")}</p>
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A]">
+              {t("admin.jobsTitle")}
+            </h1>
+            <p className="mt-2 text-muted-foreground">{t("admin.jobsSubtitle")}</p>
+          </div>
+          <AdminSyncJobsButton />
         </header>
 
         <div className="space-y-3">

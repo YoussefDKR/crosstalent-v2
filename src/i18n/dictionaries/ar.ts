@@ -434,6 +434,8 @@ export const ar: Messages = {
     employerFallback: "صاحب عمل",
     notOnJobBoard: "غير موجودة على اللوحة — انشرها عند الجاهزية.",
     syncedFromRss: "متزامنة من RSS — تُدار عبر المزامنة وليس الحذف هنا.",
+    syncJobs: "مزامنة الوظائف الأوروبية",
+    syncJobsRunning: "جارٍ المزامنة…",
     created: "أُنشئت",
     publishedAt: "نُشرت",
     statusDraft: "مسودة",

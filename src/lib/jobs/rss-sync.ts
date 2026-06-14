@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchJobsFromSource } from "@/lib/jobs/job-import";
+import type { ParsedImportedJob } from "@/lib/jobs/import-types";
+import { prepareImportedJob, isOpenToEuropeanCandidates } from "@/lib/jobs/location-normalize";
 import {
   JOB_IMPORT_SOURCES,
   type JobImportSourceId,
@@ -15,6 +17,7 @@ export type RssSyncResult = {
 export type RssSyncSummary = {
   results: RssSyncResult[];
   totalUpserted: number;
+  closedNonEuropean: number;
 };
 
 export async function syncRssJobs(): Promise<RssSyncSummary> {
@@ -24,12 +27,16 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
   for (const source of JOB_IMPORT_SOURCES) {
     try {
       const jobs = await fetchJobsFromSource(source);
-      if (jobs.length === 0) {
-        results.push({ source: source.id, fetched: 0, upserted: 0 });
+      const prepared = jobs
+        .map((job) => prepareImportedJob(job, source.id))
+        .filter((job): job is ParsedImportedJob => job !== null);
+
+      if (prepared.length === 0) {
+        results.push({ source: source.id, fetched: jobs.length, upserted: 0 });
         continue;
       }
 
-      const rows = jobs.map((job) => ({
+      const rows = prepared.map((job) => ({
         source_type: "rss" as const,
         employer_id: null,
         title: job.title,
@@ -142,8 +149,41 @@ export async function syncRssJobs(): Promise<RssSyncSummary> {
     }
   }
 
+  const closed = await closeNonEuropeanRssJobs();
+
   return {
     results,
     totalUpserted: results.reduce((sum, r) => sum + r.upserted, 0),
+    closedNonEuropean: closed,
   };
+}
+
+/** Hide legacy RSS imports that are not open to European candidates. */
+export async function closeNonEuropeanRssJobs(): Promise<number> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("id, location_country, location_city")
+    .eq("source_type", "rss")
+    .eq("status", "published");
+
+  if (error || !data?.length) return 0;
+
+  const toClose = data.filter(
+    (job) =>
+      !isOpenToEuropeanCandidates(job.location_country, job.location_city)
+  );
+
+  if (toClose.length === 0) return 0;
+
+  const { error: updateError } = await supabase
+    .from("jobs")
+    .update({ status: "closed" })
+    .in(
+      "id",
+      toClose.map((j) => j.id)
+    );
+
+  if (updateError) return 0;
+  return toClose.length;
 }

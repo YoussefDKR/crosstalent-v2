@@ -451,6 +451,8 @@ export const fr: Messages = {
     employerFallback: "Employeur",
     notOnJobBoard: "Pas sur le site — publiez quand c'est prêt.",
     syncedFromRss: "Synchronisé via RSS — géré par la synchro, pas la suppression ici.",
+    syncJobs: "Synchroniser les offres européennes",
+    syncJobsRunning: "Synchronisation…",
     created: "Créé",
     publishedAt: "Publié",
     statusDraft: "Brouillon",
