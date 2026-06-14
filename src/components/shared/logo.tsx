@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Globe2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { brandAssets } from "@/config/brand";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 type LogoProps = {
   className?: string;
@@ -16,35 +17,50 @@ export function Logo({
 }: LogoProps) {
   const light = variant === "light";
 
+  if (light) {
+    return (
+      <Link
+        href="/"
+        className={cn("group flex items-center gap-2.5", className)}
+        aria-label={`${siteConfig.name} home`}
+      >
+        <Image
+          src={brandAssets.icon}
+          alt=""
+          width={36}
+          height={36}
+          className="size-9 shrink-0 rounded-lg transition-transform group-hover:scale-[1.02]"
+          priority
+        />
+        <span className="flex flex-col">
+          <span className="text-base font-semibold tracking-tight text-white">
+            {siteConfig.name}
+          </span>
+          {showTagline && (
+            <span className="text-xs text-white/60">Beyond borders</span>
+          )}
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Link
       href="/"
-      className={cn("group flex items-center gap-2.5", className)}
+      className={cn("group inline-flex items-center", className)}
       aria-label={`${siteConfig.name} home`}
     >
-      <span
-        className={cn(
-          "flex size-9 items-center justify-center rounded-lg shadow-sm transition-transform group-hover:scale-[1.02]",
-          light ? "bg-[#2563EB] text-white" : "bg-[#0F172A] text-white"
-        )}
-      >
-        <Globe2 className="size-5" strokeWidth={2} />
-      </span>
-      <span className="flex flex-col">
-        <span
-          className={cn(
-            "text-base font-semibold tracking-tight",
-            light ? "text-white" : "text-[#0F172A]"
-          )}
-        >
-          {siteConfig.name}
-        </span>
-        {showTagline && (
-          <span className="text-xs text-muted-foreground">
-            Beyond borders
-          </span>
-        )}
-      </span>
+      <Image
+        src={brandAssets.logoFull}
+        alt={siteConfig.name}
+        width={200}
+        height={48}
+        className="h-9 w-auto max-w-[200px] transition-opacity group-hover:opacity-90 sm:h-10"
+        priority
+      />
+      {showTagline && (
+        <span className="sr-only">{siteConfig.tagline}</span>
+      )}
     </Link>
   );
 }

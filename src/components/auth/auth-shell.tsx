@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Globe2, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { brandAssets } from "@/config/brand";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 
@@ -29,9 +31,13 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
         />
         <div className="relative">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <span className="flex size-10 items-center justify-center rounded-lg bg-white/10">
-              <Globe2 className="size-5" />
-            </span>
+            <Image
+              src={brandAssets.icon}
+              alt=""
+              width={40}
+              height={40}
+              className="size-10 shrink-0 rounded-lg"
+            />
             <span className="text-lg font-semibold">{siteConfig.name}</span>
           </Link>
         </div>
@@ -59,7 +65,13 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
               href="/"
               className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-[#0F172A]"
             >
-              <Globe2 className="size-4" />
+              <Image
+                src={brandAssets.icon}
+                alt=""
+                width={20}
+                height={20}
+                className="size-5 shrink-0 rounded"
+              />
               {siteConfig.name}
             </Link>
             <LanguageSwitcher />

@@ -59,6 +59,10 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
+  icons: {
+    icon: [{ url: "/images/logo-icon.png", type: "image/png" }],
+    apple: [{ url: "/images/logo-icon.png", type: "image/png" }],
+  },
 };
 
 function bodyFontClass(locale: Locale): string {

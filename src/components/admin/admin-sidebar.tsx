@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Briefcase,
@@ -9,9 +10,9 @@ import {
   LayoutDashboard,
   Mail,
   Settings,
-  Shield,
   Users,
 } from "lucide-react";
+import { brandAssets } from "@/config/brand";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -49,13 +50,19 @@ export function AdminSidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-[#0F172A] lg:flex">
       <div className="flex items-center gap-2.5 px-5 py-6">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400">
-          <Shield className="size-5" />
-        </span>
-        <div>
-          <p className="text-sm font-semibold text-white">{siteConfig.name}</p>
-          <p className="text-xs text-slate-400">{t("admin.adminLabel")}</p>
-        </div>
+        <Link href="/admin/dashboard" className="flex items-center gap-2.5">
+          <Image
+            src={brandAssets.icon}
+            alt=""
+            width={36}
+            height={36}
+            className="size-9 shrink-0 rounded-lg"
+          />
+          <div>
+            <p className="text-sm font-semibold text-white">{siteConfig.name}</p>
+            <p className="text-xs text-slate-400">{t("admin.adminLabel")}</p>
+          </div>
+        </Link>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-3 pt-2">

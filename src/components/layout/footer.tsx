@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Globe2 } from "lucide-react";
+import Image from "next/image";
 import { useI18n } from "@/context/i18n-provider";
+import { brandAssets } from "@/config/brand";
 import { siteConfig } from "@/config/site";
 
 export function Footer() {
@@ -49,9 +50,13 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-white">
-                <Globe2 className="size-5" aria-hidden />
-              </span>
+              <Image
+                src={brandAssets.icon}
+                alt=""
+                width={36}
+                height={36}
+                className="size-9 shrink-0 rounded-lg"
+              />
               <span className="text-base font-semibold text-white">
                 {siteConfig.name}
               </span>
