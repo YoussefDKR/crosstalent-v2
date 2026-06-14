@@ -76,7 +76,7 @@ export const billingEn = {
     single_post: {
       name: "Single post",
       description: "Post one role for 30 days — pay once, no subscription.",
-      cta: "Post one job — €79",
+      cta: "Post one job",
       features: [
         "1 job post live for 30 days",
         "Listed on the CrossTalent job board",

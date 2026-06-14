@@ -78,7 +78,7 @@ export const billingFr: BillingMessages = {
     single_post: {
       name: "Offre unique",
       description: "Publiez un poste 30 jours — paiement unique, sans abonnement.",
-      cta: "Publier une offre — 79 €",
+      cta: "Publier une offre",
       features: [
         "1 offre en ligne pendant 30 jours",
         "Visible sur le site CrossTalent",

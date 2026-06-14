@@ -228,7 +228,11 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
             {employerSignedIn ? (
               <CheckoutButton
                 planId="single_post"
-                label={planMessages.single_post.cta}
+                label={
+                  "cta" in planMessages.single_post
+                    ? planMessages.single_post.cta
+                    : t("common.signup")
+                }
                 disabled={
                   !stripeReady || !isPlanCheckoutReady("single_post")
                 }
@@ -237,7 +241,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
             ) : (
               <Link href={siteConfig.links.employerSignup}>
                 <Button variant="outline" className="w-full">
-                  {b.signupEmployer}
+                  {t("landing.getStartedFree")}
                 </Button>
               </Link>
             )}

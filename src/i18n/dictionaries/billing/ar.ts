@@ -77,7 +77,7 @@ export const billingAr: BillingMessages = {
     single_post: {
       name: "وظيفة واحدة",
       description: "انشر وظيفة لمدة 30 يوماً — دفعة واحدة دون اشتراك.",
-      cta: "انشر وظيفة — 79 يورو",
+      cta: "انشر وظيفة",
       features: [
         "وظيفة واحدة لمدة 30 يوماً",
         "ظهور على لوحة CrossTalent",
