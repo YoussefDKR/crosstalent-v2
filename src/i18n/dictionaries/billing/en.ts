@@ -4,7 +4,9 @@ export const billingEn = {
     "Candidates always join free. Employers choose a plan when ready to post jobs and scale hiring.",
   billingDashboard: "Billing dashboard",
   freeToStart: "Free to start",
+  oneTimePost: "One-time",
   perMonth: "/ month",
+  perOneTime: " one-time",
   currentTier: "Your current explore tier",
   signupEmployer: "Sign up as employer",
   mostPopular: "Most popular",
@@ -40,11 +42,11 @@ export const billingEn = {
     starter: {
       name: "Starter",
       description:
-        "Company profile and draft jobs. Start a free trial for hiring tools.",
+        "Try CrossTalent with one live job post on the board.",
       features: [
         "Company profile setup",
-        "Draft job posts",
-        "30-day free trial: 1 live job + candidate search",
+        "1 job post live for 10 days",
+        "Candidate search during free access",
       ],
     },
     growth: {
@@ -52,7 +54,7 @@ export const billingEn = {
       description: "For teams hiring regularly across borders.",
       cta: "Start Growth",
       features: [
-        "Up to 5 active job posts",
+        "3 job posts live (30 days each)",
         "Full candidate search & filters",
         "Unlimited messaging",
         "Company profile on job board",
@@ -64,11 +66,22 @@ export const billingEn = {
       description: "For larger hiring programs and multiple roles.",
       cta: "Start Scale",
       features: [
-        "Unlimited job posts",
+        "10 job posts live (30 days each)",
         "Priority candidate search",
         "Unlimited messaging",
         "Dedicated onboarding",
         "Priority support",
+      ],
+    },
+    single_post: {
+      name: "Single post",
+      description: "Post one role for 30 days — pay once, no subscription.",
+      cta: "Post one job — €79",
+      features: [
+        "1 job post live for 30 days",
+        "Listed on the CrossTalent job board",
+        "Apply via your external link",
+        "No monthly commitment",
       ],
     },
   },

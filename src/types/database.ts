@@ -230,6 +230,7 @@ export type Database = {
           languages: string[];
           status: string;
           published_at: string | null;
+          expires_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -255,6 +256,7 @@ export type Database = {
           languages?: string[];
           status?: string;
           published_at?: string | null;
+          expires_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["jobs"]["Insert"]>;
         Relationships: [];
@@ -426,6 +428,7 @@ export type Database = {
           current_period_end: string | null;
           cancel_at_period_end: boolean;
           trial_ends_at: string | null;
+          post_credits: number;
           created_at: string;
           updated_at: string;
         };
@@ -438,6 +441,7 @@ export type Database = {
           current_period_end?: string | null;
           cancel_at_period_end?: boolean;
           trial_ends_at?: string | null;
+          post_credits?: number;
         };
         Update: Partial<
           Database["public"]["Tables"]["employer_subscriptions"]["Insert"]

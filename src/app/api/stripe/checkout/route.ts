@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
-import { EMPLOYER_PLANS, type EmployerPlanId } from "@/config/billing";
+import {
+  CHECKOUT_PLANS,
+  type EmployerPlanId,
+} from "@/config/billing";
 import { getCurrentProfile } from "@/lib/auth/session";
 import {
   getSiteUrl,
   isPlanCheckoutReady,
+  isSinglePostPlan,
   isStripeConfigured,
 } from "@/lib/stripe/config";
 import { getStripe } from "@/lib/stripe/server";
 import { getEmployerBillingState } from "@/lib/billing/queries";
 import { upsertCustomerOnly } from "@/lib/billing/sync";
+
 export async function POST(request: Request) {
   if (!isStripeConfigured()) {
     return NextResponse.json(
@@ -33,7 +38,7 @@ export async function POST(request: Request) {
   }
 
   const planId = body.planId as EmployerPlanId | undefined;
-  const plan = EMPLOYER_PLANS.find((p) => p.id === planId);
+  const plan = CHECKOUT_PLANS.find((p) => p.id === planId);
   if (!plan) {
     return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
   }
@@ -50,6 +55,7 @@ export async function POST(request: Request) {
   const billing = await getEmployerBillingState(profile.id);
   const stripe = getStripe();
   const siteUrl = getSiteUrl();
+  const isOneTime = isSinglePostPlan(plan.id);
 
   let customerId = billing.stripeCustomerId;
   if (!customerId) {
@@ -64,20 +70,24 @@ export async function POST(request: Request) {
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
-    mode: "subscription",
+    mode: isOneTime ? "payment" : "subscription",
     line_items: [{ price: plan.stripePriceId, quantity: 1 }],
-    success_url: `${siteUrl}/employer/billing?success=1`,
+    success_url: `${siteUrl}/employer/billing?success=1${isOneTime ? "&single_post=1" : ""}`,
     cancel_url: `${siteUrl}/employer/billing?canceled=1`,
     metadata: {
       user_id: profile.id,
       plan_id: plan.id,
     },
-    subscription_data: {
-      metadata: {
-        user_id: profile.id,
-        plan_id: plan.id,
-      },
-    },
+    ...(isOneTime
+      ? {}
+      : {
+          subscription_data: {
+            metadata: {
+              user_id: profile.id,
+              plan_id: plan.id,
+            },
+          },
+        }),
   });
 
   if (!session.url) {

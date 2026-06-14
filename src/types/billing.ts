@@ -17,6 +17,7 @@ export type EmployerSubscriptionRow = {
   current_period_end: string | null;
   cancel_at_period_end: boolean;
   trial_ends_at: string | null;
+  post_credits: number;
   created_at: string;
   updated_at: string;
 };
@@ -39,6 +40,7 @@ export type EmployerFeatureAccess = {
   canPublishJobs: boolean;
   publishedJobCount: number;
   publishedJobLimit: number | null;
+  postCredits: number;
   isTrialActive: boolean;
   trialEndsAt: string | null;
   trialDaysRemaining: number | null;

@@ -225,7 +225,7 @@ export const en = {
       "Search North African candidates when your trial or subscription is active.",
     candidatesPremiumTitle: "Candidate search is a premium feature",
     candidatesPremiumDesc:
-      "Subscribe or use your free 30-day trial to browse talent, filter by skills, and message candidates.",
+      "Subscribe or use your free access to browse talent, filter by skills, and message candidates.",
     trialIncludesSearch:
       "Free trial · {days} day left · includes candidate search and {limit} published job",
     trialIncludesSearchPlural:
@@ -386,16 +386,22 @@ export const en = {
       subtitle: "Manage your CrossTalent employer subscription.",
       trialActive: "Free {days}-day trial active",
       trialIncludes:
-        "Includes candidate search and {limit} published job on the board",
+        "Includes candidate search and {limit} live job (10 days) on the board",
       daysRemaining: "· {days} day remaining",
       daysRemainingPlural: "· {days} days remaining",
       jobsLive: "· {count}/{limit} job live",
       jobsLivePlural: "· {count}/{limit} jobs live",
       noActiveTrial: "No active trial",
       noActiveTrialDesc:
-        "New employers receive a {days}-day trial automatically. Subscribe to Growth or Scale for ongoing candidate access and more job posts.",
+        "New employers receive {days} days of free access automatically. Subscribe to Growth or Scale, or buy a single post for ongoing hiring.",
       paymentReceived:
         "Payment received — your plan will update shortly. Refresh if status does not change in a minute.",
+      singlePostReceived:
+        "Payment received — 1 job post credit added. Publish a job from Jobs to use it (live for 30 days).",
+      postCredits: "{count} job post credit available",
+      postCreditsPlural: "{count} job post credits available",
+      postCreditsDesc:
+        "Each credit publishes one job on the board for 30 days. No subscription required.",
       checkoutCanceled: "Checkout canceled. You can subscribe anytime below.",
       currentPlan: "Current plan",
       statusLabel: "Status: {status}",

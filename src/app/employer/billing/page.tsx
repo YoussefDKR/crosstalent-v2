@@ -29,7 +29,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type BillingPageProps = {
-  searchParams: Promise<{ success?: string; canceled?: string }>;
+  searchParams: Promise<{
+    success?: string;
+    canceled?: string;
+    single_post?: string;
+  }>;
 };
 
 export default async function EmployerBillingPage({
@@ -57,6 +61,22 @@ export default async function EmployerBillingPage({
       description={t("employer.billing.subtitle")}
     >
       <StripeSetupBanner />
+
+      {access.postCredits > 0 && (
+        <div className="mb-6 rounded-xl border border-[#10B981]/25 bg-[#ECFDF5] px-5 py-4">
+          <p className="font-semibold text-[#0F172A]">
+            {t(
+              access.postCredits === 1
+                ? "employer.billing.postCredits"
+                : "employer.billing.postCreditsPlural",
+              { count: access.postCredits }
+            )}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("employer.billing.postCreditsDesc")}
+          </p>
+        </div>
+      )}
 
       {billing.isTrialActive && (
         <div className="mb-6 rounded-xl border border-[#2563EB]/20 bg-[#EFF6FF] px-5 py-4">
@@ -111,7 +131,9 @@ export default async function EmployerBillingPage({
 
       {params.success === "1" && (
         <p className="mb-6 rounded-lg bg-[#10B981]/10 px-4 py-3 text-sm text-[#047857]">
-          {t("employer.billing.paymentReceived")}
+          {params.single_post === "1"
+            ? t("employer.billing.singlePostReceived")
+            : t("employer.billing.paymentReceived")}
         </p>
       )}
       {params.canceled === "1" && (
@@ -178,7 +200,7 @@ export default async function EmployerBillingPage({
                       {planCopy.name}
                     </p>
                     <p className="text-2xl font-semibold mt-1">
-                      €{plan.monthlyPrice}
+                      €{plan.price}
                       <span className="text-sm font-normal text-muted-foreground">
                         {t("billing.perMonth")}
                       </span>

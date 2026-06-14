@@ -72,6 +72,32 @@ export async function upsertSubscriptionFromStripe(
   if (error) throw error;
 }
 
+export async function addPostCredit(userId: string, credits: number) {
+  const admin = createAdminClient();
+  const { data: existing } = await admin
+    .from("employer_subscriptions")
+    .select("post_credits")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await admin
+      .from("employer_subscriptions")
+      .update({ post_credits: (existing.post_credits ?? 0) + credits })
+      .eq("user_id", userId);
+    if (error) throw error;
+    return;
+  }
+
+  const { error } = await admin.from("employer_subscriptions").insert({
+    user_id: userId,
+    plan_id: "starter",
+    status: "inactive",
+    post_credits: credits,
+  });
+  if (error) throw error;
+}
+
 export async function upsertCustomerOnly(
   userId: string,
   stripeCustomerId: string

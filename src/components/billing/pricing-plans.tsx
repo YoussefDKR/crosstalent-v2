@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { animate, motion, useInView } from "framer-motion";
 import { CheckoutButton } from "@/components/billing/checkout-button";
-import { EMPLOYER_PLANS } from "@/config/billing";
+import { EMPLOYER_PLANS, SINGLE_POST_PLAN } from "@/config/billing";
 import { isPlanCheckoutReady, isStripeConfigured } from "@/lib/stripe/config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -103,10 +103,11 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
     starter: b.plans.starter,
     growth: b.plans.growth,
     scale: b.plans.scale,
+    single_post: b.plans.single_post,
   } as const;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-3">
+    <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
       <PricingPlanCard>
         <CardContent className="flex h-full flex-col p-8">
           <p className="text-sm font-medium text-[#2563EB]">{b.freeToStart}</p>
@@ -148,7 +149,7 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
         const planCopy = planMessages[plan.id as keyof typeof planMessages];
         const checkoutReady = stripeReady && isPlanCheckoutReady(plan.id);
         const disabledReason = !stripeReady ? b.stripeNotReady : undefined;
-        const price = plan.monthlyPrice ?? 0;
+        const price = plan.price ?? 0;
 
         return (
           <PricingPlanCard key={plan.id} highlighted={plan.highlighted}>
@@ -201,6 +202,48 @@ export function PricingPlans({ employerSignedIn = false }: PricingPlansProps) {
           </PricingPlanCard>
         );
       })}
+
+      <PricingPlanCard>
+        <CardContent className="flex h-full flex-col p-8">
+          <p className="text-sm font-medium text-[#2563EB]">{b.oneTimePost}</p>
+          <h3 className="mt-2 text-2xl font-semibold text-[#0F172A] transition-colors duration-300 group-hover:text-[#2563EB]">
+            {planMessages.single_post.name}
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {planMessages.single_post.description}
+          </p>
+          <p className="mt-6">
+            <AnimatedPrice value={SINGLE_POST_PLAN.price ?? 79} delay={0.5} />
+            <span className="text-muted-foreground">{b.perOneTime}</span>
+          </p>
+          <ul className="mt-6 flex-1 space-y-3">
+            {planMessages.single_post.features.map((f) => (
+              <li key={f} className="flex gap-2 text-sm text-[#0F172A]/85">
+                <Check className="size-4 shrink-0 text-[#10B981]" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            {employerSignedIn ? (
+              <CheckoutButton
+                planId="single_post"
+                label={planMessages.single_post.cta}
+                disabled={
+                  !stripeReady || !isPlanCheckoutReady("single_post")
+                }
+                disabledReason={!stripeReady ? b.stripeNotReady : undefined}
+              />
+            ) : (
+              <Link href={siteConfig.links.employerSignup}>
+                <Button variant="outline" className="w-full">
+                  {b.signupEmployer}
+                </Button>
+              </Link>
+            )}
+          </div>
+        </CardContent>
+      </PricingPlanCard>
     </div>
   );
 }

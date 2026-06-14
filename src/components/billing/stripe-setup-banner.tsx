@@ -7,14 +7,14 @@ import {
   isStripeConfigured,
   isStripeWebhookConfigured,
 } from "@/lib/stripe/config";
-import { EMPLOYER_PLANS } from "@/config/billing";
+import { CHECKOUT_PLANS } from "@/config/billing";
 
 export function StripeSetupBanner() {
   const { messages } = useI18n();
   const b = messages.billing;
 
   if (isStripeConfigured()) {
-    const missingPrices = EMPLOYER_PLANS.filter((p) => !p.stripePriceId);
+    const missingPrices = CHECKOUT_PLANS.filter((p) => !p.stripePriceId);
     if (missingPrices.length === 0 && isStripeWebhookConfigured()) {
       return null;
     }

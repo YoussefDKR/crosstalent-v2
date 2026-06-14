@@ -1,4 +1,4 @@
-import { EMPLOYER_PLANS } from "@/config/billing";
+import { CHECKOUT_PLANS, SINGLE_POST_PLAN } from "@/config/billing";
 
 export function isStripeConfigured(): boolean {
   return Boolean(
@@ -13,12 +13,16 @@ export function isStripeWebhookConfigured(): boolean {
   );
 }
 
-/** True when a paid plan has a Stripe Price ID in env. */
+/** True when a plan has a Stripe Price ID in env. */
 export function isPlanCheckoutReady(planId: string): boolean {
-  const plan = EMPLOYER_PLANS.find((p) => p.id === planId);
+  const plan = CHECKOUT_PLANS.find((p) => p.id === planId);
   return Boolean(plan?.stripePriceId);
 }
 
 export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001";
+}
+
+export function isSinglePostPlan(planId: string): boolean {
+  return planId === SINGLE_POST_PLAN.id;
 }

@@ -7,6 +7,7 @@ export function localizedPlanName(
 ): string {
   if (planId === "growth") return billing.plans.growth.name;
   if (planId === "scale") return billing.plans.scale.name;
+  if (planId === "single_post") return billing.plans.single_post.name;
   return billing.plans.starter.name;
 }
 

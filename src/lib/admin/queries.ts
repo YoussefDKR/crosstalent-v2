@@ -20,7 +20,7 @@ import type { UserRole } from "@/types";
 function planMonthlyValue(planId: string): number {
   if (planId === STARTER_PLAN.id) return 0;
   const plan = EMPLOYER_PLANS.find((p) => p.id === planId);
-  return plan?.monthlyPrice ?? 0;
+  return plan?.price ?? 0;
 }
 
 function countsTowardMrr(status: SubscriptionStatus): boolean {

@@ -51,14 +51,17 @@ export default function StripeDocsPage() {
           <h2 className="text-lg font-semibold text-[#0F172A]">
             2. Create products & prices
           </h2>
-          <p>In Stripe Dashboard → Products, create two recurring prices:</p>
+          <p>In Stripe Dashboard → Products, create:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>
-              <strong>Growth</strong> — e.g. €199/month → copy the Price ID
+              <strong>Growth</strong> — €199/month recurring → copy the Price ID
               (starts with <code>price_</code>)
             </li>
             <li>
-              <strong>Scale</strong> — e.g. €499/month → copy the Price ID
+              <strong>Scale</strong> — €499/month recurring → copy the Price ID
+            </li>
+            <li>
+              <strong>Single post</strong> — €79 one-time → copy the Price ID
             </li>
           </ul>
         </section>
@@ -74,6 +77,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 STRIPE_PRICE_GROWTH=price_...
 STRIPE_PRICE_SCALE=price_...
+STRIPE_PRICE_SINGLE_POST=price_...
 
 SUPABASE_SERVICE_ROLE_KEY=...  # required for webhooks`}
           </pre>

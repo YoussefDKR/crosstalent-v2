@@ -4,6 +4,7 @@ import type { EmployerPlanId } from "@/config/billing";
 import {
   upsertCustomerOnly,
   upsertSubscriptionFromStripe,
+  addPostCredit,
 } from "@/lib/billing/sync";
 import { isStripeWebhookConfigured } from "@/lib/stripe/config";
 import { getStripe } from "@/lib/stripe/server";
@@ -54,6 +55,13 @@ export async function POST(request: Request) {
             session.metadata?.user_id,
             session.metadata?.plan_id as EmployerPlanId | undefined
           );
+        }
+        if (
+          session.mode === "payment" &&
+          session.metadata?.plan_id === "single_post" &&
+          session.metadata?.user_id
+        ) {
+          await addPostCredit(session.metadata.user_id, 1);
         }
         if (session.customer && session.metadata?.user_id) {
           const customerId =

@@ -6,7 +6,9 @@ export const billingFr: BillingMessages = {
     "Les candidats rejoignent toujours gratuitement. Les employeurs choisissent une offre quand ils sont prêts à publier.",
   billingDashboard: "Tableau de bord facturation",
   freeToStart: "Gratuit pour commencer",
+  oneTimePost: "Paiement unique",
   perMonth: "/ mois",
+  perOneTime: " paiement unique",
   currentTier: "Votre offre d'exploration actuelle",
   signupEmployer: "S'inscrire comme employeur",
   mostPopular: "Le plus populaire",
@@ -42,11 +44,11 @@ export const billingFr: BillingMessages = {
     starter: {
       name: "Starter",
       description:
-        "Profil entreprise et brouillons d'offres. Essai gratuit pour les outils de recrutement.",
+        "Essayez CrossTalent avec une offre en ligne sur le site.",
       features: [
         "Configuration du profil entreprise",
-        "Brouillons d'offres",
-        "Essai 30 jours : 1 offre live + recherche candidats",
+        "1 offre en ligne pendant 10 jours",
+        "Recherche candidats pendant l'accès gratuit",
       ],
     },
     growth: {
@@ -54,7 +56,7 @@ export const billingFr: BillingMessages = {
       description: "Pour les équipes qui recrutent régulièrement au-delà des frontières.",
       cta: "Démarrer Growth",
       features: [
-        "Jusqu'à 5 offres actives",
+        "3 offres en ligne (30 jours chacune)",
         "Recherche candidats complète",
         "Messagerie illimitée",
         "Profil entreprise sur le site",
@@ -66,11 +68,22 @@ export const billingFr: BillingMessages = {
       description: "Pour les programmes de recrutement plus importants.",
       cta: "Démarrer Scale",
       features: [
-        "Offres illimitées",
+        "10 offres en ligne (30 jours chacune)",
         "Recherche candidats prioritaire",
         "Messagerie illimitée",
         "Onboarding dédié",
         "Support prioritaire",
+      ],
+    },
+    single_post: {
+      name: "Offre unique",
+      description: "Publiez un poste 30 jours — paiement unique, sans abonnement.",
+      cta: "Publier une offre — 79 €",
+      features: [
+        "1 offre en ligne pendant 30 jours",
+        "Visible sur le site CrossTalent",
+        "Candidature via votre lien externe",
+        "Sans engagement mensuel",
       ],
     },
   },

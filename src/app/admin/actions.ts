@@ -237,7 +237,7 @@ export async function adminUpdateEmployerSubscription(
 ): Promise<AdminActionResult> {
   await requireAdminProfile();
 
-  const validPlans = ["starter", "growth", "scale"];
+  const validPlans = ["starter", "growth", "scale", "single_post"];
   const validStatuses = [
     "inactive",
     "trialing",
@@ -270,7 +270,7 @@ export async function adminUpdateEmployerSubscription(
     status: input.status,
     trial_ends_at:
       input.status === "trialing"
-        ? input.trialEndsAt ?? new Date(Date.now() + 30 * 86400000).toISOString()
+        ? input.trialEndsAt ?? new Date(Date.now() + 10 * 86400000).toISOString()
         : null,
   };
 

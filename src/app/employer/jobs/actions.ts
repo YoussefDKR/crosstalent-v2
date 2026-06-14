@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import {
+  computeJobExpiresAt,
+  consumePostCredit,
   getEmployerFeatureAccess,
   publishBlockedMessage,
+  resolvePublishEntitlement,
 } from "@/lib/billing/access";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { parseSkillsParam } from "@/lib/jobs/queries";
@@ -16,6 +19,14 @@ export type JobActionResult = {
   error?: string;
   success?: string;
 };
+
+function isPublishFieldsOk(
+  result:
+    | { published_at: string | null; expires_at: string | null }
+    | JobActionResult
+): result is { published_at: string | null; expires_at: string | null } {
+  return "published_at" in result;
+}
 
 export type JobFormIntent =
   | "draft"
@@ -74,18 +85,82 @@ function resolveJobStatus(
 
 function applyPublishTimestamps(
   status: JobStatus,
-  existingPublishedAt: string | null
-): { status: JobStatus; published_at: string | null } {
+  existingPublishedAt: string | null,
+  expiresAt: string | null
+): {
+  status: JobStatus;
+  published_at: string | null;
+  expires_at: string | null;
+} {
   if (status === "published") {
     return {
       status,
       published_at: existingPublishedAt ?? new Date().toISOString(),
+      expires_at: expiresAt,
     };
   }
   if (status === "draft") {
-    return { status, published_at: null };
+    return { status, published_at: null, expires_at: null };
   }
-  return { status, published_at: existingPublishedAt };
+  return { status, published_at: existingPublishedAt, expires_at: expiresAt };
+}
+
+async function publishFields(
+  employerId: string,
+  status: JobStatus,
+  previousStatus: JobStatus,
+  existingPublishedAt: string | null,
+  existingExpiresAt: string | null
+): Promise<
+  | { published_at: string | null; expires_at: string | null }
+  | JobActionResult
+> {
+  if (status !== "published") {
+    const expires_at = status === "draft" ? null : existingExpiresAt;
+    const fields = applyPublishTimestamps(status, existingPublishedAt, expires_at);
+    return {
+      published_at: fields.published_at,
+      expires_at: fields.expires_at,
+    };
+  }
+
+  const isNewPublish = previousStatus !== "published";
+  if (!isNewPublish) {
+    const fields = applyPublishTimestamps(
+      status,
+      existingPublishedAt,
+      existingExpiresAt
+    );
+    return {
+      published_at: fields.published_at,
+      expires_at: fields.expires_at,
+    };
+  }
+
+  const entitlement = await resolvePublishEntitlement(employerId);
+  if (!entitlement) {
+    const access = await getEmployerFeatureAccess(employerId);
+    return { error: publishBlockedMessage(access) };
+  }
+
+  const access = await getEmployerFeatureAccess(employerId);
+  if (!access.canPublishJobs) {
+    return { error: publishBlockedMessage(access) };
+  }
+
+  if (entitlement.usesPostCredit) {
+    const consumed = await consumePostCredit(employerId);
+    if (!consumed) {
+      return { error: "No post credits available. Buy a single post to publish." };
+    }
+  }
+
+  const expires_at = computeJobExpiresAt(entitlement.durationDays);
+  const fields = applyPublishTimestamps(status, existingPublishedAt, expires_at);
+  return {
+    published_at: fields.published_at,
+    expires_at: fields.expires_at,
+  };
 }
 
 function parseJobForm(formData: FormData, currentStatus: JobStatus = "draft") {
@@ -141,7 +216,15 @@ export async function createJob(
     const blocked = await publishGuard(employerId, status);
     if (blocked) return blocked;
 
-    const { published_at } = applyPublishTimestamps(status, null);
+    const publishResult = await publishFields(
+      employerId,
+      status,
+      "draft",
+      null,
+      null
+    );
+    if (!isPublishFieldsOk(publishResult)) return publishResult;
+    const { published_at, expires_at } = publishResult;
 
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -163,6 +246,7 @@ export async function createJob(
         languages: parsed.languages,
         status,
         published_at,
+        expires_at,
       })
       .select("id")
       .single();
@@ -188,7 +272,7 @@ export async function updateJob(
 
     const { data: existing, error: fetchError } = await supabase
       .from("jobs")
-      .select("status, published_at")
+      .select("status, published_at, expires_at")
       .eq("id", jobId)
       .eq("employer_id", employerId)
       .maybeSingle();
@@ -213,10 +297,15 @@ export async function updateJob(
     );
     if (blocked) return blocked;
 
-    const { published_at } = applyPublishTimestamps(
+    const publishResult = await publishFields(
+      employerId,
       parsed.status,
-      existing.published_at
+      existing.status as JobStatus,
+      existing.published_at,
+      existing.expires_at
     );
+    if (!isPublishFieldsOk(publishResult)) return publishResult;
+    const { published_at, expires_at } = publishResult;
 
     const { error } = await supabase
       .from("jobs")
@@ -236,6 +325,7 @@ export async function updateJob(
         languages: parsed.languages,
         status: parsed.status,
         published_at,
+        expires_at,
       })
       .eq("id", jobId)
       .eq("employer_id", employerId);
@@ -269,7 +359,7 @@ async function setJobStatus(
 
     const { data: existing } = await supabase
       .from("jobs")
-      .select("published_at, status")
+      .select("published_at, status, expires_at")
       .eq("id", jobId)
       .eq("employer_id", employerId)
       .maybeSingle();
@@ -283,14 +373,19 @@ async function setJobStatus(
     );
     if (blocked) return blocked;
 
-    const { published_at } = applyPublishTimestamps(
+    const publishResult = await publishFields(
+      employerId,
       status,
-      existing.published_at
+      existing.status as JobStatus,
+      existing.published_at,
+      existing.expires_at
     );
+    if (!isPublishFieldsOk(publishResult)) return publishResult;
+    const { published_at, expires_at } = publishResult;
 
     const { error } = await supabase
       .from("jobs")
-      .update({ status, published_at })
+      .update({ status, published_at, expires_at })
       .eq("id", jobId)
       .eq("employer_id", employerId);
 

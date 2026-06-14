@@ -93,6 +93,7 @@ export async function listPublishedJobs(
     .from("jobs")
     .select("*")
     .eq("status", "published")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .order("published_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
@@ -158,6 +159,7 @@ export async function getPublishedJob(
     .select("*")
     .eq("id", id)
     .eq("status", "published")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .maybeSingle();
 
   if (error || !data) return null;

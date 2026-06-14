@@ -410,6 +410,12 @@ export const fr: Messages = {
         "Les nouveaux employeurs reçoivent automatiquement un essai de {days} jours. Abonnez-vous à Growth ou Scale pour un accès continu aux candidats et plus d'offres.",
       paymentReceived:
         "Paiement reçu — votre offre sera mise à jour sous peu. Actualisez si le statut ne change pas dans une minute.",
+      singlePostReceived:
+        "Paiement reçu — 1 crédit de publication ajouté. Publiez une offre depuis Offres (en ligne 30 jours).",
+      postCredits: "{count} crédit de publication disponible",
+      postCreditsPlural: "{count} crédits de publication disponibles",
+      postCreditsDesc:
+        "Chaque crédit publie une offre sur le site pendant 30 jours. Sans abonnement.",
       checkoutCanceled:
         "Paiement annulé. Vous pouvez vous abonner à tout moment ci-dessous.",
       currentPlan: "Offre actuelle",
