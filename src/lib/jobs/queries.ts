@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isVisiblePublishedJob } from "@/lib/jobs/import-quality";
 import type {
   EmploymentType,
   ExperienceLevel,
@@ -129,7 +130,7 @@ export async function listPublishedJobs(
 
   if (!data) return { jobs: [] };
 
-  const jobs = data as JobRow[];
+  const jobs = (data as JobRow[]).filter(isVisiblePublishedJob);
 
   if (filters.q) {
     const q = filters.q.toLowerCase();
@@ -161,7 +162,10 @@ export async function getPublishedJob(
 
   if (error || !data) return null;
 
-  const [job] = await attachCompanies([data as JobRow]);
+  const row = data as JobRow;
+  if (!isVisiblePublishedJob(row)) return null;
+
+  const [job] = await attachCompanies([row]);
   return job ?? null;
 }
 

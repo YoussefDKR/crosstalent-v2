@@ -11,7 +11,7 @@ export function isLowQualityImportedListing(
 
   if (
     haystack.includes("please mention the word") &&
-    haystack.includes("when applying to show you read the job post")
+    haystack.includes("when applying to show you read")
   ) {
     return true;
   }
@@ -20,9 +20,29 @@ export function isLowQualityImportedListing(
     return true;
   }
 
+  if (haystack.includes("companies can search these words to find applicants")) {
+    return true;
+  }
+
   if (haystack.includes("posted ") && haystack.includes("see this and similar")) {
     return true;
   }
 
   return false;
+}
+
+export function isVisiblePublishedJob(job: {
+  source_type: string;
+  status: string;
+  title: string;
+  description: string;
+}): boolean {
+  if (job.status !== "published") return false;
+  if (
+    job.source_type === "rss" &&
+    isLowQualityImportedListing(job.title, job.description)
+  ) {
+    return false;
+  }
+  return true;
 }
