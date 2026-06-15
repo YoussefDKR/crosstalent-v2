@@ -53,11 +53,9 @@ export function CandidateSidebar({ footer }: CandidateSidebarProps) {
         p === "/" || p === "/jobs" || p.startsWith("/jobs/"),
     },
     {
-      href: "/candidate/dashboard",
+      href: "/candidate/applications",
       label: t("nav.myApplications"),
       icon: Briefcase,
-      disabled: true,
-      badge: t("common.soon"),
     },
     {
       href: "/candidate/saved-jobs",
@@ -87,25 +85,8 @@ export function CandidateSidebar({ footer }: CandidateSidebarProps) {
 
       <nav className="flex flex-1 flex-col gap-1" aria-label="Candidate">
         {links.map((item) => {
-          const active = !item.disabled && isActive(pathname, item.href, item.match);
+          const active = isActive(pathname, item.href, item.match);
           const Icon = item.icon;
-
-          if (item.disabled) {
-            return (
-              <span
-                key={item.label}
-                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/35"
-              >
-                <Icon className="size-4 shrink-0" />
-                {item.label}
-                {item.badge && (
-                  <span className="ml-auto rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
-                    {item.badge}
-                  </span>
-                )}
-              </span>
-            );
-          }
 
           return (
             <Link

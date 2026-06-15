@@ -3,29 +3,37 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { applyToJob } from "@/app/applications/actions";
-import { applicationStatusLabel } from "@/lib/applications/labels";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
+import type { ApplyBlockerKey } from "@/lib/candidate/apply-readiness";
 import type { ApplicationStatus } from "@/types/applications";
 
 type ApplyToJobButtonProps = {
   jobId: string;
   applied: boolean;
   status: ApplicationStatus | null;
+  applyBlockers?: ApplyBlockerKey[];
 };
 
 export function ApplyToJobButton({
   jobId,
   applied,
   status,
+  applyBlockers = [],
 }: ApplyToJobButtonProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const { t } = useI18n();
+
+  const statusLabels: Record<ApplicationStatus, string> = {
+    pending: t("jobs.applicationStatus.pending"),
+    accepted: t("jobs.applicationStatus.accepted"),
+    rejected: t("jobs.applicationStatus.rejected"),
+  };
 
   if (applied && status) {
     return (
@@ -33,8 +41,30 @@ export function ApplyToJobButton({
         <CheckCircle2 className="size-5 text-emerald-600" />
         <span>
           {t("jobs.applicationSubmitted")}{" "}
-          <span className="font-medium">{applicationStatusLabel(status)}</span>
+          <span className="font-medium">{statusLabels[status]}</span>
         </span>
+      </div>
+    );
+  }
+
+  if (applyBlockers.length > 0) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-start gap-2 text-sm text-amber-900">
+          <AlertCircle className="mt-0.5 size-5 shrink-0 text-amber-600" />
+          <div>
+            <p className="font-medium text-[#0F172A]">{t("jobs.applyNotReadyTitle")}</p>
+            <p className="mt-1 text-muted-foreground">{t("jobs.applyNotReadyDesc")}</p>
+            <ul className="mt-2 list-inside list-disc text-muted-foreground">
+              {applyBlockers.map((key) => (
+                <li key={key}>{t(`jobs.applyBlockers.${key}`)}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <Link href="/candidate/profile">
+          <Button variant="brand">{t("jobs.completeProfileToApply")}</Button>
+        </Link>
       </div>
     );
   }
@@ -95,6 +125,7 @@ type JobApplySectionProps = {
     applied: boolean;
     status: ApplicationStatus | null;
   };
+  applyBlockers?: ApplyBlockerKey[];
   saveJobSlot?: React.ReactNode;
 };
 
@@ -104,6 +135,7 @@ export function JobApplySection({
   externalUrl,
   externalSourceLabel,
   application,
+  applyBlockers = [],
   saveJobSlot,
 }: JobApplySectionProps) {
   const { t } = useI18n();
@@ -143,6 +175,7 @@ export function JobApplySection({
             jobId={jobId}
             applied={application.applied}
             status={application.status}
+            applyBlockers={applyBlockers}
           />
           {saveJobSlot}
         </div>

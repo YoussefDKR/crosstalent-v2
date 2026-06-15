@@ -35,3 +35,13 @@ export type CandidateApplicationStatus = {
   status: ApplicationStatus | null;
   applicationId: string | null;
 };
+
+export type CandidateApplicationListItem = {
+  id: string;
+  status: ApplicationStatus;
+  createdAt: string;
+  jobId: string;
+  jobTitle: string;
+  companyName: string | null;
+  companyLogoUrl: string | null;
+};

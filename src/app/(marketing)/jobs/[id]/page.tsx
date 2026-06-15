@@ -16,11 +16,16 @@ import { formatJobDescription } from "@/lib/jobs/import-helpers";
 import { getPublishedJob } from "@/lib/jobs/queries";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getCandidateApplicationForJob } from "@/lib/applications/queries";
+import { getApplyBlockers } from "@/lib/candidate/apply-readiness";
+import { getCandidateProfileData } from "@/lib/candidate/queries";
 import { getSavedJobIds } from "@/lib/candidate/saved-jobs";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";
+import { JobPostingJsonLd } from "@/components/jobs/job-posting-json-ld";
 import { SaveJobButton } from "@/components/jobs/save-job-button";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
+import { metaDescriptionFromJob } from "@/lib/seo/job-posting";
 import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
+import { siteConfig } from "@/config/site";
 import { getServerI18n } from "@/i18n/server";
 
 type JobDetailPageProps = {
@@ -32,8 +37,29 @@ export async function generateMetadata({
 }: JobDetailPageProps): Promise<Metadata> {
   const { id } = await params;
   const job = await getPublishedJob(id);
+  if (!job) return { title: "Job" };
+
+  const companyName = job.company_name ?? "Company";
+  const title = `${job.title} at ${companyName}`;
+  const description = metaDescriptionFromJob(job);
+  const canonical = `${siteConfig.url.replace(/\/$/, "")}/jobs/${id}`;
+
   return {
-    title: job ? `${job.title} at ${job.company_name ?? "Company"}` : "Job",
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: "website",
+      images: [{ url: siteConfig.ogImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -48,6 +74,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     profile?.role === "candidate"
       ? await getCandidateApplicationForJob(profile.id, id)
       : { applied: false, status: null, applicationId: null };
+  const applyBlockers =
+    profile?.role === "candidate" && !application.applied
+      ? getApplyBlockers(await getCandidateProfileData(profile))
+      : [];
   const savedJobIds =
     profile?.role === "candidate"
       ? await getSavedJobIds(profile.id)
@@ -61,6 +91,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   return (
     <>
+      <JobPostingJsonLd job={job} />
       <MarketingPageHero
         eyebrow={companyName}
         title={job.title}
@@ -185,6 +216,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               externalUrl={isRssJob(job) ? job.external_url : null}
               externalSourceLabel={rssSourceLabel(job.external_source)}
               application={application}
+              applyBlockers={applyBlockers}
               saveJobSlot={
                 profile?.role === "candidate" ? (
                   <SaveJobButton

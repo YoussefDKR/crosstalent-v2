@@ -64,6 +64,10 @@ export const candidateEn = {
   settingsDeleteTitle: "Delete account",
   settingsDeleteDesc: "Permanently remove your account after email confirmation.",
   mobileNavAria: "Candidate mobile",
+  applicationsSubtitle: "Track every role you've applied to and its status.",
+  noApplications: "No applications yet",
+  noApplicationsHint: "When you apply to a job, it will show up here with its status.",
+  appliedOn: "Applied on",
   completionItems: {
     name: "Full name (Settings)",
     photo: "Profile photo (Settings)",

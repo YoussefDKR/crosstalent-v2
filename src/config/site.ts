@@ -26,6 +26,7 @@ export const siteConfig = {
     employerCandidates: "/employer/candidates",
     employerMessages: "/employer/messages",
     candidateMessages: "/candidate/messages",
+    candidateApplications: "/candidate/applications",
     candidateSettings: "/candidate/settings",
     employerBilling: "/employer/billing",
     employerSettings: "/employer/settings",

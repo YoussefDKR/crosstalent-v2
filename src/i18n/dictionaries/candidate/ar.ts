@@ -61,6 +61,10 @@ export const candidateAr: CandidateMessages = {
   settingsDeleteTitle: "حذف الحساب",
   settingsDeleteDesc: "احذف حسابك نهائياً بعد التأكيد بالبريد الإلكتروني.",
   mobileNavAria: "تنقل المرشح على الجوال",
+  applicationsSubtitle: "تابع كل الوظائف التي تقدمت إليها وحالتها.",
+  noApplications: "لا توجد طلبات بعد",
+  noApplicationsHint: "عند التقديم لوظيفة، ستظهر هنا مع حالتها.",
+  appliedOn: "تاريخ التقديم",
   completionItems: {
     name: "الاسم الكامل (الإعدادات)",
     photo: "صورة الملف (الإعدادات)",

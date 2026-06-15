@@ -18,6 +18,7 @@ export function CandidateMobileNav() {
       label: t("nav.jobs"),
       match: (p: string) => p === "/" || p.startsWith("/jobs"),
     },
+    { href: "/candidate/applications", label: t("nav.myApplications") },
     { href: siteConfig.links.candidateMessages, label: t("nav.messages") },
     { href: "/candidate/settings", label: t("nav.settings") },
   ];

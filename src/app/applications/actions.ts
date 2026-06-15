@@ -4,8 +4,19 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { canApplyToJobs, getApplyBlockers } from "@/lib/candidate/apply-readiness";
+import { getCandidateProfileData } from "@/lib/candidate/queries";
+import {
+  sendApplicationAcceptedToCandidate,
+  sendApplicationRejectedToCandidate,
+  sendNewApplicationToEmployer,
+} from "@/lib/email/send-application-emails";
 import { findConversationWithCandidate } from "@/lib/messaging/queries";
+import { attachCompanies } from "@/lib/jobs/queries";
 import { createClient } from "@/lib/supabase/server";
+import { getServerI18n } from "@/i18n/server";
+import { siteConfig } from "@/config/site";
+import type { JobRow } from "@/types/jobs";
 import type { ApplicationStatus } from "@/types/applications";
 
 export type ApplicationActionResult = {
@@ -16,6 +27,7 @@ export type ApplicationActionResult = {
 function revalidateApplicationPaths() {
   revalidatePath("/");
   revalidatePath("/employer/dashboard");
+  revalidatePath("/candidate/applications");
   revalidatePath("/jobs", "layout");
 }
 
@@ -27,11 +39,21 @@ export async function applyToJob(
     return { error: "Sign in as a candidate to apply." };
   }
 
+  const candidateData = await getCandidateProfileData(profile);
+  if (!canApplyToJobs(candidateData)) {
+    const { t } = await getServerI18n();
+    const blockers = getApplyBlockers(candidateData);
+    const labels = blockers.map((key) => t(`jobs.applyBlockers.${key}`));
+    return {
+      error: `${t("jobs.applyNotReady")} ${labels.join(", ")}.`,
+    };
+  }
+
   const supabase = await createClient();
 
   const { data: job } = await supabase
     .from("jobs")
-    .select("id, status")
+    .select("id, title, status, employer_id")
     .eq("id", jobId)
     .eq("status", "published")
     .maybeSingle();
@@ -40,10 +62,14 @@ export async function applyToJob(
     return { error: "This job is not open for applications." };
   }
 
-  const { error } = await supabase.from("job_applications").insert({
-    job_id: jobId,
-    candidate_id: profile.id,
-  });
+  const { data: inserted, error } = await supabase
+    .from("job_applications")
+    .insert({
+      job_id: jobId,
+      candidate_id: profile.id,
+    })
+    .select("id")
+    .single();
 
   if (error) {
     if (error.code === "23505") {
@@ -54,7 +80,48 @@ export async function applyToJob(
 
   revalidateApplicationPaths();
   revalidatePath(`/jobs/${jobId}`);
+
+  void notifyEmployerOfNewApplication({
+    applicationId: inserted.id,
+    jobId,
+    jobTitle: job.title,
+    employerId: job.employer_id,
+    candidateName: profile.fullName ?? profile.email ?? "Candidate",
+  });
+
   return { success: "Application submitted!" };
+}
+
+async function notifyEmployerOfNewApplication(payload: {
+  applicationId: string;
+  jobId: string;
+  jobTitle: string;
+  employerId: string | null;
+  candidateName: string;
+}) {
+  if (!payload.employerId) return;
+
+  try {
+    const supabase = await createClient();
+    const { data: employer } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", payload.employerId)
+      .maybeSingle();
+
+    if (!employer?.email) return;
+
+    const appUrl = siteConfig.url.replace(/\/$/, "");
+    await sendNewApplicationToEmployer({
+      toEmail: employer.email,
+      employerName: employer.full_name ?? "there",
+      candidateName: payload.candidateName,
+      jobTitle: payload.jobTitle,
+      applicationUrl: `${appUrl}${siteConfig.links.employerApplications}/${payload.applicationId}`,
+    });
+  } catch (e) {
+    console.error("Failed to send new application email:", e);
+  }
 }
 
 export async function updateApplicationStatus(
@@ -74,7 +141,7 @@ export async function updateApplicationStatus(
 
   const { data: app } = await supabase
     .from("job_applications")
-    .select("id, job_id")
+    .select("id, job_id, candidate_id")
     .eq("id", applicationId)
     .maybeSingle();
 
@@ -99,9 +166,59 @@ export async function updateApplicationStatus(
 
   revalidateApplicationPaths();
   revalidatePath(`/employer/applications/${applicationId}`);
+
+  void notifyCandidateOfStatusChange({
+    applicationId,
+    candidateId: app.candidate_id,
+    jobId: app.job_id,
+    status,
+  });
+
   return {
     success: status === "accepted" ? "Application accepted." : "Application declined.",
   };
+}
+
+async function notifyCandidateOfStatusChange(payload: {
+  applicationId: string;
+  candidateId: string;
+  jobId: string;
+  status: ApplicationStatus;
+}) {
+  if (payload.status !== "accepted" && payload.status !== "rejected") return;
+
+  try {
+    const supabase = await createClient();
+
+    const [{ data: candidate }, { data: jobRow }] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("email, full_name")
+        .eq("id", payload.candidateId)
+        .maybeSingle(),
+      supabase.from("jobs").select("*").eq("id", payload.jobId).maybeSingle(),
+    ]);
+
+    if (!candidate?.email || !jobRow) return;
+
+    const [job] = await attachCompanies([jobRow as JobRow]);
+    const appUrl = siteConfig.url.replace(/\/$/, "");
+    const emailContent = {
+      toEmail: candidate.email,
+      candidateName: candidate.full_name ?? candidate.email,
+      jobTitle: job.title,
+      companyName: job.company_name ?? "the employer",
+      applicationsUrl: `${appUrl}/candidate/applications`,
+    };
+
+    if (payload.status === "accepted") {
+      await sendApplicationAcceptedToCandidate(emailContent);
+    } else {
+      await sendApplicationRejectedToCandidate(emailContent);
+    }
+  } catch (e) {
+    console.error("Failed to send application status email:", e);
+  }
 }
 
 export async function openMessageFromApplication(

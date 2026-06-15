@@ -89,6 +89,21 @@ export const jobsFr: JobsMessages = {
   jobTitleKeywords: "Intitulé, mots-clés…",
   salaryPlaceholder: "ex. 40000",
   applicationSubmitted: "Candidature envoyée —",
+  applicationStatus: {
+    pending: "En cours d'examen",
+    accepted: "Acceptée",
+    rejected: "Refusée",
+  },
+  applyNotReady: "Complétez votre profil avant de postuler :",
+  applyNotReadyTitle: "Complétez votre profil pour postuler",
+  applyNotReadyDesc:
+    "Les employeurs ont besoin de ces éléments pour examiner votre candidature.",
+  applyBlockers: {
+    headline: "Titre professionnel",
+    country: "Pays",
+    cv: "CV",
+  },
+  completeProfileToApply: "Compléter mon profil",
   readyToApply: "Prêt à postuler ?",
   submitProfile: "Envoyez votre profil à l'employeur pour ce poste.",
   joinAsCandidate: "Rejoindre en tant que candidat",

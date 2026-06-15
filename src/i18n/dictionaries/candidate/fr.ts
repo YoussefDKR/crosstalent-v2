@@ -72,6 +72,12 @@ export const candidateFr: CandidateMessages = {
   settingsDeleteDesc:
     "Supprimez définitivement votre compte après confirmation par e-mail.",
   mobileNavAria: "Navigation mobile candidat",
+  applicationsSubtitle:
+    "Suivez chaque poste auquel vous avez postulé et son statut.",
+  noApplications: "Aucune candidature pour le moment",
+  noApplicationsHint:
+    "Lorsque vous postulez à une offre, elle apparaîtra ici avec son statut.",
+  appliedOn: "Postulé le",
   completionItems: {
     name: "Nom complet (Paramètres)",
     photo: "Photo de profil (Paramètres)",

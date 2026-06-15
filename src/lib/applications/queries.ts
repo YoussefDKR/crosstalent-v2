@@ -1,10 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
+import { attachCompanies } from "@/lib/jobs/queries";
 import type {
   ApplicationStatus,
+  CandidateApplicationListItem,
   CandidateApplicationStatus,
   EmployerApplicationDetail,
   EmployerApplicationListItem,
 } from "@/types/applications";
+import type { JobRow } from "@/types/jobs";
 
 export async function getCandidateApplicationForJob(
   candidateId: string,
@@ -27,6 +30,48 @@ export async function getCandidateApplicationForJob(
     status: data.status as ApplicationStatus,
     applicationId: data.id,
   };
+}
+
+export async function listCandidateApplications(
+  candidateId: string
+): Promise<CandidateApplicationListItem[]> {
+  const supabase = await createClient();
+
+  const { data: applications, error } = await supabase
+    .from("job_applications")
+    .select("id, job_id, status, created_at")
+    .eq("candidate_id", candidateId)
+    .order("created_at", { ascending: false });
+
+  if (error || !applications?.length) return [];
+
+  const jobIds = [...new Set(applications.map((a) => a.job_id))];
+
+  const { data: jobRows } = await supabase
+    .from("jobs")
+    .select("*")
+    .in("id", jobIds);
+
+  if (!jobRows?.length) return [];
+
+  const jobsWithCompany = await attachCompanies(jobRows as JobRow[]);
+  const jobById = new Map(jobsWithCompany.map((j) => [j.id, j]));
+
+  return applications
+    .map((row) => {
+      const job = jobById.get(row.job_id);
+      if (!job) return null;
+      return {
+        id: row.id,
+        status: row.status as ApplicationStatus,
+        createdAt: row.created_at,
+        jobId: row.job_id,
+        jobTitle: job.title,
+        companyName: job.company_name,
+        companyLogoUrl: job.company_logo_url,
+      };
+    })
+    .filter((item): item is CandidateApplicationListItem => item !== null);
 }
 
 export async function listEmployerApplications(
