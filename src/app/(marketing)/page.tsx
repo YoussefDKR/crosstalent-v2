@@ -27,7 +27,17 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
     if (isEmployerCompanyComplete(data.company)) {
       redirect("/employer/dashboard");
     }
-    // Incomplete setup: show the public homepage so they can browse jobs or sign out.
+
+    return (
+      <>
+        <Hero profile={null} />
+        <BetaBanner />
+        <HowItWorks />
+        <AudienceBento />
+        <AudienceSplit profile={null} />
+        <CtaSection profile={null} />
+      </>
+    );
   }
 
   if (profile?.role === "admin") {
