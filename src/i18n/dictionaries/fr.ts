@@ -136,7 +136,7 @@ export const fr: Messages = {
     getStartedFree: "Commencer gratuitement",
     howItWorksTitle: "Comment fonctionne CrossTalent",
     howItWorksSubtitle:
-      "Trois étapes simples du profil à votre prochain poste en Europe.",
+      "Du profil à l'offre avec une entreprise européenne — voici comment ça se passe.",
     step1Title: "Créez votre profil",
     step1Description:
       "Mettez en avant vos compétences, votre expérience et vos objectifs.",
@@ -146,6 +146,15 @@ export const fr: Messages = {
     step3Title: "Travaillez avec l'Europe",
     step3Description:
       "Rejoignez de grandes entreprises et construisez votre avenir.",
+    step4Title: "Postulez en un clic",
+    step4Description:
+      "Un seul profil pour toutes vos candidatures — plus besoin de renvoyer votre CV.",
+    step5Title: "Échangez sur la plateforme",
+    step5Description:
+      "Quand un employeur vous contacte, gardez la conversation sur CrossTalent.",
+    step6Title: "Décrochez votre prochain poste",
+    step6Description:
+      "Suivez vos candidatures, relancez et passez de la découverte à l'offre.",
     findRemoteJobs: "Trouver des emplois à distance",
     myDashboard: "Mon tableau de bord",
     imHiring: "Je recrute",

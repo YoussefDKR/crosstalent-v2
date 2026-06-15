@@ -132,13 +132,22 @@ export const ar: Messages = {
     getStartedFree: "ابدأ مجاناً",
     howItWorksTitle: "كيف تعمل CrossTalent",
     howItWorksSubtitle:
-      "ثلاث خطوات بسيطة من الملف الشخصي إلى وظيفتك القادمة مع شركة أوروبية.",
+      "من الملف الشخصي إلى العرض مع شركة أوروبية — إليك كيف تسير العملية.",
     step1Title: "أنشئ ملفك الشخصي",
     step1Description: "اعرض مهاراتك وخبراتك وما تبحث عنه.",
     step2Title: "اكتشف الفرص",
     step2Description: "اعثر على وظائف عن بُعد وهجينة تناسب أهدافك.",
     step3Title: "اعمل مع أوروبا",
     step3Description: "انضم إلى شركات رائعة وابنِ مستقبلك.",
+    step4Title: "قدّم بنقرة واحدة",
+    step4Description:
+      "ملف واحد لكل طلباتك — دون إعادة رفع سيرتك الذاتية في كل مرة.",
+    step5Title: "تواصل عبر المنصة",
+    step5Description:
+      "عندما يتواصل أصحاب العمل، ابقَ المحادثة داخل CrossTalent.",
+    step6Title: "احصل على وظيفتك القادمة",
+    step6Description:
+      "تتبّع طلباتك، تابع، وانتقل من الاكتشاف إلى العرض.",
     findRemoteJobs: "البحث عن وظائف عن بُعد",
     myDashboard: "لوحتي",
     imHiring: "أنا أوظّف",

@@ -132,7 +132,7 @@ export const en = {
     getStartedFree: "Get started free",
     howItWorksTitle: "How CrossTalent works",
     howItWorksSubtitle:
-      "Three simple steps from profile to your next role with a European company.",
+      "From profile to offer with a European company — here's how it flows.",
     step1Title: "Create your profile",
     step1Description:
       "Showcase your skills, experience, and what you're looking for.",
@@ -140,6 +140,15 @@ export const en = {
     step2Description: "Find remote and hybrid jobs that match your goals.",
     step3Title: "Work with Europe",
     step3Description: "Join great companies and build your future.",
+    step4Title: "Apply in one click",
+    step4Description:
+      "One profile powers every application — no re-uploading your CV each time.",
+    step5Title: "Message in-platform",
+    step5Description:
+      "When employers reach out, keep the conversation inside CrossTalent.",
+    step6Title: "Land your next role",
+    step6Description:
+      "Track applications, follow up, and move from discovery to offer.",
     findRemoteJobs: "Find remote jobs",
     myDashboard: "My dashboard",
     imHiring: "I'm hiring talent",
