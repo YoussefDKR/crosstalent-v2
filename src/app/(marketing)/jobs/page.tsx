@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { JobBoardPanel } from "@/components/jobs/job-board-panel";
 import { JobCard } from "@/components/jobs/job-card";
 import { JobFilters } from "@/components/jobs/job-filters";
+import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import { siteConfig } from "@/config/site";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { getSavedJobIds } from "@/lib/candidate/saved-jobs";
@@ -71,52 +72,53 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       : t("jobs.rolesFound", { count: jobs.length });
 
   return (
-    <div className="bg-slate-50/50 py-12 sm:py-16">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            {t("jobs.pageTitle")}
-          </h1>
-          <p className="mt-3 text-muted-foreground">{t("jobs.pageSubtitleLong")}</p>
-        </div>
+    <>
+      <MarketingPageHero
+        align="center"
+        title={t("jobs.pageTitle")}
+        subtitle={t("jobs.pageSubtitleLong")}
+      />
 
-        <div className="mt-10">
-          <Suspense fallback={<div className="h-40 rounded-lg bg-white" />}>
-            <JobFilters />
-          </Suspense>
-        </div>
-
-        {listError && (
-          <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
-            {listError}
-          </p>
-        )}
-
-        <p className="mt-6 text-sm text-muted-foreground">{countLabel}</p>
-
-        {jobs.length > 0 ? (
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
+      <div className="bg-slate-50/80 py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mt-2">
+            <Suspense fallback={<div className="h-40 rounded-lg bg-white" />}>
+              <JobFilters />
+            </Suspense>
           </div>
-        ) : (
-          <div className="mt-8 rounded-lg border border-dashed border-border bg-white p-12 text-center">
-            <p className="font-medium text-[#0F172A]">
-              {hasActiveFilters ? t("jobs.noMatch") : t("jobs.noListed")}
+
+          {listError && (
+            <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+              {listError}
             </p>
-            {!hasActiveFilters && (
-              <p className="mt-2 text-sm text-muted-foreground">{t("jobs.rssHint")}</p>
-            )}
-            <Link
-              href={siteConfig.links.candidateSignup}
-              className="mt-6 inline-block text-sm font-medium text-[#2563EB] hover:underline"
-            >
-              {t("jobs.createProfile")}
-            </Link>
-          </div>
-        )}
+          )}
+
+          <p className="mt-6 text-sm text-muted-foreground">{countLabel}</p>
+
+          {jobs.length > 0 ? (
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              {jobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-8 rounded-lg border border-dashed border-border bg-white p-12 text-center">
+              <p className="font-medium text-[#0F172A]">
+                {hasActiveFilters ? t("jobs.noMatch") : t("jobs.noListed")}
+              </p>
+              {!hasActiveFilters && (
+                <p className="mt-2 text-sm text-muted-foreground">{t("jobs.rssHint")}</p>
+              )}
+              <Link
+                href={siteConfig.links.candidateSignup}
+                className="mt-6 inline-block text-sm font-medium text-[#2563EB] hover:underline"
+              >
+                {t("jobs.createProfile")}
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

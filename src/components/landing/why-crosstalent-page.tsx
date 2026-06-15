@@ -14,6 +14,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { BetaBanner } from "@/components/landing/beta-banner";
+import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -48,25 +49,18 @@ export function WhyCrossTalentPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[#F8FAFC] py-16 sm:py-24">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_#2563EB12,_transparent_55%)]"
-          aria-hidden
-        />
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
-            {m.eyebrow}
-          </p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0F172A] sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
+      <MarketingPageHero
+        align="center"
+        eyebrow={m.eyebrow}
+        title={
+          <>
             {m.title}{" "}
-            <span className="text-[#2563EB]">{m.titleHighlight}</span>
+            <span className="text-[#60A5FA]">{m.titleHighlight}</span>
             {m.titleEnd}
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {m.subtitle}
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        subtitle={m.subtitle}
+      />
 
       <BetaBanner />
 

@@ -19,6 +19,7 @@ import { getCandidateApplicationForJob } from "@/lib/applications/queries";
 import { getSavedJobIds } from "@/lib/candidate/saved-jobs";
 import { JobApplySection } from "@/components/jobs/apply-to-job-button";
 import { SaveJobButton } from "@/components/jobs/save-job-button";
+import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import { isRssJob, rssSourceLabel } from "@/lib/jobs/source";
 import { getServerI18n } from "@/i18n/server";
 
@@ -55,45 +56,60 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const logoUrl = resolveImageUrl(job.company_logo_url);
   const description = formatJobDescription(job.description);
 
-  return (
-    <div className="bg-slate-50/50 py-12 sm:py-16">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/jobs"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"
-        >
-          <ArrowLeft className="size-4" />
-          {t("jobs.backToBoard")}
-        </Link>
+  const companyName = job.company_name ?? t("jobs.europeanEmployer");
+  const location = locationLabel(job.location_city, job.location_country);
 
-        <Card className="mt-8 border-border/80 shadow-sm">
-          <CardContent className="p-8">
-            <div className="flex items-start gap-4">
-              <span className="flex size-12 items-center justify-center overflow-hidden rounded-lg border border-border bg-white">
-                {logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={logoUrl}
-                    alt=""
-                    className="size-full object-contain p-1.5"
-                  />
-                ) : (
-                  <Building2 className="size-6 text-[#0F172A]" />
-                )}
-              </span>
-              <div>
-                <p className="text-sm font-medium text-[#2563EB]">
-                  {job.company_name ?? t("jobs.europeanEmployer")}
-                </p>
-                <h1 className="mt-1 text-2xl font-semibold text-[#0F172A] sm:text-3xl">
-                  {job.title}
-                </h1>
-                <p className="mt-2 flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="size-4" />
-                  {locationLabel(job.location_city, job.location_country)}
-                </p>
+  return (
+    <>
+      <MarketingPageHero
+        eyebrow={companyName}
+        title={job.title}
+        subtitle={
+          <span className="inline-flex items-center justify-center gap-2">
+            <MapPin className="size-4 shrink-0 text-[#34D399]" />
+            {location}
+          </span>
+        }
+      />
+
+      <div className="bg-slate-50/80 py-12 sm:py-16">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <Link
+            href="/jobs"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#0F172A]"
+          >
+            <ArrowLeft className="size-4" />
+            {t("jobs.backToBoard")}
+          </Link>
+
+          <Card className="mt-8 border-border/80 shadow-sm">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-4">
+                <span className="flex size-12 items-center justify-center overflow-hidden rounded-lg border border-border bg-white">
+                  {logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={logoUrl}
+                      alt=""
+                      className="size-full object-contain p-1.5"
+                    />
+                  ) : (
+                    <Building2 className="size-6 text-[#0F172A]" />
+                  )}
+                </span>
+                <div>
+                  <p className="text-sm font-medium text-[#2563EB]">
+                    {companyName}
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-[#0F172A]">
+                    {job.title}
+                  </p>
+                  <p className="mt-2 flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="size-4" />
+                    {location}
+                  </p>
+                </div>
               </div>
-            </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
               <Badge variant="secondary">{remoteLabel(job.remote_type)}</Badge>
@@ -179,8 +195,9 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               }
             />
           </CardContent>
-        </Card>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

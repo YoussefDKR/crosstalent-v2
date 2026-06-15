@@ -13,6 +13,11 @@ import { PricingPlans } from "@/components/billing/pricing-plans";
 import { StripeSetupBanner } from "@/components/billing/stripe-setup-banner";
 import { MarketingCtaBand } from "@/components/landing/marketing-cta-band";
 import { BetaBanner } from "@/components/landing/beta-banner";
+import {
+  MarketingPageHero,
+  marketingOutlineButtonClass,
+  marketingPrimaryButtonClass,
+} from "@/components/marketing/marketing-page-hero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -44,67 +49,52 @@ export function ForEmployersPage({
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[#F8FAFC] py-16 sm:py-24">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_#2563EB15,_transparent_50%)]"
-          aria-hidden
-        />
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
-                {m.eyebrow}
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0F172A] sm:text-5xl lg:leading-[1.1]">
-                {m.title}{" "}
-                <span className="text-[#2563EB]">{m.titleHighlight}</span>
-              </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                {m.subtitle}
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href={siteConfig.links.employerSignup}>
-                  <Button
-                    size="lg"
-                    className="h-12 min-w-[200px] bg-[#2563EB] text-base font-semibold text-white hover:bg-[#1d4ed8]"
-                  >
-                    {m.createAccount}
-                  </Button>
-                </Link>
-                <Link href="#pricing">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 min-w-[200px] border-2 border-[#2563EB] text-base font-semibold text-[#2563EB] hover:bg-[#2563EB]/5"
-                  >
-                    {m.seePricing}
-                  </Button>
-                </Link>
+      <MarketingPageHero
+        eyebrow={m.eyebrow}
+        title={
+          <>
+            {m.title}{" "}
+            <span className="text-[#60A5FA]">{m.titleHighlight}</span>
+          </>
+        }
+        subtitle={m.subtitle}
+        actions={
+          <>
+            <Link href={siteConfig.links.employerSignup}>
+              <Button size="lg" className={marketingPrimaryButtonClass}>
+                {m.createAccount}
+              </Button>
+            </Link>
+            <Link href="#pricing">
+              <Button size="lg" variant="outline" className={marketingOutlineButtonClass}>
+                {m.seePricing}
+              </Button>
+            </Link>
+          </>
+        }
+        note={m.starterNote}
+        aside={
+          <div className="rounded-2xl border border-white/10 bg-white p-8 shadow-2xl shadow-black/20 ring-1 ring-white/10">
+            <div className="flex items-center gap-4 border-b border-border/60 pb-6">
+              <span className="flex size-14 items-center justify-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
+                <Building2 className="size-7" />
+              </span>
+              <div>
+                <p className="font-semibold text-[#0F172A]">{m.hubTitle}</p>
+                <p className="text-sm text-muted-foreground">{m.hubSubtitle}</p>
               </div>
-              <p className="mt-4 text-sm text-muted-foreground">{m.starterNote}</p>
             </div>
-            <div className="rounded-2xl border border-border/80 bg-white p-8 shadow-lg ring-1 ring-black/5">
-              <div className="flex items-center gap-4 border-b border-border/60 pb-6">
-                <span className="flex size-14 items-center justify-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
-                  <Building2 className="size-7" />
-                </span>
-                <div>
-                  <p className="font-semibold text-[#0F172A]">{m.hubTitle}</p>
-                  <p className="text-sm text-muted-foreground">{m.hubSubtitle}</p>
-                </div>
-              </div>
-              <ul className="mt-6 space-y-4">
-                {hubItems.map((item) => (
-                  <li key={item.text} className="flex items-center gap-3 text-sm">
-                    <item.icon className="size-5 shrink-0 text-[#10B981]" />
-                    <span className="text-[#0F172A]">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="mt-6 space-y-4">
+              {hubItems.map((item) => (
+                <li key={item.text} className="flex items-center gap-3 text-sm">
+                  <item.icon className="size-5 shrink-0 text-[#10B981]" />
+                  <span className="text-[#0F172A]">{item.text}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <BetaBanner />
 

@@ -11,6 +11,11 @@ import {
 } from "lucide-react";
 import { MarketingCtaBand } from "@/components/landing/marketing-cta-band";
 import { BetaBanner } from "@/components/landing/beta-banner";
+import {
+  MarketingPageHero,
+  marketingOutlineButtonClass,
+  marketingPrimaryButtonClass,
+} from "@/components/marketing/marketing-page-hero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -31,69 +36,57 @@ export function ForCandidatesPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[#F8FAFC] py-16 sm:py-24">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,_#10B98112,_transparent_50%)]"
-          aria-hidden
-        />
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-[#10B981]">
-                {m.eyebrow}
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0F172A] sm:text-5xl lg:leading-[1.1]">
-                {m.title}{" "}
-                <span className="text-[#2563EB]">{m.titleHighlight}</span>.
-              </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                {m.subtitle}
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href={siteConfig.links.candidateSignup}>
-                  <Button
-                    size="lg"
-                    className="h-12 min-w-[200px] bg-[#2563EB] text-base font-semibold text-white hover:bg-[#1d4ed8]"
-                  >
-                    {m.createAccount}
-                  </Button>
-                </Link>
-                <Link href={siteConfig.links.jobs}>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 min-w-[200px] border-2 border-[#2563EB] text-base font-semibold text-[#2563EB] hover:bg-[#2563EB]/5"
-                  >
-                    {m.browseJobs}
-                  </Button>
-                </Link>
-              </div>
-              <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <BadgeCheck className="size-4 text-[#10B981]" />
-                {m.freeNote}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-border/80 bg-white p-8 shadow-lg ring-1 ring-black/5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {m.profileIncludes}
-              </p>
-              <ul className="mt-6 space-y-5">
-                {profileItems.map((label, index) => {
-                  const Icon = profileIcons[index];
-                  return (
-                    <li key={label} className="flex items-center gap-3">
-                      <span className="flex size-10 items-center justify-center rounded-lg bg-[#10B981]/10 text-[#10B981]">
-                        <Icon className="size-5" />
-                      </span>
-                      <span className="font-medium text-[#0F172A]">{label}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+      <MarketingPageHero
+        eyebrow={m.eyebrow}
+        eyebrowClassName="text-[#34D399]"
+        title={
+          <>
+            {m.title}{" "}
+            <span className="text-[#60A5FA]">{m.titleHighlight}</span>.
+          </>
+        }
+        subtitle={m.subtitle}
+        actions={
+          <>
+            <Link href={siteConfig.links.candidateSignup}>
+              <Button size="lg" className={marketingPrimaryButtonClass}>
+                {m.createAccount}
+              </Button>
+            </Link>
+            <Link href={siteConfig.links.jobs}>
+              <Button size="lg" variant="outline" className={marketingOutlineButtonClass}>
+                {m.browseJobs}
+              </Button>
+            </Link>
+          </>
+        }
+        note={
+          <span className="inline-flex items-center gap-2">
+            <BadgeCheck className="size-4 text-[#10B981]" />
+            {m.freeNote}
+          </span>
+        }
+        aside={
+          <div className="rounded-2xl border border-white/10 bg-white p-8 shadow-2xl shadow-black/20 ring-1 ring-white/10">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {m.profileIncludes}
+            </p>
+            <ul className="mt-6 space-y-5">
+              {profileItems.map((label, index) => {
+                const Icon = profileIcons[index];
+                return (
+                  <li key={label} className="flex items-center gap-3">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-[#10B981]/10 text-[#10B981]">
+                      <Icon className="size-5" />
+                    </span>
+                    <span className="font-medium text-[#0F172A]">{label}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <BetaBanner />
 
@@ -185,7 +178,6 @@ export function ForCandidatesPage() {
       </section>
 
       <MarketingCtaBand
-        variant="light"
         title={m.ctaTitle}
         description={m.ctaDesc}
         primaryHref={siteConfig.links.candidateSignup}

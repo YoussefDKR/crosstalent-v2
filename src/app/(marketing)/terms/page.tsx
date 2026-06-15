@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalIntro, TermsDocument } from "@/components/legal/legal-prose";
+import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import { CONTACT_PUBLIC_EMAIL } from "@/config/contact";
 import { siteConfig } from "@/config/site";
 import { getServerI18n } from "@/i18n/server";
@@ -24,32 +25,36 @@ export default async function TermsPage() {
   };
 
   return (
-    <div className="bg-slate-50/50 py-12 sm:py-20">
-      <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <header className="mb-10">
-          <h1 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
-            {doc.title}
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">
+    <>
+      <MarketingPageHero
+        align="center"
+        title={doc.title}
+        subtitle={
+          <>
             {doc.lastUpdatedLabel} {doc.updatedDate}
-          </p>
+          </>
+        }
+      />
+
+      <div className="bg-slate-50/80 py-12 sm:py-20">
+        <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <LegalIntro text={doc.intro} vars={vars} />
-        </header>
 
-        <div className="space-y-10 rounded-2xl border border-border/80 bg-white p-6 shadow-sm sm:p-10">
-          <TermsDocument doc={doc} vars={vars} />
-        </div>
+          <div className="mt-10 space-y-10 rounded-2xl border border-border/80 bg-white p-6 shadow-sm sm:p-10">
+            <TermsDocument doc={doc} vars={vars} />
+          </div>
 
-        <p className="mt-8 text-center text-sm text-muted-foreground">
-          {doc.questions}{" "}
-          <Link
-            href={siteConfig.links.contact}
-            className="font-medium text-[#2563EB] hover:underline"
-          >
-            {doc.contactUs}
-          </Link>
-        </p>
-      </article>
-    </div>
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            {doc.questions}{" "}
+            <Link
+              href={siteConfig.links.contact}
+              className="font-medium text-[#2563EB] hover:underline"
+            >
+              {doc.contactUs}
+            </Link>
+          </p>
+        </article>
+      </div>
+    </>
   );
 }
