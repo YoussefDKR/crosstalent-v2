@@ -97,6 +97,8 @@ export const jobsEn = {
     "This role is aggregated from {source}. Apply on the original site — CrossTalent profiles are for direct employer posts as we grow.",
   partnerBoard: "a partner job board",
   viewApplyExternally: "View & apply externally",
+  seeMore: "See more ({count})",
+  showLess: "Show less",
 } as const;
 
 import type { DeepString } from "@/i18n/types";

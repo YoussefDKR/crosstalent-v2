@@ -18,6 +18,10 @@ import {
   marketingOutlineButtonClass,
   marketingPrimaryButtonClass,
 } from "@/components/marketing/marketing-page-hero";
+import {
+  MarketingRevealItem,
+  MarketingRevealSection,
+} from "@/components/marketing/marketing-reveal";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -98,7 +102,7 @@ export function ForEmployersPage({
 
       <BetaBanner />
 
-      <section className="py-16 sm:py-24">
+      <MarketingRevealSection className="py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
@@ -109,8 +113,9 @@ export function ForEmployersPage({
             {m.benefits.map((item, index) => {
               const Icon = benefitIcons[benefitIconOrder[index]];
               return (
-                <li
+                <MarketingRevealItem
                   key={item.title}
+                  index={index}
                   className="rounded-2xl border border-border/80 bg-white p-8 shadow-sm"
                 >
                   <span className="flex size-11 items-center justify-center rounded-lg bg-[#2563EB]/10 text-[#2563EB]">
@@ -122,14 +127,14 @@ export function ForEmployersPage({
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
-                </li>
+                </MarketingRevealItem>
               );
             })}
           </ul>
         </div>
-      </section>
+      </MarketingRevealSection>
 
-      <section
+      <MarketingRevealSection
         id="browse-talent"
         className="border-y border-border/80 bg-slate-50/80 py-16 sm:py-24"
       >
@@ -149,8 +154,9 @@ export function ForEmployersPage({
           </div>
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {m.steps.map((step, index) => (
-              <li
+              <MarketingRevealItem
                 key={step.title}
+                index={index}
                 className="rounded-2xl border border-border/80 bg-white p-8 shadow-sm"
               >
                 <span className="text-xs font-bold tracking-widest text-[#2563EB]">
@@ -162,13 +168,13 @@ export function ForEmployersPage({
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {step.description}
                 </p>
-              </li>
+              </MarketingRevealItem>
             ))}
           </ol>
         </div>
-      </section>
+      </MarketingRevealSection>
 
-      <section id="pricing" className="scroll-mt-24 py-16 sm:py-24">
+      <MarketingRevealSection id="pricing" className="scroll-mt-24 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
@@ -194,28 +200,30 @@ export function ForEmployersPage({
             </Link>
           </p>
         </div>
-      </section>
+      </MarketingRevealSection>
 
-      <section className="py-16 sm:py-24">
+      <MarketingRevealSection className="py-16 sm:py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-3xl font-semibold text-[#0F172A]">
             {m.faqTitle}
           </h2>
           <dl className="mt-12 space-y-6">
-            {m.faqs.map((faq) => (
-              <div
+            {m.faqs.map((faq, index) => (
+              <MarketingRevealItem
                 key={faq.question}
+                index={index}
+                as="div"
                 className="rounded-2xl border border-border/80 bg-white p-6 shadow-sm"
               >
                 <dt className="font-semibold text-[#0F172A]">{faq.question}</dt>
                 <dd className="mt-2 text-muted-foreground leading-relaxed">
                   {faq.answer}
                 </dd>
-              </div>
+              </MarketingRevealItem>
             ))}
           </dl>
         </div>
-      </section>
+      </MarketingRevealSection>
 
       <MarketingCtaBand
         title={m.ctaTitle}

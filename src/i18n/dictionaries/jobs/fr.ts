@@ -99,4 +99,6 @@ export const jobsFr: JobsMessages = {
     "Cette offre provient de {source}. Postulez sur le site d'origine — les profils CrossTalent sont pour les offres directes des employeurs.",
   partnerBoard: "un partenaire d'offres",
   viewApplyExternally: "Voir et postuler en externe",
+  seeMore: "Voir plus ({count})",
+  showLess: "Voir moins",
 };

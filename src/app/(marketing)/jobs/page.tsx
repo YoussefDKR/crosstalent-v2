@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { JobBoardPanel } from "@/components/jobs/job-board-panel";
-import { JobCard } from "@/components/jobs/job-card";
 import { JobFilters } from "@/components/jobs/job-filters";
+import { GuestJobBoardGrid } from "@/components/jobs/guest-job-board-grid";
 import { MarketingPageHero } from "@/components/marketing/marketing-page-hero";
 import { siteConfig } from "@/config/site";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -96,11 +96,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           <p className="mt-6 text-sm text-muted-foreground">{countLabel}</p>
 
           {jobs.length > 0 ? (
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
+            <GuestJobBoardGrid jobs={jobs} />
           ) : (
             <div className="mt-8 rounded-lg border border-dashed border-border bg-white p-12 text-center">
               <p className="font-medium text-[#0F172A]">

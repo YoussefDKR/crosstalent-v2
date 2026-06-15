@@ -1,3 +1,5 @@
+export const JOB_BOARD_PREVIEW_COUNT = 6;
+
 export const EMPLOYMENT_TYPES = [
   { value: "full_time", label: "Full-time" },
   { value: "part_time", label: "Part-time" },

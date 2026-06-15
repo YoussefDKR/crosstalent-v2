@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,7 +28,11 @@ export function MarketingCtaBand({
   const dark = variant === "dark";
 
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-64px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "py-16 sm:py-20",
         dark ? "bg-[#0F172A] text-white" : "bg-[#F8FAFC]"
@@ -52,12 +59,8 @@ export function MarketingCtaBand({
           <Link href={primaryHref}>
             <Button
               size="lg"
-              className={cn(
-                "h-12 min-w-[220px] gap-2 text-base font-semibold",
-                dark
-                  ? "bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-                  : "bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
-              )}
+              variant="brand"
+              className="h-12 min-w-[220px] gap-2 text-base font-semibold"
             >
               {primaryLabel}
               <ArrowRight className="size-4" />
@@ -72,7 +75,7 @@ export function MarketingCtaBand({
                   "h-12 min-w-[220px] text-base font-semibold",
                   dark
                     ? "border-white/30 bg-transparent text-white hover:bg-white/10"
-                    : "border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB]/5"
+                    : "border-brand-accent/30 text-brand-accent hover:bg-brand-accent/5"
                 )}
               >
                 {secondaryLabel}
@@ -81,6 +84,6 @@ export function MarketingCtaBand({
           )}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

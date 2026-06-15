@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useI18n } from "@/context/i18n-provider";
+import { MarketingReveal } from "@/components/marketing/marketing-reveal";
 import { cn } from "@/lib/utils";
 
 const MARQUEE_GAP_PX = 24;
@@ -97,14 +98,14 @@ export function HowItWorks() {
   return (
     <section id="how-it-works" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
+        <MarketingReveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-semibold tracking-tight text-[#0F172A] sm:text-4xl">
             {t("landing.howItWorksTitle")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             {t("landing.howItWorksSubtitle")}
           </p>
-        </div>
+        </MarketingReveal>
 
         <div
           className="group/how-marquee relative left-1/2 mt-16 w-screen max-w-[100vw] -translate-x-1/2 overflow-hidden"

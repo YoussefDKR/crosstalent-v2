@@ -99,4 +99,6 @@ export const jobsAr: JobsMessages = {
     "هذه الوظيفة مجمّعة من {source}. قدّم على الموقع الأصلي — ملفات CrossTalent مخصصة لإعلانات أصحاب العمل المباشرة.",
   partnerBoard: "لوحة وظائف شريكة",
   viewApplyExternally: "عرض والتقديم خارجياً",
+  seeMore: "عرض المزيد ({count})",
+  showLess: "عرض أقل",
 };
