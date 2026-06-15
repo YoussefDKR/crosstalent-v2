@@ -5,7 +5,7 @@ import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { createClient } from "@/lib/supabase/server";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
-import { ensureCompanyProfileRow } from "@/lib/employer/queries";
+import { ensureCompanyProfileRow, getEmployerEntryPath } from "@/lib/employer/queries";
 import {
   isValidWebsiteUrl,
   normalizeWebsiteUrl,
@@ -27,9 +27,16 @@ function rolePathPrefix(role: UserRole): string {
   return "/candidate";
 }
 
-function redirectByRole(role: UserRole, fallback?: string): never {
+async function redirectByRole(
+  role: UserRole,
+  userId: string,
+  fallback?: string
+): Promise<never> {
   if (fallback && fallback.startsWith(rolePathPrefix(role))) {
     redirect(fallback);
+  }
+  if (role === "employer") {
+    redirect(await getEmployerEntryPath(userId));
   }
   redirect(getDashboardPath(role));
 }
@@ -102,7 +109,7 @@ export async function signUp(
   if (data.session && data.user) {
     await recordSignupCountry(data.user.id);
     const resolvedRole = (await resolveUserRole(data.user.id)) ?? role;
-    redirectByRole(resolvedRole);
+    return redirectByRole(resolvedRole, data.user.id);
   }
 
   return {
@@ -160,5 +167,5 @@ export async function signIn(
   }
 
   await recordSignupCountry(data.user.id);
-  redirectByRole(role, redirectTo || undefined);
+  return redirectByRole(role, data.user.id, redirectTo || undefined);
 }

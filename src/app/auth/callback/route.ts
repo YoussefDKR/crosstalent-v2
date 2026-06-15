@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { createClient } from "@/lib/supabase/server";
 import { getDashboardPath } from "@/lib/auth/routes";
+import { getEmployerEntryPath } from "@/lib/employer/queries";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
 
 export async function GET(request: Request) {
@@ -29,11 +30,13 @@ export async function GET(request: Request) {
         await recordSignupCountry(user.id);
         const role = await resolveUserRole(user.id);
         if (role) {
+          const employerDestination =
+            role === "employer" ? await getEmployerEntryPath(user.id) : null;
           const destination =
             next.startsWith(`/${role === "candidate" ? "candidate" : "employer"}`) ||
             (role === "candidate" && next === "/")
               ? next
-              : getDashboardPath(role);
+              : employerDestination ?? getDashboardPath(role);
           return NextResponse.redirect(`${origin}${destination}`);
         }
       }

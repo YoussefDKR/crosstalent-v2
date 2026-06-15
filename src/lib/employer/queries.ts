@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { EMPLOYER_ONBOARDING_PATH } from "@/lib/auth/routes";
+import { isEmployerCompanyComplete } from "@/lib/employer/onboarding";
 import type { Profile } from "@/types";
 import type { CompanyProfileData, CompanyProfileRow } from "@/types/employer";
 
@@ -7,6 +9,21 @@ export async function ensureCompanyProfileRow(userId: string): Promise<void> {
   await supabase
     .from("company_profiles")
     .upsert({ user_id: userId }, { onConflict: "user_id" });
+}
+
+export async function getEmployerEntryPath(userId: string): Promise<string> {
+  const supabase = await createClient();
+  await ensureCompanyProfileRow(userId);
+
+  const { data: company } = await supabase
+    .from("company_profiles")
+    .select("company_name, website")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  return isEmployerCompanyComplete(company)
+    ? "/employer/dashboard"
+    : EMPLOYER_ONBOARDING_PATH;
 }
 
 export async function getCompanyProfileData(

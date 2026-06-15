@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { EmployerOnboardingForm } from "@/components/employer/employer-onboarding-form";
 import { Logo } from "@/components/shared/logo";
 import { getCurrentProfile } from "@/lib/auth/session";
@@ -31,6 +33,29 @@ export default async function EmployerOnboardingPage() {
         </p>
         <div className="mt-8">
           <EmployerOnboardingForm />
+        </div>
+        <div className="mt-8 flex flex-col items-center gap-3 border-t border-border pt-6 text-sm">
+          <p className="text-center text-muted-foreground">
+            Signed up by mistake? You can leave and browse the site, or sign out
+            and create a candidate account instead.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/"
+              className="font-medium text-[#2563EB] hover:underline"
+            >
+              Back to homepage
+            </Link>
+            <span className="text-muted-foreground">·</span>
+            <Link
+              href="/jobs"
+              className="font-medium text-[#2563EB] hover:underline"
+            >
+              Browse jobs
+            </Link>
+            <span className="text-muted-foreground">·</span>
+            <SignOutButton variant="ghost" size="sm" />
+          </div>
         </div>
       </div>
     </div>

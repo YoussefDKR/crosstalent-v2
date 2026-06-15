@@ -124,7 +124,8 @@ export async function middleware(request: NextRequest) {
       !isPublicPath(pathname) &&
       !isCandidatePath(pathname) &&
       !isEmployerPath(pathname) &&
-      !isAdminPath(pathname)
+      !isAdminPath(pathname) &&
+      pathname !== "/auth/signout"
     ) {
       if (role) {
         const url = request.nextUrl.clone();
