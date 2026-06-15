@@ -168,6 +168,7 @@ export const en = {
   },
   employer: {
     companyProfile: "Company profile",
+    completeSetup: "Complete setup",
     postNewJob: "New job",
     postNewJobLong: "Post a new job",
     postAJob: "Post a job",

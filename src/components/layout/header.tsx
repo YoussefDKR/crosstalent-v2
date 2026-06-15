@@ -27,22 +27,34 @@ type HeaderProps = {
   profile?: Profile | null;
   notifications?: AppNotification[];
   variant?: "default" | "marketing";
+  /** Incomplete employer browsing marketing — show public nav, not employer dashboard links */
+  forceMarketingNav?: boolean;
+  primaryActionHref?: string;
 };
 
 export function Header({
   profile = null,
   notifications = [],
   variant = "default",
+  forceMarketingNav = false,
+  primaryActionHref,
 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { messages, t } = useI18n();
   const isLoggedIn = Boolean(profile);
-  const isMarketingGuest = !profile && variant === "marketing";
+  const isMarketingGuest = (!profile || forceMarketingNav) && variant === "marketing";
   const isDarkShell = isMarketingGuest;
-  const navLinks = profile
-    ? navForRole(messages, profile.role)
-    : marketingNav(messages);
+  const navLinks =
+    profile && !forceMarketingNav
+      ? navForRole(messages, profile.role)
+      : marketingNav(messages);
+  const dashboardHref =
+    primaryActionHref ?? (profile ? getDashboardPath(profile.role) : undefined);
+  const dashboardLabel =
+    forceMarketingNav && profile?.role === "employer"
+      ? t("employer.completeSetup")
+      : t("common.dashboard");
 
   const authActions = isLoggedIn && profile ? (
     <>
@@ -57,12 +69,12 @@ export function Header({
           {profile.fullName ?? profile.email}
         </span>
       </div>
-      <Link href={getDashboardPath(profile.role)}>
+      <Link href={dashboardHref!}>
         <Button
           size="sm"
           className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
         >
-          {t("common.dashboard")}
+          {dashboardLabel}
         </Button>
       </Link>
       <SignOutButton />

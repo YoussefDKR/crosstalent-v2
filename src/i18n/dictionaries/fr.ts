@@ -177,6 +177,7 @@ export const fr: Messages = {
   },
   employer: {
     companyProfile: "Profil de l'entreprise",
+    completeSetup: "Compléter la configuration",
     postNewJob: "Nouvelle offre",
     postNewJobLong: "Publier une offre",
     postAJob: "Publier une offre",

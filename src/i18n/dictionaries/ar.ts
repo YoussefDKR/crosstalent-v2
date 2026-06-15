@@ -167,6 +167,7 @@ export const ar: Messages = {
   },
   employer: {
     companyProfile: "ملف الشركة",
+    completeSetup: "إكمال الإعداد",
     postNewJob: "وظيفة جديدة",
     postNewJobLong: "نشر وظيفة جديدة",
     postAJob: "نشر وظيفة",
