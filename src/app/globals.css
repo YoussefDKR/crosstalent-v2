@@ -144,7 +144,7 @@
       transform: translateX(0);
     }
     to {
-      transform: translateX(-50%);
+      transform: translateX(calc(-50% - var(--marquee-gap, 24px) / 2));
     }
   }
 
@@ -159,12 +159,9 @@
   @media (prefers-reduced-motion: reduce) {
     .how-it-works-marquee {
       animation: none;
-      flex-wrap: wrap;
       width: 100%;
       max-width: 72rem;
       margin-inline: auto;
-      gap: 1.5rem;
-      justify-content: center;
     }
   }
 }

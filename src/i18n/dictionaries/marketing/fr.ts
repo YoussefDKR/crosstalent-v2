@@ -40,9 +40,8 @@ export const marketingFr: MarketingMessages = {
     centerDesc:
       "Une plateforme où professionnels ambitieux et entreprises européennes se rencontrent — sans le bruit des job boards génériques.",
     workModelsTitle: "Modes de travail",
-    workRemote: "À distance depuis le MENA",
-    workHybrid: "Postes hybrides",
-    workFlexible: "Ouvert au relocation",
+    workRemote: "À distance",
+    workHybrid: "Hybride",
     skillsIntro: "Tech et au-delà —",
     skillsHighlight: "React · Node.js · Python · Arabe · Français · Anglais",
     skillTags: [

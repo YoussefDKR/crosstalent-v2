@@ -40,9 +40,8 @@ export const marketingAr: MarketingMessages = {
     centerDesc:
       "منصة واحدة يلتقي فيها المحترفون الطموحون والشركات الأوروبية — بعيداً عن ضجيج لوحات الوظائف العامة.",
     workModelsTitle: "أنماط العمل",
-    workRemote: "عن بُعد من MENA",
-    workHybrid: "وظائف هجينة",
-    workFlexible: "مفتوح للانتقال",
+    workRemote: "عن بُعد",
+    workHybrid: "هجين",
     skillsIntro: "تقنية وما بعدها —",
     skillsHighlight: "React · Node.js · Python · العربية · الفرنسية · الإنجليزية",
     skillTags: [

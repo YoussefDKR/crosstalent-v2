@@ -12,6 +12,8 @@ import {
 import { useI18n } from "@/context/i18n-provider";
 import { cn } from "@/lib/utils";
 
+const MARQUEE_GAP_PX = 24;
+
 const stepIcons = {
   user: UserRound,
   search: Search,
@@ -39,7 +41,7 @@ function StepCardContent({
   return (
     <article
       className={cn(
-        "flex w-[min(100%,320px)] shrink-0 flex-col rounded-xl border border-border bg-white p-8 shadow-sm",
+        "flex w-[320px] max-w-[85vw] shrink-0 flex-col rounded-xl border border-border bg-white p-8 shadow-sm",
         "transition-all duration-300 hover:-translate-y-1 hover:border-[#2563EB]/30 hover:shadow-md"
       )}
     >
@@ -51,29 +53,6 @@ function StepCardContent({
         {step.description}
       </p>
     </article>
-  );
-}
-
-function MarqueeRow({
-  steps,
-  rowId,
-}: {
-  steps: StepCard[];
-  rowId: string;
-}) {
-  return (
-    <div className="flex shrink-0 gap-6 pe-6">
-      {steps.map((step) => {
-        const Icon = stepIcons[step.icon];
-        return (
-          <StepCardContent
-            key={`${rowId}-${step.icon}-${step.title}`}
-            step={step}
-            Icon={Icon}
-          />
-        );
-      })}
-    </div>
   );
 }
 
@@ -113,6 +92,8 @@ export function HowItWorks() {
     },
   ];
 
+  const loopSteps = [...steps, ...steps];
+
   return (
     <section id="how-it-works" className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -125,7 +106,10 @@ export function HowItWorks() {
           </p>
         </div>
 
-        <div className="group/how-marquee relative mt-16 overflow-hidden">
+        <div
+          className="group/how-marquee relative left-1/2 mt-16 w-screen max-w-[100vw] -translate-x-1/2 overflow-hidden"
+          style={{ "--marquee-gap": `${MARQUEE_GAP_PX}px` } as React.CSSProperties}
+        >
           <div
             className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white via-white/90 to-transparent sm:w-24"
             aria-hidden
@@ -135,9 +119,21 @@ export function HowItWorks() {
             aria-hidden
           />
 
-          <div className="how-it-works-marquee flex w-max motion-reduce:animate-none">
-            <MarqueeRow steps={steps} rowId="a" />
-            <MarqueeRow steps={steps} rowId="b" aria-hidden />
+          <div
+            className="how-it-works-marquee flex w-max will-change-transform motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-6 motion-reduce:px-4 motion-reduce:animate-none"
+            style={{ gap: `${MARQUEE_GAP_PX}px` }}
+          >
+            {loopSteps.map((step, index) => {
+              const Icon = stepIcons[step.icon];
+              const copy = index < steps.length ? "a" : "b";
+              return (
+                <StepCardContent
+                  key={`${copy}-${step.icon}-${step.title}`}
+                  step={step}
+                  Icon={Icon}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

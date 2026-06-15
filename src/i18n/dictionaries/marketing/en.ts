@@ -38,9 +38,8 @@ export const marketingEn = {
     centerDesc:
       "One platform where ambitious professionals and European companies meet — without generic job-board noise.",
     workModelsTitle: "Work models",
-    workRemote: "Remote from MENA",
-    workHybrid: "Hybrid roles",
-    workFlexible: "Relocation-friendly",
+    workRemote: "Remote",
+    workHybrid: "Hybrid",
     skillsIntro: "Tech & beyond —",
     skillsHighlight: "React · Node.js · Python · Arabic · French · English",
     skillTags: [

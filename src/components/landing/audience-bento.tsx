@@ -26,27 +26,18 @@ function BentoCard({
       viewport={{ once: true, margin: "-48px" }}
       transition={{ duration: 0.55, delay, ease: cardEase }}
       whileHover={{
-        y: -6,
-        scale: 1.02,
+        y: -4,
         transition: { duration: 0.25, ease: "easeOut" },
       }}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border p-5 shadow-lg transition-[border-color,box-shadow] duration-300 sm:p-6",
+        "relative z-0 overflow-hidden rounded-2xl border p-5 shadow-lg transition-[border-color,box-shadow,z-index] duration-300 hover:z-10 sm:p-6",
         variant === "accent"
           ? "border-[#2563EB]/60 bg-[#2563EB] text-white shadow-[#2563EB]/25 hover:shadow-[0_20px_40px_-12px_rgba(37,99,235,0.45)]"
           : "border-white/10 bg-[#1e293b]/90 text-white hover:border-[#2563EB]/35 hover:shadow-[0_20px_40px_-12px_rgba(15,23,42,0.55)]",
         className
       )}
     >
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
-          variant === "accent"
-            ? "bg-gradient-to-br from-white/10 to-transparent"
-            : "bg-gradient-to-br from-[#2563EB]/10 to-transparent"
-        )}
-      />
-      <div className="relative z-10">{children}</div>
+      <div className="relative">{children}</div>
     </motion.div>
   );
 }
@@ -67,7 +58,7 @@ function PillTags({
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: delay + index * 0.04, duration: 0.35 }}
-          className="rounded-full border border-white/10 bg-[#0F172A]/50 px-3 py-1 text-xs font-medium text-slate-200 transition-colors group-hover:border-[#2563EB]/30 group-hover:bg-[#2563EB]/15"
+          className="rounded-full border border-white/10 bg-[#0F172A]/50 px-3 py-1 text-xs font-medium text-slate-200 transition-colors hover:border-[#2563EB]/30 hover:bg-[#2563EB]/15"
         >
           {tag}
         </motion.span>
@@ -79,13 +70,14 @@ function PillTags({
 function WorkModelDonut({
   segments,
 }: {
-  segments: readonly { label: string; color: string }[];
+  segments: readonly { label: string; color: string; share: number }[];
 }) {
+  let cursor = 0;
   const gradient = segments
-    .map((segment, index) => {
-      const start = (index / segments.length) * 100;
-      const end = ((index + 1) / segments.length) * 100;
-      return `${segment.color} ${start}% ${end}%`;
+    .map((segment) => {
+      const start = cursor;
+      cursor += segment.share;
+      return `${segment.color} ${start}% ${cursor}%`;
     })
     .join(", ");
 
@@ -116,9 +108,8 @@ export function AudienceBento() {
   const b = messages.marketing.bento;
 
   const workModels = [
-    { label: b.workRemote, color: "#10B981" },
-    { label: b.workHybrid, color: "#2563EB" },
-    { label: b.workFlexible, color: "#F97316" },
+    { label: b.workRemote, color: "#10B981", share: 50 },
+    { label: b.workHybrid, color: "#2563EB", share: 50 },
   ] as const;
 
   return (
@@ -140,7 +131,7 @@ export function AudienceBento() {
           <p className="mt-4 text-lg text-slate-400">{b.subtitle}</p>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-3">
+        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-3 lg:gap-4 [&>*]:min-w-0">
           <BentoCard delay={0.05} className="lg:col-start-1 lg:row-start-1">
             <p className="text-sm leading-relaxed text-slate-300">
               {b.menaMarketsPrefix}{" "}
