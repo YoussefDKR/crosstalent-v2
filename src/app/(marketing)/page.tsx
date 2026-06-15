@@ -1,6 +1,7 @@
 import { Hero } from "@/components/landing/hero";
 import { BetaBanner } from "@/components/landing/beta-banner";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { AudienceBento } from "@/components/landing/audience-bento";
 import { AudienceSplit } from "@/components/landing/audience-split";
 import { CtaSection } from "@/components/landing/cta-section";
 import { CandidateHome } from "@/components/home/candidate-home";
@@ -32,6 +33,7 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
       <Hero profile={profile} />
       <BetaBanner />
       <HowItWorks />
+      <AudienceBento />
       <AudienceSplit profile={profile} />
       <CtaSection profile={profile} />
     </>
