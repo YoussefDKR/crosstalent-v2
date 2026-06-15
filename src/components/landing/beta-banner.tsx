@@ -9,7 +9,7 @@ export function BetaBanner() {
   const { beta } = messages.marketing;
 
   return (
-    <section className="bg-[#0F172A] py-10 sm:py-12" aria-label="Platform status">
+    <section className="border-t border-white/5 bg-[#0F172A] py-10 sm:py-12" aria-label="Platform status">
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -17,7 +17,7 @@ export function BetaBanner() {
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
         >
-          <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#2563EB]">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#60A5FA]">
             <Sparkles className="size-4" aria-hidden />
             {beta.label}
           </p>

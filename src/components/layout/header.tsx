@@ -26,17 +26,20 @@ import type { Profile } from "@/types";
 type HeaderProps = {
   profile?: Profile | null;
   notifications?: AppNotification[];
+  variant?: "default" | "marketing";
 };
 
 export function Header({
   profile = null,
   notifications = [],
+  variant = "default",
 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { messages, t } = useI18n();
   const isLoggedIn = Boolean(profile);
-  const isMarketingGuest = !profile;
+  const isMarketingGuest = !profile && variant === "marketing";
+  const isDarkShell = isMarketingGuest;
   const navLinks = profile
     ? navForRole(messages, profile.role)
     : marketingNav(messages);
@@ -66,12 +69,17 @@ export function Header({
     </>
   ) : (
     <>
-      <LanguageSwitcher />
+      <LanguageSwitcher variant={isDarkShell ? "dark" : "default"} />
       <Link href={siteConfig.links.login}>
         <Button
           variant="ghost"
           size="lg"
-          className="h-11 px-6 text-base font-semibold text-[#0F172A] hover:bg-slate-100"
+          className={cn(
+            "h-11 px-6 text-base font-semibold",
+            isDarkShell
+              ? "text-slate-200 hover:bg-white/10 hover:text-white"
+              : "text-[#0F172A] hover:bg-slate-100"
+          )}
         >
           {t("common.login")}
         </Button>
@@ -104,8 +112,12 @@ export function Header({
             className={cn(
               "text-sm font-medium transition-colors",
               active
-                ? "text-[#2563EB]"
-                : "text-[#0F172A]/70 hover:text-[#0F172A]"
+                ? isDarkShell
+                  ? "text-[#60A5FA]"
+                  : "text-[#2563EB]"
+                : isDarkShell
+                  ? "text-slate-300 hover:text-white"
+                  : "text-[#0F172A]/70 hover:text-[#0F172A]"
             )}
           >
             {link.label}
@@ -119,7 +131,14 @@ export function Header({
     "px-5 sm:px-8 lg:px-12 xl:px-16 2xl:px-20";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-white/95 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full backdrop-blur-md",
+        isDarkShell
+          ? "border-b border-white/10 bg-[#0F172A]/90"
+          : "border-b border-border/60 bg-white/95"
+      )}
+    >
       {isMarketingGuest ? (
         <>
           <div
@@ -128,10 +147,10 @@ export function Header({
               headerPadding
             )}
           >
-            <Logo className="shrink-0" />
+            <Logo className="shrink-0" variant="light" />
             <button
               type="button"
-              className="ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-lg border border-border"
+              className="ml-auto inline-flex size-10 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white"
               onClick={() => setMobileOpen((o) => !o)}
               aria-expanded={mobileOpen}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -145,7 +164,7 @@ export function Header({
               headerPadding
             )}
           >
-            <Logo className="justify-self-start" />
+            <Logo className="justify-self-start" variant="light" />
             {nav}
             <div className="flex shrink-0 items-center justify-self-end gap-3">
               {isLoggedIn && <LanguageSwitcher />}
@@ -184,7 +203,12 @@ export function Header({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden border-t border-border bg-white md:hidden"
+            className={cn(
+              "overflow-hidden md:hidden",
+              isDarkShell
+                ? "border-t border-white/10 bg-[#0F172A]"
+                : "border-t border-border bg-white"
+            )}
           >
             <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Mobile">
               {navLinks.map((link) => (
@@ -192,14 +216,22 @@ export function Header({
                   key={link.href + link.label}
                   href={link.href}
                   className={cn(
-                    "rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-[#0F172A]"
+                    "rounded-lg px-3 py-2.5 text-sm font-medium",
+                    isDarkShell
+                      ? "text-slate-300 hover:bg-white/10 hover:text-white"
+                      : "text-muted-foreground hover:bg-muted hover:text-[#0F172A]"
                   )}
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="mt-3 flex flex-col gap-2 border-t border-border pt-4">
+              <div
+                className={cn(
+                  "mt-3 flex flex-col gap-2 border-t pt-4",
+                  isDarkShell ? "border-white/10" : "border-border"
+                )}
+              >
                 {isLoggedIn && profile ? (
                   <>
                     <NotificationMenu
@@ -218,12 +250,19 @@ export function Header({
                   </>
                 ) : (
                   <>
-                    <LanguageSwitcher className="px-1" />
+                    <LanguageSwitcher
+                      variant={isDarkShell ? "dark" : "default"}
+                      className="px-1"
+                    />
                     <Link href={siteConfig.links.login}>
                       <Button
                         variant="outline"
                         size="lg"
-                        className="h-12 w-full text-base font-semibold"
+                        className={cn(
+                          "h-12 w-full text-base font-semibold",
+                          isDarkShell &&
+                            "border-white/20 bg-transparent text-white hover:bg-white/10"
+                        )}
                       >
                         {t("common.login")}
                       </Button>

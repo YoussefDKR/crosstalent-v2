@@ -8,9 +8,13 @@ import { cn } from "@/lib/utils";
 
 type LanguageSwitcherProps = {
   className?: string;
+  variant?: "default" | "dark";
 };
 
-export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
+export function LanguageSwitcher({
+  className,
+  variant = "default",
+}: LanguageSwitcherProps) {
   const { locale, setLocale, pending, t } = useI18n();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,7 +54,12 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
         aria-label={t("language.label")}
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 text-sm font-semibold text-[#0F172A] shadow-sm outline-none transition-colors hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-[#2563EB]/30 disabled:opacity-60"
+        className={cn(
+          "inline-flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-sm font-semibold shadow-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#2563EB]/30 disabled:opacity-60",
+          variant === "dark"
+            ? "border-white/15 bg-white/5 text-white hover:bg-white/10"
+            : "border-border bg-white text-[#0F172A] hover:bg-slate-50"
+        )}
       >
         <Globe className="size-4 shrink-0 text-[#2563EB]" aria-hidden />
         <span className="tabular-nums">{LOCALE_ABBREV[locale]}</span>

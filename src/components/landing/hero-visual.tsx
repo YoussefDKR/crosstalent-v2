@@ -13,7 +13,7 @@ export function HeroVisual() {
 
   return (
     <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-      <div className="relative aspect-[5/4] overflow-hidden rounded-2xl bg-[#E8EEF4] shadow-xl ring-1 ring-black/5 sm:aspect-[4/3]">
+      <div className="relative aspect-[5/4] overflow-hidden rounded-2xl bg-[#1e293b] shadow-2xl shadow-black/30 ring-1 ring-white/10 sm:aspect-[4/3]">
         <Image
           src="/images/hero-professional.png"
           alt={l.heroImageAlt}
@@ -23,7 +23,7 @@ export function HeroVisual() {
           className="object-cover object-center"
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#F8FAFC]/30 via-transparent to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0F172A]/50 via-transparent to-transparent"
           aria-hidden
         />
       </div>

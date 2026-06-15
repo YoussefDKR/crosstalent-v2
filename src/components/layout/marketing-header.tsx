@@ -12,5 +12,5 @@ export async function MarketingHeader({ profile }: MarketingHeaderProps) {
     ? await listAppNotifications(profile)
     : [];
 
-  return <Header profile={profile} notifications={notifications} />;
+  return <Header profile={profile} notifications={notifications} variant="marketing" />;
 }
