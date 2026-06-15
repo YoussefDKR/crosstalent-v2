@@ -8,13 +8,20 @@ import {
   type ApplicationStatusCandidateContent,
   type NewApplicationEmployerContent,
 } from "@/lib/email/application-templates";
+import { logEmailSent } from "@/lib/email/email-log";
 
-async function sendEmail(payload: {
+type SendEmailPayload = {
   to: string;
   subject: string;
   html: string;
   text: string;
-}): Promise<{ ok: true } | { ok: false; error: string }> {
+  userId: string;
+  emailType: "application_new" | "application_accepted" | "application_rejected";
+};
+
+async function sendEmail(
+  payload: SendEmailPayload
+): Promise<{ ok: true } | { ok: false; error: string }> {
   if (!isContactEmailConfigured()) {
     return { ok: false, error: "RESEND_API_KEY is not configured" };
   }
@@ -32,11 +39,17 @@ async function sendEmail(payload: {
     return { ok: false, error: error.message };
   }
 
+  try {
+    await logEmailSent(payload.userId, payload.emailType, payload.to);
+  } catch (e) {
+    console.error("Failed to log application email:", e);
+  }
+
   return { ok: true };
 }
 
 export async function sendNewApplicationToEmployer(
-  content: NewApplicationEmployerContent & { toEmail: string }
+  content: NewApplicationEmployerContent & { toEmail: string; userId: string }
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const { subject, html } = renderNewApplicationEmployerEmail(content);
   const name = content.employerName.trim() || "there";
@@ -54,11 +67,13 @@ export async function sendNewApplicationToEmployer(
     subject,
     html,
     text,
+    userId: content.userId,
+    emailType: "application_new",
   });
 }
 
 export async function sendApplicationAcceptedToCandidate(
-  content: ApplicationStatusCandidateContent & { toEmail: string }
+  content: ApplicationStatusCandidateContent & { toEmail: string; userId: string }
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const { subject, html } = renderApplicationAcceptedEmail(content);
   const name = content.candidateName.trim() || "there";
@@ -76,11 +91,13 @@ export async function sendApplicationAcceptedToCandidate(
     subject,
     html,
     text,
+    userId: content.userId,
+    emailType: "application_accepted",
   });
 }
 
 export async function sendApplicationRejectedToCandidate(
-  content: ApplicationStatusCandidateContent & { toEmail: string }
+  content: ApplicationStatusCandidateContent & { toEmail: string; userId: string }
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const { subject, html } = renderApplicationRejectedEmail(content);
   const name = content.candidateName.trim() || "there";
@@ -100,5 +117,7 @@ export async function sendApplicationRejectedToCandidate(
     subject,
     html,
     text,
+    userId: content.userId,
+    emailType: "application_rejected",
   });
 }

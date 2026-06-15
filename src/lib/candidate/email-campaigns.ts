@@ -13,6 +13,7 @@ import { sendCandidateJobDigest } from "@/lib/email/send-candidate-job-digest";
 import { sendCandidateProfileNudge } from "@/lib/email/send-candidate-profile-nudge";
 import { jobMatchesFilters } from "@/lib/jobs/match-filters";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logEmailSent } from "@/lib/email/email-log";
 import type { JobRow, JobWithCompany } from "@/types/jobs";
 
 const PROFILE_THRESHOLD = 85;
@@ -61,19 +62,6 @@ async function wasEmailSentRecently(
     .limit(1);
 
   return Boolean(data?.length);
-}
-
-async function logEmailSent(
-  userId: string,
-  emailType: CandidateEmailType,
-  recipientEmail: string
-): Promise<void> {
-  const supabase = createAdminClient();
-  await supabase.from("candidate_email_log").insert({
-    user_id: userId,
-    email_type: emailType,
-    recipient_email: recipientEmail,
-  });
 }
 
 async function attachCompaniesAdmin(jobs: JobRow[]): Promise<JobWithCompany[]> {

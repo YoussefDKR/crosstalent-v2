@@ -1,4 +1,12 @@
 import {
+  renderApplicationAcceptedEmail,
+  renderApplicationRejectedEmail,
+  renderNewApplicationEmployerEmail,
+  SAMPLE_APPLICATION_ACCEPTED,
+  SAMPLE_APPLICATION_REJECTED,
+  SAMPLE_NEW_APPLICATION,
+} from "@/lib/email/application-templates";
+import {
   renderJobDigestEmail,
   renderProfileNudgeEmail,
   SAMPLE_JOB_DIGEST,
@@ -42,14 +50,22 @@ type AdminEmailPreviewProps = {
 export function AdminEmailPreview({ logs, summary }: AdminEmailPreviewProps) {
   const profileNudge = renderProfileNudgeEmail(SAMPLE_PROFILE_NUDGE);
   const jobDigest = renderJobDigestEmail(SAMPLE_JOB_DIGEST);
+  const newApplication = renderNewApplicationEmployerEmail(SAMPLE_NEW_APPLICATION);
+  const applicationAccepted = renderApplicationAcceptedEmail(
+    SAMPLE_APPLICATION_ACCEPTED
+  );
+  const applicationRejected = renderApplicationRejectedEmail(
+    SAMPLE_APPLICATION_REJECTED
+  );
 
   return (
     <div className="space-y-12">
       <div>
-        <h1 className="text-2xl font-semibold text-[#0F172A]">Candidate emails</h1>
+        <h1 className="text-2xl font-semibold text-[#0F172A]">Emails</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Preview templates and review who received each automated send. Real
-          emails go out every Monday at 09:00 UTC via the candidate-email cron.
+          Preview all templates and review who received each automated send.
+          Weekly candidate emails go out Monday at 09:00 UTC; application emails
+          send immediately when someone applies or an employer updates status.
         </p>
       </div>
 
@@ -71,6 +87,24 @@ export function AdminEmailPreview({ logs, summary }: AdminEmailPreviewProps) {
             title="2. Weekly new jobs digest"
             subject={jobDigest.subject}
             html={jobDigest.html}
+          />
+
+          <EmailPreviewFrame
+            title="3. New application (employer)"
+            subject={newApplication.subject}
+            html={newApplication.html}
+          />
+
+          <EmailPreviewFrame
+            title="4. Application accepted (candidate)"
+            subject={applicationAccepted.subject}
+            html={applicationAccepted.html}
+          />
+
+          <EmailPreviewFrame
+            title="5. Application declined (candidate)"
+            subject={applicationRejected.subject}
+            html={applicationRejected.html}
           />
         </div>
       </div>

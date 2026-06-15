@@ -816,6 +816,9 @@ export async function getCandidateEmailLogSummary(): Promise<AdminEmailLogSummar
         total: 0,
         profileNudges: 0,
         jobDigests: 0,
+        applicationNew: 0,
+        applicationAccepted: 0,
+        applicationRejected: 0,
         lastSentAt: null,
       };
     }
@@ -825,16 +828,25 @@ export async function getCandidateEmailLogSummary(): Promise<AdminEmailLogSummar
   const rows = data ?? [];
   let profileNudges = 0;
   let jobDigests = 0;
+  let applicationNew = 0;
+  let applicationAccepted = 0;
+  let applicationRejected = 0;
 
   for (const row of rows) {
     if (row.email_type === "profile_nudge") profileNudges += 1;
     if (row.email_type === "job_digest") jobDigests += 1;
+    if (row.email_type === "application_new") applicationNew += 1;
+    if (row.email_type === "application_accepted") applicationAccepted += 1;
+    if (row.email_type === "application_rejected") applicationRejected += 1;
   }
 
   return {
     total: rows.length,
     profileNudges,
     jobDigests,
+    applicationNew,
+    applicationAccepted,
+    applicationRejected,
     lastSentAt: rows[0]?.sent_at ?? null,
   };
 }

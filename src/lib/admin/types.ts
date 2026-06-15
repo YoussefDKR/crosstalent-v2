@@ -137,6 +137,9 @@ export type AdminEmailLogSummary = {
   total: number;
   profileNudges: number;
   jobDigests: number;
+  applicationNew: number;
+  applicationAccepted: number;
+  applicationRejected: number;
   lastSentAt: string | null;
 };
 

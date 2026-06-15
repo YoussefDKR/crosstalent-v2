@@ -114,6 +114,7 @@ async function notifyEmployerOfNewApplication(payload: {
     const appUrl = siteConfig.url.replace(/\/$/, "");
     await sendNewApplicationToEmployer({
       toEmail: employer.email,
+      userId: payload.employerId,
       employerName: employer.full_name ?? "there",
       candidateName: payload.candidateName,
       jobTitle: payload.jobTitle,
@@ -205,6 +206,7 @@ async function notifyCandidateOfStatusChange(payload: {
     const appUrl = siteConfig.url.replace(/\/$/, "");
     const emailContent = {
       toEmail: candidate.email,
+      userId: payload.candidateId,
       candidateName: candidate.full_name ?? candidate.email,
       jobTitle: job.title,
       companyName: job.company_name ?? "the employer",

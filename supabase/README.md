@@ -38,6 +38,8 @@ Stripe setup (when ready): see [`docs/STRIPE.md`](../docs/STRIPE.md) and in-app 
 22. `migrations/20250617000000_saved_jobs_and_alerts.sql` — candidate saved jobs & job alerts
 23. `migrations/20250617100000_profile_moderation.sql` — admin suspend/ban flag on profiles
 24. `migrations/20250617200000_candidate_email_log.sql` — throttle profile nudge & job digest emails
+25. `migrations/20250619000000_email_log_recipient.sql` — store recipient email on send log
+26. `migrations/20250620000000_application_email_log_types.sql` — log application transactional emails in admin
 
 > **Supabase SQL Editor:** PostgreSQL cannot use a new enum value in the same transaction that adds it. Run step 17, wait for success, then run step 18 in a **new** query tab.
 

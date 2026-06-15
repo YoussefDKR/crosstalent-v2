@@ -99,3 +99,24 @@ export function renderApplicationRejectedEmail(
     }),
   };
 }
+
+export const SAMPLE_NEW_APPLICATION: NewApplicationEmployerContent = {
+  employerName: "Marie",
+  candidateName: "Youssef Benali",
+  jobTitle: "Senior React Developer",
+  applicationUrl: `${siteConfig.url.replace(/\/$/, "")}/employer/applications/sample-id`,
+};
+
+export const SAMPLE_APPLICATION_ACCEPTED: ApplicationStatusCandidateContent = {
+  candidateName: "Youssef",
+  jobTitle: "Senior React Developer",
+  companyName: "Acme GmbH",
+  applicationsUrl: `${siteConfig.url.replace(/\/$/, "")}/candidate/applications`,
+};
+
+export const SAMPLE_APPLICATION_REJECTED: ApplicationStatusCandidateContent = {
+  candidateName: "Youssef",
+  jobTitle: "Product Designer",
+  companyName: "Studio Paris",
+  applicationsUrl: `${siteConfig.url.replace(/\/$/, "")}/candidate/applications`,
+};
