@@ -34,7 +34,7 @@ export function ProfileCompletionCard({
                 : t("candidate.completionStandOut")}
             </p>
           </div>
-          <span className="text-3xl font-semibold tabular-nums text-[#2563EB]">
+          <span className="text-3xl font-semibold tabular-nums text-brand-accent">
             {percent}%
           </span>
         </div>
@@ -48,7 +48,7 @@ export function ProfileCompletionCard({
           aria-valuemax={100}
         >
           <div
-            className="h-full rounded-full bg-[#2563EB] transition-all duration-500"
+            className="h-full rounded-full bg-brand-accent transition-all duration-500"
             style={{ width: `${percent}%` }}
           />
         </div>
@@ -61,7 +61,7 @@ export function ProfileCompletionCard({
                 className="flex items-center gap-2 text-sm text-muted-foreground"
               >
                 {item.done ? (
-                  <CheckCircle2 className="size-4 shrink-0 text-[#10B981]" />
+                  <CheckCircle2 className="size-4 shrink-0 text-brand-success" />
                 ) : (
                   <Circle className="size-4 shrink-0 text-slate-300" />
                 )}
@@ -77,8 +77,8 @@ export function ProfileCompletionCard({
           <div className="flex flex-wrap gap-2">
             <Link href="/candidate/profile">
               <Button
-                variant="outline"
-                className="gap-2 border-[#2563EB]/30 text-[#2563EB] hover:bg-[#2563EB]/5"
+                variant="brandOutline"
+                className="gap-2"
               >
                 {t("candidate.careerProfile")}
                 <ArrowRight className="size-4" />

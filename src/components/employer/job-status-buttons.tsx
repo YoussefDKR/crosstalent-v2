@@ -83,7 +83,8 @@ export function JobStatusButtons({
             size="sm"
             disabled={pending}
             onClick={() => run(() => publishJob(jobId))}
-            className="gap-1.5 bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+            variant="brand"
+            className="gap-1.5"
           >
             <Globe className="size-3.5" />
             Reopen

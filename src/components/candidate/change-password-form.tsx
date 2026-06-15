@@ -90,7 +90,7 @@ export function ChangePasswordForm() {
       <Button
         type="submit"
         disabled={!canSubmit}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8] disabled:opacity-50"
+        variant="brand"
       >
         {pending ? a.updating : a.updatePassword}
       </Button>

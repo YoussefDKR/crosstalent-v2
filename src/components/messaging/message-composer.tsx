@@ -50,7 +50,8 @@ export function MessageComposer({ conversationId }: MessageComposerProps) {
         <Button
           type="submit"
           disabled={pending}
-          className="shrink-0 self-end bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+          variant="brand"
+          className="shrink-0 self-end"
           aria-label="Send message"
         >
           <Send className="size-4" />

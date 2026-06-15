@@ -33,10 +33,7 @@ export async function SidebarProfileStrength({
         {percent >= 80 ? c.completionStrong : c.sidebarAlmostThere}
       </p>
       <Link href="/candidate/profile" className="mt-4 block">
-        <Button
-          size="sm"
-          className="w-full bg-white text-[#0F172A] hover:bg-white/90"
-        >
+        <Button size="sm" variant="brand" className="w-full">
           {c.improveProfile}
         </Button>
       </Link>

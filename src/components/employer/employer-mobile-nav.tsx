@@ -32,9 +32,7 @@ export function EmployerMobileNav() {
             href={item.href}
             className={cn(
               "shrink-0 rounded-full px-3 py-1.5 text-sm font-medium",
-              active
-                ? "bg-[#2563EB] text-white"
-                : "bg-slate-100 text-[#0F172A]/80"
+              active ? "nav-pill-active" : "nav-pill-inactive"
             )}
           >
             {item.label}

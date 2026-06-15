@@ -49,7 +49,7 @@ export function EmailUpdateForm({ email }: EmailUpdateFormProps) {
       <Button
         type="submit"
         disabled={pending}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        variant="brand"
       >
         {pending ? a.saving : a.updateEmail}
       </Button>

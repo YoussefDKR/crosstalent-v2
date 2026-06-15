@@ -65,7 +65,7 @@ export default async function EmployerJobsPage() {
             : t("employer.postPlural")}
         </p>
         <Link href="/employer/jobs/new">
-          <Button className="gap-2 bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+          <Button variant="brand" className="gap-2">
             <Plus className="size-4" />
             {t("employer.postNewJob")}
           </Button>

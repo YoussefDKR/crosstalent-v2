@@ -102,7 +102,7 @@ export default async function EmployerApplicationsPage({
               {t("employer.noApplicationsHint")}
             </p>
             <Link href="/employer/jobs/new" className="mt-6 inline-block">
-              <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+              <Button variant="brand">
                 {t("employer.postAJob")}
               </Button>
             </Link>

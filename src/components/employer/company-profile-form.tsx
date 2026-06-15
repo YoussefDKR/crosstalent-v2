@@ -267,7 +267,7 @@ export function CompanyProfileForm({ company }: CompanyProfileFormProps) {
       <Button
         type="submit"
         disabled={pending}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        variant="brand"
       >
         {pending ? f.saving : f.save}
       </Button>

@@ -46,7 +46,7 @@ export function AccountInfoForm({ fullName }: AccountInfoFormProps) {
       <Button
         type="submit"
         disabled={pending}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        variant="brand"
       >
         {pending ? a.saving : a.saveName}
       </Button>

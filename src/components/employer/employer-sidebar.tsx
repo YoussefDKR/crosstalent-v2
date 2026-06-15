@@ -97,7 +97,7 @@ export function EmployerSidebar({
       <div className="shrink-0 px-4 pt-6 pb-4">
         <Link
           href={siteConfig.links.employerCompany}
-          className="flex items-center gap-3 rounded-xl border border-border/80 bg-white p-3 shadow-sm transition-colors hover:border-[#2563EB]/30"
+          className="flex items-center gap-3 rounded-xl border border-border/80 bg-white p-3 shadow-sm transition-colors hover:border-brand-accent/30"
         >
           {logoUrl ? (
             <img
@@ -143,14 +143,14 @@ export function EmployerSidebar({
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   active
-                    ? "bg-[#2563EB]/10 text-[#2563EB]"
-                    : "text-[#0F172A]/75 hover:bg-white hover:text-[#0F172A]"
+                    ? "bg-brand-accent/10 text-brand-accent"
+                    : "text-foreground/75 hover:bg-white hover:text-foreground"
                 )}
               >
                 <Icon className="size-4 shrink-0" />
                 <span className="flex-1">{item.label}</span>
                 {badge > 0 && (
-                  <span className="flex size-5 items-center justify-center rounded-full bg-[#2563EB] text-[10px] font-semibold text-white">
+                  <span className="flex size-5 items-center justify-center rounded-full bg-brand-accent text-[10px] font-semibold text-white">
                     {badge > 9 ? "9+" : badge}
                   </span>
                 )}
@@ -164,7 +164,8 @@ export function EmployerSidebar({
         <Link href="/employer/jobs/new" className="block">
           <Button
             size="lg"
-            className="h-11 w-full gap-2 rounded-xl bg-[#2563EB] px-3 text-sm font-semibold text-white shadow-md shadow-[#2563EB]/25 hover:bg-[#1d4ed8]"
+            variant="brand"
+            className="h-11 w-full gap-2 rounded-xl px-3 text-sm font-semibold shadow-md shadow-brand-accent/25"
           >
             <Plus className="size-4 shrink-0" strokeWidth={2.5} />
             <span className="truncate">{t("employer.postNewJob")}</span>

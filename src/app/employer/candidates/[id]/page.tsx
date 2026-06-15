@@ -285,7 +285,7 @@ export default async function EmployerCandidateDetailPage({
               </p>
               {canMessage && (
                 <Link href="/employer/applications?status=accepted">
-                  <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+                  <Button variant="brand" className="w-full">
                     {t("employer.openAcceptedApplications")}
                   </Button>
                 </Link>

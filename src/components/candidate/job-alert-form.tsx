@@ -157,7 +157,7 @@ export function JobAlertForm({ defaultValues }: JobAlertFormProps) {
         <p className="text-sm text-green-700">{state.success}</p>
       )}
 
-      <Button type="submit" disabled={pending} className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+      <Button type="submit" disabled={pending} variant="brand">
         {pending ? t("jobs.savingAlert") : t("jobs.createAlert")}
       </Button>
     </form>

@@ -134,6 +134,22 @@
 }
 
 @layer utilities {
+  .link-brand {
+    @apply font-medium text-brand-accent hover:underline;
+  }
+
+  .nav-pill-active {
+    @apply bg-brand-accent text-white;
+  }
+
+  .nav-pill-inactive {
+    @apply bg-slate-100 text-foreground/80;
+  }
+
+  .dark-nav-active {
+    @apply border-l-2 border-brand-accent bg-brand-accent/10 text-white;
+  }
+
   .font-arabic {
     font-family: var(--font-arabic), var(--font-sans), ui-sans-serif, system-ui,
       sans-serif;

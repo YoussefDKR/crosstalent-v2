@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
+import { cn } from "@/lib/utils";
 import type { EmployerPlanId } from "@/config/billing";
 
 type CheckoutButtonProps = {
@@ -56,14 +57,10 @@ export function CheckoutButton({
     <div className="w-full">
       <Button
         type="button"
-        variant={variant}
+        variant={variant === "default" ? "brand" : variant}
         disabled={disabled || loading}
         onClick={handleCheckout}
-        className={
-          variant === "default"
-            ? `w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8] ${className ?? ""}`
-            : `w-full ${className ?? ""}`
-        }
+        className={cn("w-full", className)}
       >
         {loading ? (
           <>

@@ -24,7 +24,7 @@ export default function EmployerError({
             Try again
           </Button>
           <Link href="/employer/dashboard">
-            <Button className="w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8] sm:w-auto">
+            <Button variant="brand" className="w-full sm:w-auto">
               Dashboard
             </Button>
           </Link>

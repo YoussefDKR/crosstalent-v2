@@ -40,7 +40,7 @@ export function ConversationList({
             href={messagesThreadPath(role, c.id)}
             className="flex gap-4 p-5 transition-colors hover:bg-slate-50"
           >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#2563EB]/10 text-[#2563EB]">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-accent/10 text-brand-accent">
               <MessageSquare className="size-5" />
             </span>
             <div className="min-w-0 flex-1">

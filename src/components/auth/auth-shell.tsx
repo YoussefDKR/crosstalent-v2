@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { MarketingGradientBg } from "@/components/marketing/marketing-gradient-bg";
 import { brandAssets } from "@/config/brand";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
@@ -21,14 +22,7 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
   return (
     <div className="flex min-h-screen">
       <aside className="relative hidden w-[44%] flex-col justify-between overflow-hidden bg-[#0F172A] p-10 text-white lg:flex xl:p-14">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-50"
-          aria-hidden
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 10% 20%, #2563EB 0%, transparent 45%), radial-gradient(circle at 90% 80%, #10B981 0%, transparent 40%)",
-          }}
-        />
+        <MarketingGradientBg opacity={50} />
         <div className="relative">
           <Link href="/" className="inline-flex items-center gap-2.5">
             <Image

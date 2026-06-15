@@ -153,7 +153,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
         <Button
           type="submit"
           disabled={pending}
-          className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+          variant="brand"
         >
           Add experience
         </Button>

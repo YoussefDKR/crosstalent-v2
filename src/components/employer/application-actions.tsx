@@ -62,7 +62,8 @@ export function ApplicationActions({
               if (result?.error) setMessage(result.error);
             });
           }}
-          className="gap-2 bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+          variant="brand"
+          className="gap-2"
         >
           <MessageSquare className="size-4" />
           Message {candidateName.split(" ")[0] ?? "candidate"}

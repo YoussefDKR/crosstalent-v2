@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminFilters } from "@/components/admin/admin-filters";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import type { UserRole } from "@/types";
 
@@ -33,14 +34,11 @@ export function AdminUserSearch({ role, q }: AdminUserSearchProps) {
           name="q"
           defaultValue={q}
           placeholder={t("admin.searchPlaceholder")}
-          className="h-10 min-w-[220px] flex-1 rounded-xl border border-border bg-white px-3 text-sm outline-none ring-[#2563EB] focus:ring-2"
+          className="h-10 min-w-[220px] flex-1 rounded-xl border border-border bg-white px-3 text-sm outline-none ring-brand-accent focus:ring-2"
         />
-        <button
-          type="submit"
-          className="h-10 rounded-xl bg-[#0F172A] px-4 text-sm font-medium text-white hover:bg-[#1e293b]"
-        >
+        <Button type="submit" variant="brand" className="h-10 rounded-xl px-4">
           {t("admin.search")}
-        </button>
+        </Button>
       </form>
     </div>
   );

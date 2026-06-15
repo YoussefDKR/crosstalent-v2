@@ -54,7 +54,8 @@ export function EmployerOnboardingForm() {
       <Button
         type="submit"
         disabled={pending}
-        className="h-10 w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        variant="brand"
+        className="h-10 w-full"
       >
         {pending ? "Saving…" : "Continue to dashboard"}
       </Button>

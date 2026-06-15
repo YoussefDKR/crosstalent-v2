@@ -112,10 +112,10 @@ export function CandidateSidebar({ footer }: CandidateSidebarProps) {
               key={item.label}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-white/10 text-white"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "dark-nav-active"
+                  : "border-transparent text-white/70 hover:bg-white/5 hover:text-white"
               )}
             >
               <Icon className="size-4 shrink-0" />

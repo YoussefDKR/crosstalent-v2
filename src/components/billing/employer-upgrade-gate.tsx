@@ -46,7 +46,7 @@ export function EmployerUpgradeGate({
       )}
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <Link href="/employer/billing">
-          <Button className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+          <Button variant="brand">
             {access?.hasPaidSubscription ? "Manage plan" : "View plans & trial"}
           </Button>
         </Link>

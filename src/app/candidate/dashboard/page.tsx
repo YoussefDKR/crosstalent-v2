@@ -73,7 +73,7 @@ export default async function CandidateDashboardPage() {
               </p>
             )}
             <Link href="/candidate/profile">
-              <Button className="w-full gap-2 bg-[#2563EB] text-white hover:bg-[#1d4ed8]">
+              <Button variant="brand" className="w-full gap-2">
                 {t("candidate.editProfile")}
                 <ArrowRight className="size-4" />
               </Button>

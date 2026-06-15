@@ -71,10 +71,10 @@ export function AdminSidebar() {
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+              "flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors",
               isActive(pathname, href)
-                ? "bg-white/10 text-white"
-                : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                ? "dark-nav-active"
+                : "border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-200"
             )}
           >
             <Icon className="size-4 shrink-0" />

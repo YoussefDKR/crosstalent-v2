@@ -280,7 +280,8 @@ export function JobForm({ job, mode }: JobFormProps) {
                 name="intent"
                 value="publish"
                 disabled={pending}
-                className="min-w-[140px] bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+                variant="brand"
+                className="min-w-[140px]"
               >
                 {pending ? "Posting…" : "Post job"}
               </Button>
@@ -317,7 +318,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 name="intent"
                 value="save"
                 disabled={pending}
-                className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+                variant="brand"
               >
                 {pending ? "Saving…" : "Save changes"}
               </Button>
@@ -358,7 +359,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 name="intent"
                 value="reopen"
                 disabled={pending}
-                className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+                variant="brand"
               >
                 Reopen & post
               </Button>

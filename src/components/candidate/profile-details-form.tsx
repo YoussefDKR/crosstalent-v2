@@ -150,7 +150,7 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
       <Button
         type="submit"
         disabled={pending}
-        className="bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
+        variant="brand"
       >
         {pending ? "Saving…" : "Save profile details"}
       </Button>

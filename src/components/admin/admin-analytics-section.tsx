@@ -47,8 +47,8 @@ export function AdminAnalyticsSection({ data }: AdminAnalyticsSectionProps) {
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-sm transition-colors",
                   activeDays === option.days
-                    ? "border-[#2563EB] bg-[#2563EB] text-white"
-                    : "border-border bg-white text-muted-foreground hover:border-[#2563EB]/40"
+                    ? "border-brand-accent bg-brand-accent text-white"
+                    : "border-border bg-white text-muted-foreground hover:border-brand-accent/40"
                 )}
               >
                 {option.label}

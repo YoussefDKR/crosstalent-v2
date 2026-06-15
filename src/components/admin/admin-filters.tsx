@@ -41,8 +41,8 @@ export function AdminFilters({
           className={cn(
             "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
             active === option.value
-              ? "bg-[#0F172A] text-white"
-              : "bg-white text-muted-foreground ring-1 ring-border hover:text-[#0F172A]"
+              ? "bg-brand-accent text-white"
+              : "bg-white text-muted-foreground ring-1 ring-border hover:text-foreground"
           )}
         >
           {option.label}

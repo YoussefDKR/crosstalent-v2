@@ -34,7 +34,7 @@ export function CompanyCompletionCard({
                 : t("employer.companyCompletionStandOut")}
             </p>
           </div>
-          <span className="text-3xl font-semibold tabular-nums text-[#2563EB]">
+          <span className="text-3xl font-semibold tabular-nums text-brand-accent">
             {percent}%
           </span>
         </div>
@@ -48,7 +48,7 @@ export function CompanyCompletionCard({
           aria-valuemax={100}
         >
           <div
-            className="h-full rounded-full bg-[#2563EB] transition-all duration-500"
+            className="h-full rounded-full bg-brand-accent transition-all duration-500"
             style={{ width: `${percent}%` }}
           />
         </div>
@@ -61,7 +61,7 @@ export function CompanyCompletionCard({
                 className="flex items-center gap-2 text-sm text-muted-foreground"
               >
                 {item.done ? (
-                  <CheckCircle2 className="size-4 shrink-0 text-[#10B981]" />
+                  <CheckCircle2 className="size-4 shrink-0 text-brand-success" />
                 ) : (
                   <Circle className="size-4 shrink-0 text-slate-300" />
                 )}
@@ -75,10 +75,7 @@ export function CompanyCompletionCard({
 
         {percent < 100 && (
           <Link href="/employer/company">
-            <Button
-              variant="outline"
-              className="mt-2 w-full gap-2 border-[#2563EB]/30 text-[#2563EB] hover:bg-[#2563EB]/5 sm:w-auto"
-            >
+            <Button variant="brandOutline" className="mt-2 w-full gap-2 sm:w-auto">
               {t("employer.completeCompanyProfile")}
               <ArrowRight className="size-4" />
             </Button>
