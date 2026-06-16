@@ -111,13 +111,11 @@ Users can **Sign in with Google** on `/login` or **Sign up with Google** on `/si
 
 ### Password reset
 
-Password reset emails are sent via **Resend** (same as other CrossTalent mail) with the logo and `CrossTalent <contact@crosstalent.io>` sender — not Supabase's default template.
+Password reset emails are sent via **Resend** (same as other CrossTalent mail) with the logo and `CrossTalent <contact@crosstalent.io>` sender.
 
-Requires `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, and `SUPABASE_SERVICE_ROLE_KEY` in production. If Resend is not configured locally, the app falls back to Supabase's built-in reset email.
+The email button links to `/recover?token_hash=…` — users click **Continue** there so email scanners do not burn the one-time token before they open the link.
 
-The reset link still uses `/auth/callback` (already in **Redirect URLs**). Customize copy in `src/lib/email/send-password-reset.ts` and i18n keys under `auth.resetPasswordEmail*`.
-
-Optional: disable Supabase's duplicate template under **Authentication → Email templates → Reset password** if you ever call `resetPasswordForEmail` in production.
+Requires `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, and `SUPABASE_SERVICE_ROLE_KEY` in production.
 
 ## 4. What the migration creates
 

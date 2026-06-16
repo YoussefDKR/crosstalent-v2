@@ -5,6 +5,7 @@ export const AUTH_ROUTES = {
   signup: "/signup",
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
+  recover: "/recover",
   callback: "/auth/callback",
   signOut: "/auth/signout",
 } as const;
@@ -21,6 +22,7 @@ export const PUBLIC_PATH_PREFIXES = [
   "/signup",
   "/forgot-password",
   "/reset-password",
+  "/recover",
   "/auth/callback",
   "/auth/google",
   "/pricing",

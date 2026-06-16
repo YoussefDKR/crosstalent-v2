@@ -144,6 +144,13 @@ export const ar: Messages = {
       "ينتهي صلاحية هذا الرابط قريباً. إذا لم تطلب إعادة التعيين، تجاهل هذا البريد.",
     resetPasswordEmailNotConfigured:
       "بريد إعادة التعيين غير مُعدّ. تواصل مع support@crosstalent.io.",
+    recoverTitle: "المتابعة لإعادة تعيين كلمة المرور",
+    recoverSubtitle:
+      "انقر الزر أدناه لفتح صفحة الإعادة الآمنة. هذه الخطوة تمنع ماسحات البريد من إبطال الرابط.",
+    recoverContinue: "المتابعة لإعادة التعيين",
+    recoverContinuing: "جارٍ التحقق من الرابط…",
+    recoverMissingToken:
+      "رابط إعادة التعيين غير مكتمل. اطلب رابطاً جديداً.",
   },
   landing: {
     heroTitle: "مواهب حقيقية.",

@@ -149,6 +149,13 @@ export const fr: Messages = {
       "Ce lien expire rapidement. Si vous n'avez pas demandé cette réinitialisation, ignorez cet e-mail.",
     resetPasswordEmailNotConfigured:
       "L'e-mail de réinitialisation n'est pas configuré. Contactez support@crosstalent.io.",
+    recoverTitle: "Continuer la réinitialisation",
+    recoverSubtitle:
+      "Cliquez ci-dessous pour ouvrir la page sécurisée. Cette étape évite que les scanners d'e-mails invalident votre lien.",
+    recoverContinue: "Continuer la réinitialisation",
+    recoverContinuing: "Vérification du lien…",
+    recoverMissingToken:
+      "Ce lien de réinitialisation est incomplet. Demandez un nouveau lien.",
   },
   landing: {
     heroTitle: "De vrais talents.",

@@ -13,8 +13,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ForgotPasswordPage() {
+type ForgotPasswordPageProps = {
+  searchParams: Promise<{ error?: string }>;
+};
+
+export default async function ForgotPasswordPage({
+  searchParams,
+}: ForgotPasswordPageProps) {
   const { t } = await getServerI18n();
+  const { error } = await searchParams;
+
+  const initialError =
+    error === "reset_link_expired"
+      ? t("auth.resetPasswordSessionExpired")
+      : undefined;
 
   return (
     <AuthShell
@@ -29,7 +41,7 @@ export default async function ForgotPasswordPage() {
         </Link>
       }
     >
-      <ForgotPasswordForm />
+      <ForgotPasswordForm initialError={initialError} />
     </AuthShell>
   );
 }

@@ -242,7 +242,10 @@ export async function requestPasswordReset(
     return { error: error.message };
   }
 
-  const resetUrl = data.properties?.action_link;
+  const resetUrl = data.properties?.hashed_token
+    ? `${getSiteUrl()}${AUTH_ROUTES.recover}?token_hash=${encodeURIComponent(data.properties.hashed_token)}`
+    : data.properties?.action_link;
+
   if (!resetUrl) {
     return { success: t("auth.forgotPasswordSuccess") };
   }
@@ -260,6 +263,30 @@ export async function requestPasswordReset(
   }
 
   return { success: t("auth.forgotPasswordSuccess") };
+}
+
+export async function confirmPasswordRecovery(
+  _prev: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const { t } = await getServerI18n();
+  const tokenHash = String(formData.get("token_hash") ?? "").trim();
+
+  if (!tokenHash) {
+    return { error: t("auth.recoverMissingToken") };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({
+    type: "recovery",
+    token_hash: tokenHash,
+  });
+
+  if (error) {
+    return { error: t("auth.resetPasswordSessionExpired") };
+  }
+
+  redirect(AUTH_ROUTES.resetPassword);
 }
 
 export async function completePasswordReset(

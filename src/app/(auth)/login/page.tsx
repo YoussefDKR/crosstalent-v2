@@ -22,7 +22,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { t } = await getServerI18n();
 
   const authError =
-    error === "auth_callback_failed" ? t("auth.authCallbackFailed") : undefined;
+    error === "reset_link_expired"
+      ? t("auth.resetPasswordSessionExpired")
+      : error === "auth_callback_failed"
+        ? t("auth.authCallbackFailed")
+        : undefined;
 
   return (
     <AuthShell

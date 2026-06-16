@@ -144,6 +144,12 @@ export const en = {
       "This link expires after a short time. If you did not request a reset, you can ignore this email.",
     resetPasswordEmailNotConfigured:
       "Password reset email is not configured. Contact support at contact@crosstalent.io.",
+    recoverTitle: "Continue to reset your password",
+    recoverSubtitle:
+      "Click the button below to open the secure reset page. This extra step stops email scanners from invalidating your link.",
+    recoverContinue: "Continue to reset password",
+    recoverContinuing: "Verifying link…",
+    recoverMissingToken: "This reset link is incomplete. Request a new one.",
   },
   landing: {
     heroTitle: "Real talent.",

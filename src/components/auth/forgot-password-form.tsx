@@ -14,9 +14,15 @@ import { siteConfig } from "@/config/site";
 
 const initial: AuthActionState = {};
 
-export function ForgotPasswordForm() {
+type ForgotPasswordFormProps = {
+  initialError?: string;
+};
+
+export function ForgotPasswordForm({ initialError }: ForgotPasswordFormProps) {
   const { t } = useI18n();
   const [state, action, pending] = useActionState(requestPasswordReset, initial);
+
+  const displayError = state.error ?? initialError;
 
   return (
     <div className="space-y-5">
@@ -25,12 +31,12 @@ export function ForgotPasswordForm() {
       </p>
 
       <form action={action} className="space-y-5">
-        {state.error && (
+        {displayError && (
           <div
             role="alert"
             className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
           >
-            {state.error}
+            {displayError}
           </div>
         )}
 
