@@ -26,7 +26,7 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
+    default: `${siteConfig.name} — Beyond borders`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: siteConfig.ogImage,
-        width: 1024,
-        height: 682,
+        width: 1200,
+        height: 630,
         alt: `${siteConfig.name} — ${siteConfig.description}`,
       },
     ],
