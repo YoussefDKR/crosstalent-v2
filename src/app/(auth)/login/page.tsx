@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { AuthHashErrorHandler } from "@/components/auth/auth-hash-error-handler";
 import { LoginForm } from "@/components/auth/login-form";
 import { siteConfig } from "@/config/site";
 import { getServerI18n } from "@/i18n/server";
@@ -41,6 +42,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </Link>
       }
     >
+      <AuthHashErrorHandler />
       <LoginForm redirectTo={redirectTo} authError={authError} />
     </AuthShell>
   );

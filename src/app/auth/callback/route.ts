@@ -12,28 +12,34 @@ export async function GET(request: Request) {
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/";
   const intentId = searchParams.get("intent");
+  const authError = searchParams.get("error");
+  const errorCode = searchParams.get("error_code");
+
+  if (
+    errorCode === "otp_expired" ||
+    (authError === "access_denied" && errorCode === "otp_expired")
+  ) {
+    return NextResponse.redirect(
+      `${origin}${AUTH_ROUTES.forgotPassword}?error=reset_link_expired`
+    );
+  }
 
   const supabase = await createClient();
 
   if (tokenHash && type === "recovery") {
-    const { error } = await supabase.auth.verifyOtp({
-      type: "recovery",
-      token_hash: tokenHash,
-    });
-
-    if (!error) {
-      return NextResponse.redirect(`${origin}${AUTH_ROUTES.resetPassword}`);
-    }
-
-    return NextResponse.redirect(
-      `${origin}${AUTH_ROUTES.forgotPassword}?error=reset_link_expired`
-    );
+    const recoverUrl = new URL(`${origin}${AUTH_ROUTES.recover}`);
+    recoverUrl.searchParams.set("token_hash", tokenHash);
+    return NextResponse.redirect(recoverUrl);
   }
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      if (next.includes("reset-password")) {
+        return NextResponse.redirect(`${origin}${AUTH_ROUTES.resetPassword}`);
+      }
+
       if (intentId) {
         await supabase.rpc("apply_oauth_signup_role", {
           p_intent_id: intentId,

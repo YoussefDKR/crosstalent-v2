@@ -113,7 +113,7 @@ Users can **Sign in with Google** on `/login` or **Sign up with Google** on `/si
 
 Password reset emails are sent via **Resend** (same as other CrossTalent mail) with the logo and `CrossTalent <contact@crosstalent.io>` sender.
 
-The email button links to `/recover?token_hash=…` — users click **Continue** there so email scanners do not burn the one-time token before they open the link.
+The email button links to `/recover?ticket=…` (a signed app ticket, not a Supabase verify URL). Users click **Continue** there so email scanners do not burn the one-time token before they open the link.
 
 Requires `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, and `SUPABASE_SERVICE_ROLE_KEY` in production.
 

@@ -12,6 +12,7 @@ import {
 } from "@/lib/supabase/admin";
 import { getServerI18n } from "@/i18n/server";
 import type { Messages } from "@/i18n/dictionaries/en";
+import { createRecoveryTicket } from "@/lib/auth/recovery-ticket";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
 import { ensureCompanyProfileRow, getEmployerEntryPath } from "@/lib/employer/queries";
@@ -212,26 +213,17 @@ export async function requestPasswordReset(
     return { error: t("auth.forgotPasswordEmailRequired") };
   }
 
-  const redirectTo = `${getSiteUrl()}${AUTH_ROUTES.callback}?next=${encodeURIComponent(AUTH_ROUTES.resetPassword)}`;
-
   if (!isContactEmailConfigured() || !isSupabaseAdminConfigured()) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo,
-    });
-
-    if (error) {
-      return { error: error.message };
-    }
-
-    return { success: t("auth.forgotPasswordSuccess") };
+    return { error: t("auth.resetPasswordEmailNotConfigured") };
   }
+
+  const recoverRedirect = `${getSiteUrl()}${AUTH_ROUTES.recover}`;
 
   const admin = createAdminClient();
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
-    options: { redirectTo },
+    options: { redirectTo: recoverRedirect },
   });
 
   if (error) {
@@ -242,13 +234,17 @@ export async function requestPasswordReset(
     return { error: error.message };
   }
 
-  const resetUrl = data.properties?.hashed_token
-    ? `${getSiteUrl()}${AUTH_ROUTES.recover}?token_hash=${encodeURIComponent(data.properties.hashed_token)}`
-    : data.properties?.action_link;
-
-  if (!resetUrl) {
-    return { success: t("auth.forgotPasswordSuccess") };
+  const hashedToken = data.properties?.hashed_token?.trim();
+  if (!hashedToken) {
+    return { error: t("auth.resetPasswordEmailNotConfigured") };
   }
+
+  const ticket = createRecoveryTicket(hashedToken);
+  if (!ticket) {
+    return { error: t("auth.resetPasswordEmailNotConfigured") };
+  }
+
+  const resetUrl = `${getSiteUrl()}${AUTH_ROUTES.recover}?ticket=${encodeURIComponent(ticket)}`;
 
   const sendResult = await sendPasswordResetEmail(email, resetUrl, {
     subject: t("auth.resetPasswordEmailSubject"),
@@ -263,30 +259,6 @@ export async function requestPasswordReset(
   }
 
   return { success: t("auth.forgotPasswordSuccess") };
-}
-
-export async function confirmPasswordRecovery(
-  _prev: AuthActionState,
-  formData: FormData
-): Promise<AuthActionState> {
-  const { t } = await getServerI18n();
-  const tokenHash = String(formData.get("token_hash") ?? "").trim();
-
-  if (!tokenHash) {
-    return { error: t("auth.recoverMissingToken") };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({
-    type: "recovery",
-    token_hash: tokenHash,
-  });
-
-  if (error) {
-    return { error: t("auth.resetPasswordSessionExpired") };
-  }
-
-  redirect(AUTH_ROUTES.resetPassword);
 }
 
 export async function completePasswordReset(

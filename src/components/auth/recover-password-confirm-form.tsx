@@ -1,16 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
-import {
-  confirmPasswordRecovery,
-  type AuthActionState,
-} from "@/app/(auth)/actions";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/context/i18n-provider";
 import { siteConfig } from "@/config/site";
-
-const initial: AuthActionState = {};
+import { AUTH_ROUTES } from "@/lib/auth/routes";
+import { createClient } from "@/lib/supabase/client";
 
 type RecoverPasswordConfirmFormProps = {
   tokenHash: string;
@@ -20,27 +16,43 @@ export function RecoverPasswordConfirmForm({
   tokenHash,
 }: RecoverPasswordConfirmFormProps) {
   const { t } = useI18n();
-  const [state, action, pending] = useActionState(
-    confirmPasswordRecovery,
-    initial
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function handleContinue() {
+    setError(null);
+    setPending(true);
+
+    const supabase = createClient();
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      type: "recovery",
+      token_hash: tokenHash,
+    });
+
+    if (verifyError) {
+      setError(t("auth.resetPasswordSessionExpired"));
+      setPending(false);
+      return;
+    }
+
+    window.location.href = AUTH_ROUTES.resetPassword;
+  }
 
   return (
-    <form action={action} className="space-y-5">
-      <input type="hidden" name="token_hash" value={tokenHash} />
-
-      {state.error && (
+    <div className="space-y-5">
+      {error && (
         <div
           role="alert"
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
-          {state.error}
+          {error}
         </div>
       )}
 
       <Button
-        type="submit"
+        type="button"
         disabled={pending}
+        onClick={handleContinue}
         className="h-10 w-full bg-[#2563EB] text-white hover:bg-[#1d4ed8]"
       >
         {pending ? t("auth.recoverContinuing") : t("auth.recoverContinue")}
@@ -54,6 +66,6 @@ export function RecoverPasswordConfirmForm({
           {t("auth.backToSignIn")}
         </Link>
       </p>
-    </form>
+    </div>
   );
 }

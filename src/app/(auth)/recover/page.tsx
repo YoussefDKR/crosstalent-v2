@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RecoverPasswordConfirmForm } from "@/components/auth/recover-password-confirm-form";
 import { AUTH_ROUTES } from "@/lib/auth/routes";
+import { verifyRecoveryTicket } from "@/lib/auth/recovery-ticket";
 import { getServerI18n } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,14 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type RecoverPageProps = {
-  searchParams: Promise<{ token_hash?: string }>;
+  searchParams: Promise<{ ticket?: string; token_hash?: string }>;
 };
 
 export default async function RecoverPage({ searchParams }: RecoverPageProps) {
   const { t } = await getServerI18n();
-  const { token_hash } = await searchParams;
+  const { ticket, token_hash } = await searchParams;
 
-  if (!token_hash?.trim()) {
+  const tokenHash =
+    (ticket ? verifyRecoveryTicket(ticket) : null) ?? token_hash?.trim() ?? "";
+
+  if (!tokenHash) {
     redirect(`${AUTH_ROUTES.forgotPassword}?error=reset_link_expired`);
   }
 
@@ -36,7 +40,7 @@ export default async function RecoverPage({ searchParams }: RecoverPageProps) {
         </Link>
       }
     >
-      <RecoverPasswordConfirmForm tokenHash={token_hash} />
+      <RecoverPasswordConfirmForm tokenHash={tokenHash} />
     </AuthShell>
   );
 }
