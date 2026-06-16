@@ -135,6 +135,15 @@ export const ar: Messages = {
     resetPasswordSubmit: "تحديث كلمة المرور",
     resetPasswordUpdating: "جارٍ تحديث كلمة المرور…",
     requestNewLink: "طلب رابط جديد",
+    resetPasswordEmailSubject: "إعادة تعيين كلمة مرور CrossTalent",
+    resetPasswordEmailTitle: "إعادة تعيين كلمة المرور",
+    resetPasswordEmailBody:
+      "تلقّينا طلباً لإعادة تعيين كلمة مرور حسابك على <strong>CrossTalent</strong>. انقر الزر أدناه لاختيار كلمة مرور جديدة.",
+    resetPasswordEmailCta: "إعادة تعيين كلمة المرور",
+    resetPasswordEmailFooter:
+      "ينتهي صلاحية هذا الرابط قريباً. إذا لم تطلب إعادة التعيين، تجاهل هذا البريد.",
+    resetPasswordEmailNotConfigured:
+      "بريد إعادة التعيين غير مُعدّ. تواصل مع support@crosstalent.io.",
   },
   landing: {
     heroTitle: "مواهب حقيقية.",

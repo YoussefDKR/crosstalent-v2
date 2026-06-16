@@ -1,9 +1,15 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isContactEmailConfigured } from "@/config/contact";
 import { recordSignupCountry } from "@/lib/auth/record-signup-country";
 import { getMissingPasswordRequirementIds } from "@/lib/auth/password-strength";
+import { sendPasswordResetEmail } from "@/lib/email/send-password-reset";
 import { createClient } from "@/lib/supabase/server";
+import {
+  createAdminClient,
+  isSupabaseAdminConfigured,
+} from "@/lib/supabase/admin";
 import { getServerI18n } from "@/i18n/server";
 import type { Messages } from "@/i18n/dictionaries/en";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
@@ -206,15 +212,51 @@ export async function requestPasswordReset(
     return { error: t("auth.forgotPasswordEmailRequired") };
   }
 
-  const supabase = await createClient();
   const redirectTo = `${getSiteUrl()}${AUTH_ROUTES.callback}?next=${encodeURIComponent(AUTH_ROUTES.resetPassword)}`;
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo,
+  if (!isContactEmailConfigured() || !isSupabaseAdminConfigured()) {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    return { success: t("auth.forgotPasswordSuccess") };
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "recovery",
+    email,
+    options: { redirectTo },
   });
 
   if (error) {
+    const msg = error.message.toLowerCase();
+    if (msg.includes("not found") || msg.includes("no user")) {
+      return { success: t("auth.forgotPasswordSuccess") };
+    }
     return { error: error.message };
+  }
+
+  const resetUrl = data.properties?.action_link;
+  if (!resetUrl) {
+    return { success: t("auth.forgotPasswordSuccess") };
+  }
+
+  const sendResult = await sendPasswordResetEmail(email, resetUrl, {
+    subject: t("auth.resetPasswordEmailSubject"),
+    title: t("auth.resetPasswordEmailTitle"),
+    bodyHtml: t("auth.resetPasswordEmailBody"),
+    ctaLabel: t("auth.resetPasswordEmailCta"),
+    footerNote: t("auth.resetPasswordEmailFooter"),
+  });
+
+  if (!sendResult.ok) {
+    return { error: sendResult.error };
   }
 
   return { success: t("auth.forgotPasswordSuccess") };

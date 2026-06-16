@@ -140,6 +140,15 @@ export const fr: Messages = {
     resetPasswordSubmit: "Mettre à jour le mot de passe",
     resetPasswordUpdating: "Mise à jour du mot de passe…",
     requestNewLink: "Demander un nouveau lien",
+    resetPasswordEmailSubject: "Réinitialisez votre mot de passe CrossTalent",
+    resetPasswordEmailTitle: "Réinitialiser votre mot de passe",
+    resetPasswordEmailBody:
+      "Nous avons reçu une demande de réinitialisation du mot de passe de votre compte <strong>CrossTalent</strong>. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.",
+    resetPasswordEmailCta: "Réinitialiser le mot de passe",
+    resetPasswordEmailFooter:
+      "Ce lien expire rapidement. Si vous n'avez pas demandé cette réinitialisation, ignorez cet e-mail.",
+    resetPasswordEmailNotConfigured:
+      "L'e-mail de réinitialisation n'est pas configuré. Contactez support@crosstalent.io.",
   },
   landing: {
     heroTitle: "De vrais talents.",

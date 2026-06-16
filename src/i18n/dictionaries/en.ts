@@ -135,6 +135,15 @@ export const en = {
     resetPasswordSubmit: "Update password",
     resetPasswordUpdating: "Updating password…",
     requestNewLink: "Request a new reset link",
+    resetPasswordEmailSubject: "Reset your CrossTalent password",
+    resetPasswordEmailTitle: "Reset your password",
+    resetPasswordEmailBody:
+      "We received a request to reset the password for your <strong>CrossTalent</strong> account. Click the button below to choose a new password.",
+    resetPasswordEmailCta: "Reset password",
+    resetPasswordEmailFooter:
+      "This link expires after a short time. If you did not request a reset, you can ignore this email.",
+    resetPasswordEmailNotConfigured:
+      "Password reset email is not configured. Contact support at contact@crosstalent.io.",
   },
   landing: {
     heroTitle: "Real talent.",
