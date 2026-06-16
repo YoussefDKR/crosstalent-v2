@@ -7,8 +7,8 @@ import {
   openMessageFromApplication,
   updateApplicationStatus,
 } from "@/app/applications/actions";
-import { applicationStatusLabel } from "@/lib/applications/labels";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import type { ApplicationStatus } from "@/types/applications";
 
 type ApplicationActionsProps = {
@@ -22,9 +22,15 @@ export function ApplicationActions({
   status,
   candidateName,
 }: ApplicationActionsProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+
+  const statusText = t(`employer.applicationStatuses.${status}`);
+  const firstName =
+    candidateName.split(" ")[0] ??
+    t("employer.applicationActions.messageFallback");
 
   function runAction(
     action: () => Promise<{ error?: string; success?: string }>
@@ -47,10 +53,8 @@ export function ApplicationActions({
     return (
       <div className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Status:{" "}
-          <span className="font-medium text-emerald-700">
-            {applicationStatusLabel(status)}
-          </span>
+          {t("employer.applicationActions.status")}{" "}
+          <span className="font-medium text-emerald-700">{statusText}</span>
         </p>
         <Button
           type="button"
@@ -66,7 +70,7 @@ export function ApplicationActions({
           className="gap-2"
         >
           <MessageSquare className="size-4" />
-          Message {candidateName.split(" ")[0] ?? "candidate"}
+          {t("employer.applicationActions.message", { name: firstName })}
         </Button>
         {message && (
           <p className="text-sm text-muted-foreground">{message}</p>
@@ -78,10 +82,8 @@ export function ApplicationActions({
   if (status === "rejected") {
     return (
       <p className="text-sm text-muted-foreground">
-        Status:{" "}
-        <span className="font-medium text-[#0F172A]">
-          {applicationStatusLabel(status)}
-        </span>
+        {t("employer.applicationActions.status")}{" "}
+        <span className="font-medium text-[#0F172A]">{statusText}</span>
       </p>
     );
   }
@@ -100,7 +102,7 @@ export function ApplicationActions({
           className="gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
         >
           <Check className="size-4" />
-          Accept
+          {t("employer.applicationActions.accept")}
         </Button>
         <Button
           type="button"
@@ -114,11 +116,11 @@ export function ApplicationActions({
           className="gap-2 text-red-700 hover:bg-red-50"
         >
           <X className="size-4" />
-          Decline
+          {t("employer.applicationActions.decline")}
         </Button>
       </div>
       <p className="text-sm text-muted-foreground">
-        Messaging unlocks after you accept this application.
+        {t("employer.applicationActions.messagingUnlock")}
       </p>
       {message && (
         <p className="text-sm text-muted-foreground">{message}</p>

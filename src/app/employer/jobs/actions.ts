@@ -13,6 +13,7 @@ import {
 import { getCurrentProfile } from "@/lib/auth/session";
 import { parseSkillsParam } from "@/lib/jobs/queries";
 import { createClient } from "@/lib/supabase/server";
+import { getServerI18n } from "@/i18n/server";
 import type { JobStatus } from "@/types/jobs";
 
 export type JobActionResult = {
@@ -151,7 +152,8 @@ async function publishFields(
   if (entitlement.usesPostCredit) {
     const consumed = await consumePostCredit(employerId);
     if (!consumed) {
-      return { error: "No post credits available. Buy a single post to publish." };
+      const { t } = await getServerI18n();
+      return { error: t("employer.actionMessages.noPostCredits") };
     }
   }
 
@@ -203,12 +205,13 @@ export async function createJob(
   _prev: JobActionResult,
   formData: FormData
 ): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   try {
     const employerId = await requireEmployerId();
     const parsed = parseJobForm(formData, "draft");
 
     if (!parsed.title || !parsed.description) {
-      return { error: "Title and description are required." };
+      return { error: t("employer.actionMessages.titleRequired") };
     }
 
     const status =
@@ -257,7 +260,7 @@ export async function createJob(
     redirect(`/employer/jobs/${data.id}/edit?created=1`);
   } catch (e) {
     if (isRedirectError(e)) throw e;
-    return { error: "Something went wrong." };
+    return { error: t("employer.actionMessages.somethingWrong") };
   }
 }
 
@@ -266,6 +269,7 @@ export async function updateJob(
   _prev: JobActionResult,
   formData: FormData
 ): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   try {
     const employerId = await requireEmployerId();
     const supabase = await createClient();
@@ -278,7 +282,7 @@ export async function updateJob(
       .maybeSingle();
 
     if (fetchError || !existing) {
-      return { error: "Job not found." };
+      return { error: t("employer.actionMessages.jobNotFound") };
     }
 
     const parsed = parseJobForm(
@@ -287,7 +291,7 @@ export async function updateJob(
     );
 
     if (!parsed.title || !parsed.description) {
-      return { error: "Title and description are required." };
+      return { error: t("employer.actionMessages.titleRequired") };
     }
 
     const blocked = await publishGuard(
@@ -335,17 +339,17 @@ export async function updateJob(
     revalidateJobPaths();
 
     if (parsed.intent === "publish" || parsed.intent === "reopen") {
-      return { success: "Job is live on the job board." };
+      return { success: t("employer.actionMessages.jobLive") };
     }
     if (parsed.intent === "close") {
-      return { success: "Job marked as closed." };
+      return { success: t("employer.actionMessages.jobClosed") };
     }
     if (parsed.intent === "draft") {
-      return { success: "Job moved to draft." };
+      return { success: t("employer.actionMessages.jobDraft") };
     }
-    return { success: "Job saved." };
+    return { success: t("employer.actionMessages.jobSaved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("employer.actionMessages.somethingWrong") };
   }
 }
 
@@ -353,6 +357,7 @@ async function setJobStatus(
   jobId: string,
   status: JobStatus
 ): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   try {
     const employerId = await requireEmployerId();
     const supabase = await createClient();
@@ -364,7 +369,7 @@ async function setJobStatus(
       .eq("employer_id", employerId)
       .maybeSingle();
 
-    if (!existing) return { error: "Job not found." };
+    if (!existing) return { error: t("employer.actionMessages.jobNotFound") };
 
     const blocked = await publishGuard(
       employerId,
@@ -392,31 +397,41 @@ async function setJobStatus(
     if (error) return { error: error.message };
 
     revalidateJobPaths();
-    return { success: "Job updated." };
+    return { success: t("employer.actionMessages.jobUpdated") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("employer.actionMessages.somethingWrong") };
   }
 }
 
 export async function publishJob(jobId: string): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   const result = await setJobStatus(jobId, "published");
-  if (result.success) return { success: "Job is now live on the job board." };
+  if (result.success) {
+    return { success: t("employer.actionMessages.jobNowLive") };
+  }
   return result;
 }
 
 export async function closeJob(jobId: string): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   const result = await setJobStatus(jobId, "closed");
-  if (result.success) return { success: "Job closed." };
+  if (result.success) {
+    return { success: t("employer.actionMessages.jobClosedShort") };
+  }
   return result;
 }
 
 export async function moveJobToDraft(jobId: string): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   const result = await setJobStatus(jobId, "draft");
-  if (result.success) return { success: "Job moved to draft." };
+  if (result.success) {
+    return { success: t("employer.actionMessages.jobDraft") };
+  }
   return result;
 }
 
 export async function deleteJob(jobId: string): Promise<JobActionResult> {
+  const { t } = await getServerI18n();
   try {
     const employerId = await requireEmployerId();
     const supabase = await createClient();
@@ -433,6 +448,6 @@ export async function deleteJob(jobId: string): Promise<JobActionResult> {
     redirect("/employer/jobs");
   } catch (e) {
     if (isRedirectError(e)) throw e;
-    return { error: "Something went wrong." };
+    return { error: t("employer.actionMessages.somethingWrong") };
   }
 }

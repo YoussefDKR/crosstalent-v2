@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { ensureCompanyProfileRow } from "@/lib/employer/queries";
 import {
@@ -17,19 +18,20 @@ export async function completeEmployerOnboarding(
   _prev: EmployerOnboardingResult,
   formData: FormData
 ): Promise<EmployerOnboardingResult> {
+  const { t } = await getServerI18n();
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") {
-    return { error: "You must be signed in as an employer." };
+    return { error: t("employer.actionMessages.onboardingMustSignIn") };
   }
 
   const companyName = String(formData.get("companyName") ?? "").trim();
   const websiteRaw = String(formData.get("website") ?? "").trim();
 
   if (!companyName) {
-    return { error: "Company name is required." };
+    return { error: t("employer.actionMessages.onboardingCompanyRequired") };
   }
   if (!isValidWebsiteUrl(websiteRaw)) {
-    return { error: "Enter a valid website URL (e.g. yourcompany.com)." };
+    return { error: t("employer.actionMessages.onboardingInvalidWebsite") };
   }
 
   await ensureCompanyProfileRow(profile.id);

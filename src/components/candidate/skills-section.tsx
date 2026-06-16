@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 import type { CandidateSkill } from "@/types/candidate";
 
 const initial: ActionResult = {};
@@ -17,6 +18,7 @@ type SkillsSectionProps = {
 };
 
 export function SkillsSection({ skills }: SkillsSectionProps) {
+  const { t } = useI18n();
   const [state, action, pending] = useActionState(addSkill, initial);
   const [removing, startRemove] = useTransition();
 
@@ -43,8 +45,9 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
               >
                 {skill.name}
                 {skill.level && (
-                  <span className="text-xs text-muted-foreground capitalize">
-                    · {skill.level}
+                  <span className="text-xs text-muted-foreground">
+                    ·{" "}
+                    {t(`candidate.profileForm.skillLevels.${skill.level}`)}
                   </span>
                 )}
                 <button
@@ -56,7 +59,9 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
                   }
                   disabled={removing}
                   className="ml-1 rounded p-0.5 hover:bg-muted"
-                  aria-label={`Remove ${skill.name}`}
+                  aria-label={t("candidate.profileForm.removeItem", {
+                    name: skill.name,
+                  })}
                 >
                   <X className="size-3.5" />
                 </button>
@@ -66,33 +71,37 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Add at least 3 skills employers search for (e.g. React, Python, UX).
+          {t("candidate.profileForm.skillsEmpty")}
         </p>
       )}
 
       <form action={action} className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1 space-y-2">
-          <Label htmlFor="skillName">Add skill</Label>
+          <Label htmlFor="skillName">
+            {t("candidate.profileForm.addSkill")}
+          </Label>
           <Input
             id="skillName"
             name="name"
-            placeholder="e.g. TypeScript"
+            placeholder={t("candidate.profileForm.skillPlaceholder")}
             required
             disabled={pending}
           />
         </div>
         <div className="w-full space-y-2 sm:w-40">
-          <Label htmlFor="skillLevel">Level</Label>
+          <Label htmlFor="skillLevel">
+            {t("candidate.profileForm.level")}
+          </Label>
           <select
             id="skillLevel"
             name="level"
             disabled={pending}
             className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
           >
-            <option value="">Optional</option>
+            <option value="">{t("candidate.profileForm.optional")}</option>
             {SKILL_LEVELS.map((l) => (
               <option key={l.value} value={l.value}>
-                {l.label}
+                {t(`candidate.profileForm.skillLevels.${l.value}`)}
               </option>
             ))}
           </select>
@@ -102,7 +111,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
           disabled={pending}
           className="bg-[#0F172A] text-white hover:bg-[#0F172A]/90"
         >
-          Add
+          {t("candidate.profileForm.add")}
         </Button>
       </form>
     </div>

@@ -18,8 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { statusLabel } from "@/lib/jobs/labels";
-import type { JobRow } from "@/types/jobs";
+import { useI18n } from "@/context/i18n-provider";
+import type { JobRow, JobStatus } from "@/types/jobs";
 
 const initial: JobActionResult = {};
 
@@ -32,16 +32,24 @@ type JobFormProps = {
 };
 
 export function JobForm({ job, mode }: JobFormProps) {
+  const { t } = useI18n();
   const action =
-    mode === "create"
-      ? createJob
-      : updateJob.bind(null, job!.id);
+    mode === "create" ? createJob : updateJob.bind(null, job!.id);
 
   const [state, formAction, pending] = useActionState(action, initial);
 
   const skillsValue = job?.skills?.join(", ") ?? "";
   const languagesValue = job?.languages?.join(", ") ?? "";
   const currentStatus = job?.status ?? "draft";
+
+  const intentHint =
+    mode === "create"
+      ? t("employer.jobForm.hintCreate")
+      : currentStatus === "draft"
+        ? t("employer.jobForm.hintEditDraft")
+        : currentStatus === "published"
+          ? t("employer.jobForm.hintEditPublished")
+          : t("employer.jobForm.hintEditClosed");
 
   return (
     <form
@@ -62,45 +70,49 @@ export function JobForm({ job, mode }: JobFormProps) {
 
       {mode === "edit" && job && (
         <p className="rounded-lg border border-border/80 bg-slate-50 px-4 py-3 text-sm text-muted-foreground">
-          Current state:{" "}
+          {t("employer.jobForm.currentState")}{" "}
           <span className="font-medium text-[#0F172A]">
-            {statusLabel(job.status)}
+            {t(`employer.jobStatuses.${job.status as JobStatus}`)}
           </span>
         </p>
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="title">Job title *</Label>
+        <Label htmlFor="title">{t("employer.jobForm.jobTitleRequired")}</Label>
         <Input
           id="title"
           name="title"
           required
-          placeholder="e.g. Senior React Developer"
+          placeholder={t("employer.jobForm.jobTitlePlaceholder")}
           defaultValue={job?.title ?? ""}
           disabled={pending}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
+        <Label htmlFor="description">
+          {t("employer.jobForm.descriptionRequired")}
+        </Label>
         <Textarea
           id="description"
           name="description"
           rows={6}
           required
-          placeholder="Role overview, team, impact…"
+          placeholder={t("employer.jobForm.descriptionPlaceholder")}
           defaultValue={job?.description ?? ""}
           disabled={pending}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="requirements">Requirements</Label>
+        <Label htmlFor="requirements">
+          {t("employer.jobForm.requirements")}
+        </Label>
         <Textarea
           id="requirements"
           name="requirements"
           rows={4}
-          placeholder="Must-have skills, years of experience…"
+          placeholder={t("employer.jobForm.requirementsPlaceholder")}
           defaultValue={job?.requirements ?? ""}
           disabled={pending}
         />
@@ -108,7 +120,9 @@ export function JobForm({ job, mode }: JobFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="employmentType">Employment type</Label>
+          <Label htmlFor="employmentType">
+            {t("employer.jobForm.employmentType")}
+          </Label>
           <select
             id="employmentType"
             name="employmentType"
@@ -116,15 +130,15 @@ export function JobForm({ job, mode }: JobFormProps) {
             className={selectClassName}
             disabled={pending}
           >
-            {EMPLOYMENT_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {EMPLOYMENT_TYPES.map((item) => (
+              <option key={item.value} value={item.value}>
+                {t(`employer.employmentTypes.${item.value}`)}
               </option>
             ))}
           </select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="remoteType">Work style</Label>
+          <Label htmlFor="remoteType">{t("employer.jobForm.workStyle")}</Label>
           <select
             id="remoteType"
             name="remoteType"
@@ -132,15 +146,17 @@ export function JobForm({ job, mode }: JobFormProps) {
             className={selectClassName}
             disabled={pending}
           >
-            {REMOTE_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {REMOTE_TYPES.map((item) => (
+              <option key={item.value} value={item.value}>
+                {t(`employer.remoteTypes.${item.value}`)}
               </option>
             ))}
           </select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="experienceLevel">Experience</Label>
+          <Label htmlFor="experienceLevel">
+            {t("employer.jobForm.experience")}
+          </Label>
           <select
             id="experienceLevel"
             name="experienceLevel"
@@ -148,9 +164,9 @@ export function JobForm({ job, mode }: JobFormProps) {
             className={selectClassName}
             disabled={pending}
           >
-            {EXPERIENCE_LEVELS.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.label}
+            {EXPERIENCE_LEVELS.map((level) => (
+              <option key={level.value} value={level.value}>
+                {t(`employer.experienceLevels.${level.value}`)}
               </option>
             ))}
           </select>
@@ -159,17 +175,19 @@ export function JobForm({ job, mode }: JobFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="locationCity">City</Label>
+          <Label htmlFor="locationCity">{t("employer.jobForm.city")}</Label>
           <Input
             id="locationCity"
             name="locationCity"
-            placeholder="Paris, Berlin…"
+            placeholder={t("employer.jobForm.cityPlaceholder")}
             defaultValue={job?.location_city ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="locationCountry">Country</Label>
+          <Label htmlFor="locationCountry">
+            {t("employer.jobForm.country")}
+          </Label>
           <select
             id="locationCountry"
             name="locationCountry"
@@ -177,10 +195,10 @@ export function JobForm({ job, mode }: JobFormProps) {
             className={selectClassName}
             disabled={pending}
           >
-            <option value="">Select</option>
+            <option value="">{t("employer.jobForm.select")}</option>
             {JOB_LOCATION_COUNTRIES.map((c) => (
               <option key={c.code} value={c.code}>
-                {c.label}
+                {t(`employer.jobCountries.${c.code}`)}
               </option>
             ))}
           </select>
@@ -189,7 +207,7 @@ export function JobForm({ job, mode }: JobFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="salaryMin">Salary min (EUR)</Label>
+          <Label htmlFor="salaryMin">{t("employer.jobForm.salaryMin")}</Label>
           <Input
             id="salaryMin"
             name="salaryMin"
@@ -200,7 +218,7 @@ export function JobForm({ job, mode }: JobFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="salaryMax">Salary max (EUR)</Label>
+          <Label htmlFor="salaryMax">{t("employer.jobForm.salaryMax")}</Label>
           <Input
             id="salaryMax"
             name="salaryMax"
@@ -211,7 +229,9 @@ export function JobForm({ job, mode }: JobFormProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="salaryCurrency">Currency</Label>
+          <Label htmlFor="salaryCurrency">
+            {t("employer.jobForm.currency")}
+          </Label>
           <Input
             id="salaryCurrency"
             name="salaryCurrency"
@@ -223,11 +243,11 @@ export function JobForm({ job, mode }: JobFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="skills">Skills (comma-separated)</Label>
+          <Label htmlFor="skills">{t("employer.jobForm.skills")}</Label>
           <Input
             id="skills"
             name="skills"
-            placeholder="React, TypeScript, Node.js"
+            placeholder={t("employer.jobForm.skillsPlaceholder")}
             defaultValue={skillsValue}
             disabled={pending}
             list="skill-suggestions"
@@ -239,11 +259,11 @@ export function JobForm({ job, mode }: JobFormProps) {
           </datalist>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="languages">Languages (comma-separated)</Label>
+          <Label htmlFor="languages">{t("employer.jobForm.languages")}</Label>
           <Input
             id="languages"
             name="languages"
-            placeholder="English, French, Arabic"
+            placeholder={t("employer.jobForm.languagesPlaceholder")}
             defaultValue={languagesValue}
             disabled={pending}
           />
@@ -251,16 +271,10 @@ export function JobForm({ job, mode }: JobFormProps) {
       </div>
 
       <div className="rounded-xl border border-border/80 bg-slate-50/80 p-5">
-        <p className="text-sm font-medium text-[#0F172A]">What should we do?</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {mode === "create"
-            ? "Save as draft to finish later, or post to publish on the job board."
-            : currentStatus === "draft"
-              ? "Save your edits, post to go live, or keep as draft."
-              : currentStatus === "published"
-                ? "Save changes, close hiring, or move back to draft."
-                : "Save changes or reopen the job on the board."}
+        <p className="text-sm font-medium text-[#0F172A]">
+          {t("employer.jobForm.whatShouldWeDo")}
         </p>
+        <p className="mt-1 text-xs text-muted-foreground">{intentHint}</p>
 
         <div className="mt-4 flex flex-wrap gap-3">
           {mode === "create" && (
@@ -273,7 +287,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 disabled={pending}
                 className="min-w-[140px]"
               >
-                {pending ? "Saving…" : "Save as draft"}
+                {pending
+                  ? t("employer.jobForm.saving")
+                  : t("employer.jobForm.saveAsDraft")}
               </Button>
               <Button
                 type="submit"
@@ -283,7 +299,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="brand"
                 className="min-w-[140px]"
               >
-                {pending ? "Posting…" : "Post job"}
+                {pending
+                  ? t("employer.jobForm.posting")
+                  : t("employer.jobForm.postJob")}
               </Button>
             </>
           )}
@@ -297,7 +315,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="outline"
                 disabled={pending}
               >
-                {pending ? "Saving…" : "Save as draft"}
+                {pending
+                  ? t("employer.jobForm.saving")
+                  : t("employer.jobForm.saveAsDraft")}
               </Button>
               <Button
                 type="submit"
@@ -306,7 +326,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 disabled={pending}
                 className="bg-[#10B981] text-white hover:bg-[#059669]"
               >
-                {pending ? "Posting…" : "Post job"}
+                {pending
+                  ? t("employer.jobForm.posting")
+                  : t("employer.jobForm.postJob")}
               </Button>
             </>
           )}
@@ -320,7 +342,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 disabled={pending}
                 variant="brand"
               >
-                {pending ? "Saving…" : "Save changes"}
+                {pending
+                  ? t("employer.jobForm.saving")
+                  : t("employer.jobForm.saveChanges")}
               </Button>
               <Button
                 type="submit"
@@ -329,7 +353,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="outline"
                 disabled={pending}
               >
-                Move to draft
+                {t("employer.jobForm.moveToDraft")}
               </Button>
               <Button
                 type="submit"
@@ -338,7 +362,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="outline"
                 disabled={pending}
               >
-                Mark as closed
+                {t("employer.jobForm.markClosed")}
               </Button>
             </>
           )}
@@ -352,7 +376,9 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="outline"
                 disabled={pending}
               >
-                {pending ? "Saving…" : "Save changes"}
+                {pending
+                  ? t("employer.jobForm.saving")
+                  : t("employer.jobForm.saveChanges")}
               </Button>
               <Button
                 type="submit"
@@ -361,7 +387,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 disabled={pending}
                 variant="brand"
               >
-                Reopen & post
+                {t("employer.jobForm.reopenPost")}
               </Button>
               <Button
                 type="submit"
@@ -370,7 +396,7 @@ export function JobForm({ job, mode }: JobFormProps) {
                 variant="outline"
                 disabled={pending}
               >
-                Move to draft
+                {t("employer.jobForm.moveToDraft")}
               </Button>
             </>
           )}
@@ -378,11 +404,14 @@ export function JobForm({ job, mode }: JobFormProps) {
 
         {mode === "create" && (
           <p className="mt-3 text-xs text-muted-foreground">
-            Drafts are only visible to you. Posted jobs appear on{" "}
-            <Link href="/jobs" className="font-medium text-[#2563EB] hover:underline">
+            {t("employer.jobForm.draftsHintBefore")}{" "}
+            <Link
+              href="/jobs"
+              className="font-medium text-[#2563EB] hover:underline"
+            >
               /jobs
             </Link>
-            .
+            {t("employer.jobForm.draftsHintAfter")}
           </p>
         )}
       </div>

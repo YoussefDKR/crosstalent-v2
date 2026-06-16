@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getServerI18n } from "@/i18n/server";
 import { getCurrentProfile } from "@/lib/auth/session";
-import { applicationStatusLabel } from "@/lib/applications/labels";
 import { getEmployerApplication } from "@/lib/applications/queries";
 import { markApplicationViewed } from "@/lib/applications/views";
 import { countryLabel } from "@/lib/employer/candidate-search";
@@ -83,7 +82,7 @@ export default async function EmployerApplicationDetailPage({
                     {application.candidateName}
                   </h2>
                   <Badge variant="secondary">
-                    {applicationStatusLabel(application.status)}
+                    {t(`employer.applicationStatuses.${application.status}`)}
                   </Badge>
                 </div>
                 {application.candidateHeadline && (

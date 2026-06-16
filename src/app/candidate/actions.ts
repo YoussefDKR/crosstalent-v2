@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentProfile } from "@/lib/auth/session";
 import { ensureCandidateProfileRow } from "@/lib/candidate/queries";
 import { createClient } from "@/lib/supabase/server";
+import { getServerI18n } from "@/i18n/server";
 import type { LanguageProficiency, SkillLevel } from "@/types/candidate";
 
 export type ActionResult = {
@@ -34,6 +35,7 @@ export async function updateCandidateDetails(
   _prev: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
 
@@ -56,9 +58,9 @@ export async function updateCandidateDetails(
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "Profile details saved." };
+    return { success: t("candidate.actionMessages.profileSaved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
@@ -66,11 +68,12 @@ export async function saveCvMetadata(
   cvPath: string,
   fileName: string
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
 
     if (!cvPath.startsWith(`${userId}/`)) {
-      return { error: "Invalid file path." };
+      return { error: t("candidate.actionMessages.invalidFilePath") };
     }
 
     const supabase = await createClient();
@@ -86,13 +89,14 @@ export async function saveCvMetadata(
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "CV uploaded successfully." };
+    return { success: t("candidate.actionMessages.cvUploaded") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
 export async function removeCv(): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const supabase = await createClient();
@@ -119,9 +123,9 @@ export async function removeCv(): Promise<ActionResult> {
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "CV removed." };
+    return { success: t("candidate.actionMessages.cvRemoved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
@@ -129,12 +133,13 @@ export async function addSkill(
   _prev: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const name = String(formData.get("name") ?? "").trim();
     const level = String(formData.get("level") ?? "").trim() as SkillLevel | "";
 
-    if (!name) return { error: "Skill name is required." };
+    if (!name) return { error: t("candidate.actionMessages.skillNameRequired") };
 
     const supabase = await createClient();
     const { error } = await supabase.from("candidate_skills").insert({
@@ -144,18 +149,21 @@ export async function addSkill(
     });
 
     if (error) {
-      if (error.code === "23505") return { error: "Skill already added." };
+      if (error.code === "23505") {
+        return { error: t("candidate.actionMessages.skillAlreadyAdded") };
+      }
       return { error: error.message };
     }
 
     revalidateCandidate();
-    return { success: "Skill added." };
+    return { success: t("candidate.actionMessages.skillAdded") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
 export async function removeSkill(skillId: string): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const supabase = await createClient();
@@ -168,9 +176,9 @@ export async function removeSkill(skillId: string): Promise<ActionResult> {
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "Skill removed." };
+    return { success: t("candidate.actionMessages.skillRemoved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
@@ -178,6 +186,7 @@ export async function addLanguage(
   _prev: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const language = String(formData.get("language") ?? "").trim();
@@ -186,7 +195,7 @@ export async function addLanguage(
     ).trim() as LanguageProficiency;
 
     if (!language || !proficiency) {
-      return { error: "Language and proficiency are required." };
+      return { error: t("candidate.actionMessages.languageRequired") };
     }
 
     const supabase = await createClient();
@@ -197,18 +206,21 @@ export async function addLanguage(
     });
 
     if (error) {
-      if (error.code === "23505") return { error: "Language already added." };
+      if (error.code === "23505") {
+        return { error: t("candidate.actionMessages.languageAlreadyAdded") };
+      }
       return { error: error.message };
     }
 
     revalidateCandidate();
-    return { success: "Language added." };
+    return { success: t("candidate.actionMessages.languageAdded") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
 export async function removeLanguage(languageId: string): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const supabase = await createClient();
@@ -221,9 +233,9 @@ export async function removeLanguage(languageId: string): Promise<ActionResult> 
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "Language removed." };
+    return { success: t("candidate.actionMessages.languageRemoved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
@@ -231,6 +243,7 @@ export async function addExperience(
   _prev: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const company = String(formData.get("company") ?? "").trim();
@@ -244,7 +257,7 @@ export async function addExperience(
     const description = String(formData.get("description") ?? "").trim() || null;
 
     if (!company || !title || !startDate) {
-      return { error: "Company, title, and start date are required." };
+      return { error: t("candidate.actionMessages.experienceRequired") };
     }
 
     const supabase = await createClient();
@@ -268,15 +281,16 @@ export async function addExperience(
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "Experience added." };
+    return { success: t("candidate.actionMessages.experienceAdded") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }
 
 export async function removeExperience(
   experienceId: string
 ): Promise<ActionResult> {
+  const { t } = await getServerI18n();
   try {
     const userId = await requireCandidateId();
     const supabase = await createClient();
@@ -289,8 +303,8 @@ export async function removeExperience(
     if (error) return { error: error.message };
 
     revalidateCandidate();
-    return { success: "Experience removed." };
+    return { success: t("candidate.actionMessages.experienceRemoved") };
   } catch {
-    return { error: "Something went wrong." };
+    return { error: t("candidate.actionMessages.somethingWrong") };
   }
 }

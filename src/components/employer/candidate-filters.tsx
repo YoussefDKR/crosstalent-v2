@@ -11,11 +11,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 
 const selectClassName =
   "flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 export function CandidateFilters() {
+  const { t } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
@@ -55,18 +57,18 @@ export function CandidateFilters() {
     >
       <div className="mb-4 flex items-center gap-2 text-sm font-medium text-[#0F172A]">
         <SlidersHorizontal className="size-4 text-[#2563EB]" />
-        Search talent
+        {t("employer.candidateFilters.title")}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-2 sm:col-span-2 lg:col-span-3">
-          <Label htmlFor="q">Search</Label>
+          <Label htmlFor="q">{t("employer.candidateFilters.search")}</Label>
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               id="q"
               name="q"
-              placeholder="Name, headline, skills, bio…"
+              placeholder={t("employer.candidateFilters.searchPlaceholder")}
               defaultValue={searchParams.get("q") ?? ""}
               className="pl-9"
             />
@@ -74,31 +76,33 @@ export function CandidateFilters() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country">
+            {t("employer.candidateFilters.country")}
+          </Label>
           <select
             id="country"
             name="country"
             defaultValue={searchParams.get("country") ?? ""}
             className={selectClassName}
           >
-            <option value="">All MENA countries</option>
+            <option value="">{t("employer.candidateFilters.allMena")}</option>
             {CANDIDATE_SEARCH_COUNTRIES.map((c) => (
               <option key={c.code} value={c.code}>
-                {c.label}
+                {t(`employer.menaCountries.${c.code}`)}
               </option>
             ))}
           </select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="skill">Skill</Label>
+          <Label htmlFor="skill">{t("employer.candidateFilters.skill")}</Label>
           <select
             id="skill"
             name="skill"
             defaultValue={searchParams.get("skill") ?? ""}
             className={selectClassName}
           >
-            <option value="">Any skill</option>
+            <option value="">{t("employer.candidateFilters.anySkill")}</option>
             {CANDIDATE_SEARCH_SKILLS.map((skill) => (
               <option key={skill} value={skill}>
                 {skill}
@@ -108,14 +112,18 @@ export function CandidateFilters() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="language">Language</Label>
+          <Label htmlFor="language">
+            {t("employer.candidateFilters.language")}
+          </Label>
           <select
             id="language"
             name="language"
             defaultValue={searchParams.get("language") ?? ""}
             className={selectClassName}
           >
-            <option value="">Any language</option>
+            <option value="">
+              {t("employer.candidateFilters.anyLanguage")}
+            </option>
             {CANDIDATE_SEARCH_LANGUAGES.map((lang) => (
               <option key={lang} value={lang}>
                 {lang}
@@ -133,21 +141,19 @@ export function CandidateFilters() {
               defaultChecked={searchParams.get("hasCv") === "1"}
               className="size-4 rounded border-input"
             />
-            CV uploaded only
+            {t("employer.candidateFilters.cvOnly")}
           </label>
         </div>
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Button
-          type="submit"
-          disabled={pending}
-          variant="brand"
-        >
-          {pending ? "Searching…" : "Search"}
+        <Button type="submit" disabled={pending} variant="brand">
+          {pending
+            ? t("employer.candidateFilters.searching")
+            : t("employer.candidateFilters.search")}
         </Button>
         <Button type="button" variant="outline" onClick={clearFilters}>
-          Clear
+          {t("employer.candidateFilters.clear")}
         </Button>
       </div>
     </form>

@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { Trash2 } from "lucide-react";
 import { deleteJob } from "@/app/employer/jobs/actions";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 
 type DeleteJobButtonProps = {
   jobId: string;
@@ -11,13 +12,12 @@ type DeleteJobButtonProps = {
 };
 
 export function DeleteJobButton({ jobId, jobTitle }: DeleteJobButtonProps) {
+  const { t } = useI18n();
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
     if (
-      !confirm(
-        `Delete "${jobTitle}"? This cannot be undone.`
-      )
+      !confirm(t("employer.deleteJob.confirm", { title: jobTitle }))
     ) {
       return;
     }
@@ -36,7 +36,9 @@ export function DeleteJobButton({ jobId, jobTitle }: DeleteJobButtonProps) {
       onClick={handleDelete}
     >
       <Trash2 className="size-3.5" />
-      {pending ? "Deleting…" : "Delete"}
+      {pending
+        ? t("employer.deleteJob.deleting")
+        : t("employer.deleteJob.delete")}
     </Button>
   );
 }

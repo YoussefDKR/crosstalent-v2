@@ -6,6 +6,7 @@ import { removeCv, saveCvMetadata } from "@/app/candidate/actions";
 import { CV_ACCEPT, CV_BUCKET, CV_MAX_BYTES } from "@/config/candidate";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 
 type CvUploadProps = {
   userId: string;
@@ -20,6 +21,7 @@ export function CvUpload({
   cvUploadedAt,
   downloadUrl,
 }: CvUploadProps) {
+  const { t, locale } = useI18n();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [fileName, setFileName] = useState(cvFileName);
@@ -31,13 +33,13 @@ export function CvUpload({
     setSuccess(null);
 
     if (file.size > CV_MAX_BYTES) {
-      setError("File must be 5MB or smaller.");
+      setError(t("candidate.profileForm.cvTooLarge"));
       return;
     }
 
     const ext = file.name.split(".").pop()?.toLowerCase();
     if (!ext || !["pdf", "doc", "docx"].includes(ext)) {
-      setError("Please upload a PDF, DOC, or DOCX file.");
+      setError(t("candidate.profileForm.cvInvalidType"));
       return;
     }
 
@@ -61,7 +63,7 @@ export function CvUpload({
 
     setFileName(file.name);
     setUploadedAt(new Date().toISOString());
-    setSuccess(result.success ?? "CV uploaded.");
+    setSuccess(result.success ?? t("candidate.actionMessages.cvUploaded"));
   }
 
   function handleRemove() {
@@ -75,7 +77,7 @@ export function CvUpload({
       }
       setFileName(null);
       setUploadedAt(null);
-      setSuccess(result.success ?? "CV removed.");
+      setSuccess(result.success ?? t("candidate.actionMessages.cvRemoved"));
     });
   }
 
@@ -102,7 +104,9 @@ export function CvUpload({
               <p className="font-medium text-[#0F172A]">{fileName}</p>
               {uploadedAt && (
                 <p className="text-xs text-muted-foreground">
-                  Uploaded {new Date(uploadedAt).toLocaleDateString()}
+                  {t("candidate.profileForm.cvUploadedOn", {
+                    date: new Date(uploadedAt).toLocaleDateString(locale),
+                  })}
                 </p>
               )}
               {downloadUrl && (
@@ -112,7 +116,7 @@ export function CvUpload({
                   rel="noopener noreferrer"
                   className="mt-1 inline-block text-sm text-[#2563EB] hover:underline"
                 >
-                  Preview / download
+                  {t("candidate.profileForm.cvPreviewDownload")}
                 </a>
               )}
             </div>
@@ -130,17 +134,17 @@ export function CvUpload({
             ) : (
               <Trash2 className="size-4" />
             )}
-            Remove
+            {t("candidate.profileForm.cvRemove")}
           </Button>
         </div>
       ) : (
         <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-slate-50/50 px-6 py-10 transition-colors hover:border-[#2563EB]/40 hover:bg-[#2563EB]/5">
           <Upload className="size-8 text-muted-foreground" />
           <span className="mt-3 text-sm font-medium text-[#0F172A]">
-            Click to upload your CV
+            {t("candidate.profileForm.cvClickUpload")}
           </span>
           <span className="mt-1 text-xs text-muted-foreground">
-            PDF, DOC, or DOCX · Max 5MB
+            {t("candidate.profileForm.cvFormats")}
           </span>
           <input
             type="file"
@@ -161,7 +165,7 @@ export function CvUpload({
       {fileName && (
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted">
           <Upload className="size-4" />
-          Replace file
+          {t("candidate.profileForm.cvReplace")}
           <input
             type="file"
             accept={CV_ACCEPT}
@@ -181,7 +185,7 @@ export function CvUpload({
       {isPending && (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          Uploading…
+          {t("candidate.profileForm.cvUploading")}
         </p>
       )}
     </div>

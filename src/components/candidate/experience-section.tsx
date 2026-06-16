@@ -11,31 +11,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/context/i18n-provider";
 import type { CandidateExperience } from "@/types/candidate";
 
 const initial: ActionResult = {};
-
-function formatDateRange(exp: CandidateExperience) {
-  const start = new Date(exp.startDate).toLocaleDateString(undefined, {
-    month: "short",
-    year: "numeric",
-  });
-  if (exp.isCurrent) return `${start} – Present`;
-  if (!exp.endDate) return start;
-  const end = new Date(exp.endDate).toLocaleDateString(undefined, {
-    month: "short",
-    year: "numeric",
-  });
-  return `${start} – ${end}`;
-}
 
 type ExperienceSectionProps = {
   experiences: CandidateExperience[];
 };
 
 export function ExperienceSection({ experiences }: ExperienceSectionProps) {
+  const { t, locale } = useI18n();
   const [state, action, pending] = useActionState(addExperience, initial);
   const [removing, startRemove] = useTransition();
+
+  function formatDateRange(exp: CandidateExperience) {
+    const start = new Date(exp.startDate).toLocaleDateString(locale, {
+      month: "short",
+      year: "numeric",
+    });
+    if (exp.isCurrent) return `${start} – ${t("candidate.profileForm.present")}`;
+    if (!exp.endDate) return start;
+    const end = new Date(exp.endDate).toLocaleDateString(locale, {
+      month: "short",
+      year: "numeric",
+    });
+    return `${start} – ${end}`;
+  }
 
   return (
     <div className="space-y-6">
@@ -86,7 +88,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
                     await removeExperience(exp.id);
                   })
                 }
-                aria-label="Remove experience"
+                aria-label={t("candidate.profileForm.removeExperience")}
               >
                 <Trash2 className="size-4" />
               </Button>
@@ -95,34 +97,47 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Add your work history so employers understand your background.
+          {t("candidate.profileForm.experienceEmpty")}
         </p>
       )}
 
-      <form action={action} className="space-y-4 rounded-lg border border-dashed border-border bg-slate-50/50 p-4">
-        <p className="text-sm font-medium text-[#0F172A]">Add experience</p>
+      <form
+        action={action}
+        className="space-y-4 rounded-lg border border-dashed border-border bg-slate-50/50 p-4"
+      >
+        <p className="text-sm font-medium text-[#0F172A]">
+          {t("candidate.profileForm.addExperienceTitle")}
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
+            <Label htmlFor="company">
+              {t("candidate.profileForm.company")}
+            </Label>
             <Input id="company" name="company" required disabled={pending} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="title">Job title</Label>
+            <Label htmlFor="title">
+              {t("candidate.profileForm.jobTitle")}
+            </Label>
             <Input id="title" name="title" required disabled={pending} />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="expLocation">Location</Label>
+          <Label htmlFor="expLocation">
+            {t("candidate.profileForm.location")}
+          </Label>
           <Input
             id="expLocation"
             name="location"
-            placeholder="Remote, Casablanca…"
+            placeholder={t("candidate.profileForm.locationPlaceholder")}
             disabled={pending}
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="startDate">Start date</Label>
+            <Label htmlFor="startDate">
+              {t("candidate.profileForm.startDate")}
+            </Label>
             <Input
               id="startDate"
               name="startDate"
@@ -132,30 +147,39 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="endDate">End date</Label>
-            <Input id="endDate" name="endDate" type="month" disabled={pending} />
+            <Label htmlFor="endDate">
+              {t("candidate.profileForm.endDate")}
+            </Label>
+            <Input
+              id="endDate"
+              name="endDate"
+              type="month"
+              disabled={pending}
+            />
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isCurrent" className="rounded border-input" />
-          I currently work here
+          <input
+            type="checkbox"
+            name="isCurrent"
+            className="rounded border-input"
+          />
+          {t("candidate.profileForm.currentlyWorkHere")}
         </label>
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">
+            {t("candidate.profileForm.description")}
+          </Label>
           <Textarea
             id="description"
             name="description"
             rows={3}
-            placeholder="Key responsibilities and achievements…"
+            placeholder={t("candidate.profileForm.descriptionPlaceholder")}
             disabled={pending}
           />
         </div>
-        <Button
-          type="submit"
-          disabled={pending}
-          variant="brand"
-        >
-          Add experience
+        <Button type="submit" disabled={pending} variant="brand">
+          {t("candidate.profileForm.addExperience")}
         </Button>
       </form>
     </div>

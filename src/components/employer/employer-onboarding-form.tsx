@@ -8,10 +8,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 
 const initial: EmployerOnboardingResult = {};
 
 export function EmployerOnboardingForm() {
+  const { t } = useI18n();
   const [state, action, pending] = useActionState(
     completeEmployerOnboarding,
     initial
@@ -26,28 +28,30 @@ export function EmployerOnboardingForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="companyName">Company name *</Label>
+        <Label htmlFor="companyName">
+          {t("employer.onboardingForm.companyName")}
+        </Label>
         <Input
           id="companyName"
           name="companyName"
-          placeholder="e.g. NordScale GmbH"
+          placeholder={t("employer.onboardingForm.companyNamePlaceholder")}
           required
           disabled={pending}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="website">Company website *</Label>
+        <Label htmlFor="website">{t("employer.onboardingForm.website")}</Label>
         <Input
           id="website"
           name="website"
           type="url"
-          placeholder="https://yourcompany.com"
+          placeholder={t("employer.onboardingForm.websitePlaceholder")}
           required
           disabled={pending}
         />
         <p className="text-xs text-muted-foreground">
-          Your public company website. Candidates may visit this link.
+          {t("employer.onboardingForm.websiteHint")}
         </p>
       </div>
 
@@ -57,7 +61,9 @@ export function EmployerOnboardingForm() {
         variant="brand"
         className="h-10 w-full"
       >
-        {pending ? "Saving…" : "Continue to dashboard"}
+        {pending
+          ? t("employer.onboardingForm.saving")
+          : t("employer.onboardingForm.continue")}
       </Button>
     </form>
   );

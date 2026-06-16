@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/context/i18n-provider";
 import type { CandidateLanguage } from "@/types/candidate";
 
 const initial: ActionResult = {};
@@ -21,6 +22,7 @@ type LanguagesSectionProps = {
 };
 
 export function LanguagesSection({ languages }: LanguagesSectionProps) {
+  const { t } = useI18n();
   const [state, action, pending] = useActionState(addLanguage, initial);
   const [removing, startRemove] = useTransition();
 
@@ -46,8 +48,11 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
                 className="gap-1.5 rounded-lg py-1.5 pr-1.5 pl-3"
               >
                 {lang.language}
-                <span className="text-xs text-muted-foreground capitalize">
-                  · {lang.proficiency}
+                <span className="text-xs text-muted-foreground">
+                  ·{" "}
+                  {t(
+                    `candidate.profileForm.proficiencyLevels.${lang.proficiency}`
+                  )}
                 </span>
                 <button
                   type="button"
@@ -58,7 +63,9 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
                   }
                   disabled={removing}
                   className="ml-1 rounded p-0.5 hover:bg-muted"
-                  aria-label={`Remove ${lang.language}`}
+                  aria-label={t("candidate.profileForm.removeItem", {
+                    name: lang.language,
+                  })}
                 >
                   <X className="size-3.5" />
                 </button>
@@ -68,20 +75,21 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
         </ul>
       ) : (
         <p className="text-sm text-muted-foreground">
-          Add languages you speak — Arabic, French, and English are highly valued
-          in cross-border roles.
+          {t("candidate.profileForm.languagesEmpty")}
         </p>
       )}
 
       <form action={action} className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="language">Language</Label>
+            <Label htmlFor="language">
+              {t("candidate.profileForm.language")}
+            </Label>
             <Input
               id="language"
               name="language"
               list="language-suggestions"
-              placeholder="e.g. French"
+              placeholder={t("candidate.profileForm.languagePlaceholder")}
               required
               disabled={pending}
             />
@@ -92,7 +100,9 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
             </datalist>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="proficiency">Proficiency</Label>
+            <Label htmlFor="proficiency">
+              {t("candidate.profileForm.proficiency")}
+            </Label>
             <select
               id="proficiency"
               name="proficiency"
@@ -100,10 +110,10 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
               disabled={pending}
               className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
             >
-              <option value="">Select level</option>
+              <option value="">{t("candidate.profileForm.selectLevel")}</option>
               {LANGUAGE_PROFICIENCIES.map((p) => (
                 <option key={p.value} value={p.value}>
-                  {p.label}
+                  {t(`candidate.profileForm.proficiencyLevels.${p.value}`)}
                 </option>
               ))}
             </select>
@@ -114,7 +124,7 @@ export function LanguagesSection({ languages }: LanguagesSectionProps) {
           disabled={pending}
           className="bg-[#0F172A] text-white hover:bg-[#0F172A]/90"
         >
-          Add language
+          {t("candidate.profileForm.addLanguage")}
         </Button>
       </form>
     </div>

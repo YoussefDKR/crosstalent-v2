@@ -10,6 +10,7 @@ import {
   publishJob,
 } from "@/app/employer/jobs/actions";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/context/i18n-provider";
 import type { JobStatus } from "@/types/jobs";
 import { DeleteJobButton } from "./delete-job-button";
 
@@ -24,6 +25,7 @@ export function JobStatusButtons({
   jobTitle,
   status,
 }: JobStatusButtonsProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -49,7 +51,9 @@ export function JobStatusButtons({
           className="gap-1.5 bg-[#10B981] text-white hover:bg-[#059669]"
         >
           <Globe className="size-3.5" />
-          {pending ? "Posting…" : "Post job"}
+          {pending
+            ? t("employer.jobButtons.posting")
+            : t("employer.jobButtons.postJob")}
         </Button>
       )}
       {status === "published" && (
@@ -63,7 +67,7 @@ export function JobStatusButtons({
             className="gap-1.5"
           >
             <Archive className="size-3.5" />
-            Close
+            {t("employer.jobButtons.close")}
           </Button>
           <Button
             type="button"
@@ -72,7 +76,7 @@ export function JobStatusButtons({
             disabled={pending}
             onClick={() => run(() => moveJobToDraft(jobId))}
           >
-            Move to draft
+            {t("employer.jobButtons.moveToDraft")}
           </Button>
         </>
       )}
@@ -87,7 +91,7 @@ export function JobStatusButtons({
             className="gap-1.5"
           >
             <Globe className="size-3.5" />
-            Reopen
+            {t("employer.jobButtons.reopen")}
           </Button>
           <Button
             type="button"
@@ -96,14 +100,14 @@ export function JobStatusButtons({
             disabled={pending}
             onClick={() => run(() => moveJobToDraft(jobId))}
           >
-            Move to draft
+            {t("employer.jobButtons.moveToDraft")}
           </Button>
         </>
       )}
       <Link href={`/employer/jobs/${jobId}/edit`}>
         <Button variant="outline" size="sm" className="gap-1.5">
           <Pencil className="size-3.5" />
-          Edit
+          {t("employer.jobButtons.edit")}
         </Button>
       </Link>
       <DeleteJobButton jobId={jobId} jobTitle={jobTitle} />

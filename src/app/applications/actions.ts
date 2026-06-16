@@ -129,13 +129,14 @@ export async function updateApplicationStatus(
   applicationId: string,
   status: ApplicationStatus
 ): Promise<ApplicationActionResult> {
+  const { t } = await getServerI18n();
   const profile = await getCurrentProfile();
   if (!profile || profile.role !== "employer") {
-    return { error: "Unauthorized." };
+    return { error: t("employer.actionMessages.unauthorized") };
   }
 
   if (status !== "accepted" && status !== "rejected") {
-    return { error: "Invalid status." };
+    return { error: t("employer.actionMessages.invalidStatus") };
   }
 
   const supabase = await createClient();
@@ -146,7 +147,7 @@ export async function updateApplicationStatus(
     .eq("id", applicationId)
     .maybeSingle();
 
-  if (!app) return { error: "Application not found." };
+  if (!app) return { error: t("employer.actionMessages.applicationNotFound") };
 
   const { data: job } = await supabase
     .from("jobs")
@@ -155,7 +156,7 @@ export async function updateApplicationStatus(
     .maybeSingle();
 
   if (!job || job.employer_id !== profile.id) {
-    return { error: "Unauthorized." };
+    return { error: t("employer.actionMessages.unauthorized") };
   }
 
   const { error } = await supabase
@@ -176,7 +177,10 @@ export async function updateApplicationStatus(
   });
 
   return {
-    success: status === "accepted" ? "Application accepted." : "Application declined.",
+    success:
+      status === "accepted"
+        ? t("employer.actionMessages.applicationAccepted")
+        : t("employer.actionMessages.applicationDeclined"),
   };
 }
 
@@ -226,10 +230,11 @@ async function notifyCandidateOfStatusChange(payload: {
 export async function openMessageFromApplication(
   applicationId: string
 ): Promise<never | ApplicationActionResult> {
+  const { t } = await getServerI18n();
   try {
     const profile = await getCurrentProfile();
     if (!profile || profile.role !== "employer") {
-      return { error: "Unauthorized." };
+      return { error: t("employer.actionMessages.unauthorized") };
     }
 
     const supabase = await createClient();
@@ -239,11 +244,11 @@ export async function openMessageFromApplication(
       .eq("id", applicationId)
       .maybeSingle();
 
-    if (!app) return { error: "Application not found." };
+    if (!app) return { error: t("employer.actionMessages.applicationNotFound") };
 
     if (app.status !== "accepted") {
       return {
-        error: "Accept this application before messaging the candidate.",
+        error: t("employer.actionMessages.acceptBeforeMessage"),
       };
     }
 
@@ -254,7 +259,7 @@ export async function openMessageFromApplication(
       .maybeSingle();
 
     if (!job || job.employer_id !== profile.id) {
-      return { error: "Unauthorized." };
+      return { error: t("employer.actionMessages.unauthorized") };
     }
 
     const existing = await findConversationWithCandidate(
@@ -290,6 +295,7 @@ export async function openMessageFromApplication(
     redirect(`/employer/messages/${data.id}`);
   } catch (e) {
     if (isRedirectError(e)) throw e;
-    return { error: "Something went wrong." };
+    const { t } = await getServerI18n();
+    return { error: t("employer.actionMessages.somethingWrong") };
   }
 }

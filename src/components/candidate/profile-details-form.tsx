@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/context/i18n-provider";
 import { cn } from "@/lib/utils";
 import type { CandidateProfileRow } from "@/types/candidate";
 
@@ -20,6 +21,7 @@ type ProfileDetailsFormProps = {
 };
 
 export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
+  const { t } = useI18n();
   const [state, action, pending] = useActionState(
     updateCandidateDetails,
     initial
@@ -47,23 +49,23 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="headline">Professional headline</Label>
+        <Label htmlFor="headline">{t("candidate.profileForm.headline")}</Label>
         <Input
           id="headline"
           name="headline"
-          placeholder="e.g. Senior React Developer · Open to EU roles"
+          placeholder={t("candidate.profileForm.headlinePlaceholder")}
           defaultValue={details?.headline ?? ""}
           disabled={pending}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio">About you</Label>
+        <Label htmlFor="bio">{t("candidate.profileForm.aboutYou")}</Label>
         <Textarea
           id="bio"
           name="bio"
           rows={4}
-          placeholder="Tell employers about your experience, strengths, and what you're looking for…"
+          placeholder={t("candidate.profileForm.aboutPlaceholder")}
           defaultValue={details?.bio ?? ""}
           disabled={pending}
           onChange={(e) => setBioLength(e.target.value.trim().length)}
@@ -74,26 +76,31 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
             bioComplete ? "text-[#10B981]" : "text-muted-foreground"
           )}
         >
-          {bioLength}/{BIO_MIN_LENGTH} characters
+          {t("candidate.profileForm.bioChars", {
+            count: bioLength,
+            min: BIO_MIN_LENGTH,
+          })}
           {bioComplete
-            ? " — counts toward profile strength"
-            : ` — write at least ${BIO_MIN_LENGTH - bioLength} more for the dashboard checkmark`}
+            ? t("candidate.profileForm.bioCountsToward")
+            : t("candidate.profileForm.bioWriteMore", {
+                remaining: BIO_MIN_LENGTH - bioLength,
+              })}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="location">City / region</Label>
+          <Label htmlFor="location">{t("candidate.profileForm.cityRegion")}</Label>
           <Input
             id="location"
             name="location"
-            placeholder="Casablanca, Tunis, Cairo…"
+            placeholder={t("candidate.profileForm.cityPlaceholder")}
             defaultValue={details?.location ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="countryCode">Country</Label>
+          <Label htmlFor="countryCode">{t("candidate.profileForm.country")}</Label>
           <select
             id="countryCode"
             name="countryCode"
@@ -101,10 +108,10 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
             disabled={pending}
             className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
-            <option value="">Select country</option>
+            <option value="">{t("candidate.profileForm.selectCountry")}</option>
             {MENA_COUNTRIES.map((c) => (
               <option key={c.code} value={c.code}>
-                {c.label}
+                {t(`candidate.profileForm.countries.${c.code}`)}
               </option>
             ))}
           </select>
@@ -112,7 +119,7 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone">Phone (optional)</Label>
+        <Label htmlFor="phone">{t("candidate.profileForm.phoneOptional")}</Label>
         <Input
           id="phone"
           name="phone"
@@ -124,35 +131,33 @@ export function ProfileDetailsForm({ details }: ProfileDetailsFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="linkedinUrl">LinkedIn</Label>
+          <Label htmlFor="linkedinUrl">{t("candidate.profileForm.linkedin")}</Label>
           <Input
             id="linkedinUrl"
             name="linkedinUrl"
             type="url"
-            placeholder="https://linkedin.com/in/…"
+            placeholder={t("candidate.profileForm.linkedinPlaceholder")}
             defaultValue={details?.linkedin_url ?? ""}
             disabled={pending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="portfolioUrl">Portfolio</Label>
+          <Label htmlFor="portfolioUrl">{t("candidate.profileForm.portfolio")}</Label>
           <Input
             id="portfolioUrl"
             name="portfolioUrl"
             type="url"
-            placeholder="https://…"
+            placeholder={t("candidate.profileForm.portfolioPlaceholder")}
             defaultValue={details?.portfolio_url ?? ""}
             disabled={pending}
           />
         </div>
       </div>
 
-      <Button
-        type="submit"
-        disabled={pending}
-        variant="brand"
-      >
-        {pending ? "Saving…" : "Save profile details"}
+      <Button type="submit" disabled={pending} variant="brand">
+        {pending
+          ? t("candidate.profileForm.saving")
+          : t("candidate.profileForm.saveDetails")}
       </Button>
     </form>
   );

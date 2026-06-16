@@ -4,8 +4,8 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { JOB_LOCATION_COUNTRIES } from "@/config/jobs";
 import { useI18n } from "@/context/i18n-provider";
-import { locationLabel, statusLabel } from "@/lib/jobs/labels";
 import type { JobRow } from "@/types/jobs";
 import { JobStatusButtons } from "./job-status-buttons";
 
@@ -23,6 +23,19 @@ function statusVariant(
 
 export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
   const { t } = useI18n();
+
+  const jobCountryCodes = new Set<string>(
+    JOB_LOCATION_COUNTRIES.map((c) => c.code)
+  );
+
+  function formatLocation(city: string | null, country: string | null) {
+    const countryLabel =
+      country && jobCountryCodes.has(country)
+        ? t(`employer.jobCountries.${country}`)
+        : country;
+    if (city && countryLabel) return `${city}, ${countryLabel}`;
+    return city ?? countryLabel ?? t("employer.locationFlexible");
+  }
 
   if (jobs.length === 0) {
     return (
@@ -53,11 +66,11 @@ export function EmployerJobsList({ jobs }: EmployerJobsListProps) {
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-semibold text-[#0F172A]">{job.title}</h3>
               <Badge variant={statusVariant(job.status)}>
-                {statusLabel(job.status)}
+                {t(`employer.jobStatuses.${job.status}`)}
               </Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              {locationLabel(job.location_city, job.location_country)}
+              {formatLocation(job.location_city, job.location_country)}
             </p>
             {job.status === "draft" && (
               <p className="mt-2 inline-block rounded-md bg-amber-50 px-2 py-1.5 text-xs text-amber-800">
