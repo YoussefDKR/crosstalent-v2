@@ -84,6 +84,8 @@ export const en = {
     signupCandidateSubtitle: "Build your profile and discover European opportunities.",
     email: "Email",
     password: "Password",
+    showPassword: "Show password",
+    hidePassword: "Hide password",
     fullName: "Full name",
     forgotPassword: "Forgot password?",
     noAccount: "Don't have an account?",

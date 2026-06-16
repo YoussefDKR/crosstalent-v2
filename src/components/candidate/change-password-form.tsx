@@ -6,8 +6,8 @@ import {
   type AccountActionResult,
 } from "@/lib/auth/account-actions";
 import { PasswordStrengthMeter } from "@/components/auth/password-strength-meter";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/context/i18n-provider";
 import { evaluatePasswordStrength } from "@/lib/auth/password-strength";
@@ -47,10 +47,9 @@ export function ChangePasswordForm() {
 
       <div className="space-y-2">
         <Label htmlFor="newPassword">{a.newPassword}</Label>
-        <Input
+        <PasswordInput
           id="newPassword"
           name="newPassword"
-          type="password"
           autoComplete="new-password"
           required
           disabled={pending}
@@ -62,10 +61,9 @@ export function ChangePasswordForm() {
 
       <div className="space-y-2">
         <Label htmlFor="confirmPassword">{a.confirmPassword}</Label>
-        <Input
+        <PasswordInput
           id="confirmPassword"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           required
           disabled={pending}

@@ -84,6 +84,8 @@ export const ar: Messages = {
     signupCandidateSubtitle: "أنشئ ملفك واكتشف الفرص الأوروبية.",
     email: "البريد الإلكتروني",
     password: "كلمة المرور",
+    showPassword: "إظهار كلمة المرور",
+    hidePassword: "إخفاء كلمة المرور",
     fullName: "الاسم الكامل",
     forgotPassword: "نسيت كلمة المرور؟",
     noAccount: "ليس لديك حساب؟",

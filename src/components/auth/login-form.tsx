@@ -8,6 +8,7 @@ import {
 } from "@/lib/auth/client-auth";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -82,10 +83,9 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="password">{t("auth.password")}</Label>
-          <Input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             placeholder="••••••••"
             required

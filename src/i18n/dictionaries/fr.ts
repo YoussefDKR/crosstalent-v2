@@ -88,6 +88,8 @@ export const fr: Messages = {
       "Créez votre profil et découvrez des opportunités en Europe.",
     email: "E-mail",
     password: "Mot de passe",
+    showPassword: "Afficher le mot de passe",
+    hidePassword: "Masquer le mot de passe",
     fullName: "Nom complet",
     forgotPassword: "Mot de passe oublié ?",
     noAccount: "Pas encore de compte ?",

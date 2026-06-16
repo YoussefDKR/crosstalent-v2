@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 import { signUp, type AuthActionState } from "@/app/(auth)/actions";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { PasswordInput } from "@/components/auth/password-input";
 import { RoleSelector } from "@/components/auth/role-selector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,10 +123,9 @@ export function SignupForm({ defaultRole = "candidate" }: SignupFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="password">{t("auth.password")}</Label>
-          <Input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="new-password"
             placeholder="At least 8 characters"
             required
