@@ -2,7 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { recordSignupCountry } from "@/lib/auth/record-signup-country";
+import { getMissingPasswordRequirementIds } from "@/lib/auth/password-strength";
 import { createClient } from "@/lib/supabase/server";
+import { getServerI18n } from "@/i18n/server";
+import type { Messages } from "@/i18n/dictionaries/en";
 import { AUTH_ROUTES, getDashboardPath, parseSignupRole } from "@/lib/auth/routes";
 import { resolveUserRole } from "@/lib/auth/resolve-role";
 import { ensureCompanyProfileRow, getEmployerEntryPath } from "@/lib/employer/queries";
@@ -168,4 +171,91 @@ export async function signIn(
 
   await recordSignupCountry(data.user.id);
   return redirectByRole(role, data.user.id, redirectTo || undefined);
+}
+
+const PASSWORD_REQ_KEYS: Record<string, keyof Messages["account"]> = {
+  length: "reqLength",
+  lower: "reqLower",
+  upper: "reqUpper",
+  number: "reqNumber",
+  special: "reqSpecial",
+};
+
+function passwordRequirementError(
+  messages: Messages,
+  missingIds: string[]
+): string {
+  const a = messages.account;
+  const labels = missingIds.map(
+    (id) => a[PASSWORD_REQ_KEYS[id] as keyof typeof a] ?? id
+  );
+  return messages.account.errPasswordMustInclude.replace(
+    "{requirements}",
+    labels.join(", ")
+  );
+}
+
+export async function requestPasswordReset(
+  _prev: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const { t } = await getServerI18n();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+
+  if (!email) {
+    return { error: t("auth.forgotPasswordEmailRequired") };
+  }
+
+  const supabase = await createClient();
+  const redirectTo = `${getSiteUrl()}${AUTH_ROUTES.callback}?next=${encodeURIComponent(AUTH_ROUTES.resetPassword)}`;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: t("auth.forgotPasswordSuccess") };
+}
+
+export async function completePasswordReset(
+  _prev: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const { messages, t } = await getServerI18n();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: t("auth.resetPasswordSessionExpired") };
+  }
+
+  const newPassword = String(formData.get("newPassword") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+  const missingIds = getMissingPasswordRequirementIds(newPassword);
+  if (missingIds.length > 0) {
+    return { error: passwordRequirementError(messages, missingIds) };
+  }
+
+  if (newPassword !== confirmPassword) {
+    return { error: messages.account.passwordsNoMatch };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  const role = await resolveUserRole(user.id);
+  if (!role) {
+    redirect(AUTH_ROUTES.login);
+  }
+
+  return redirectByRole(role, user.id);
 }

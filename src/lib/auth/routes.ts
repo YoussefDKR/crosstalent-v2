@@ -3,6 +3,8 @@ import type { UserRole } from "@/types";
 export const AUTH_ROUTES = {
   login: "/login",
   signup: "/signup",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
   callback: "/auth/callback",
   signOut: "/auth/signout",
 } as const;
@@ -17,6 +19,8 @@ export const PUBLIC_PATH_PREFIXES = [
   "/",
   "/login",
   "/signup",
+  "/forgot-password",
+  "/reset-password",
   "/auth/callback",
   "/auth/google",
   "/pricing",
@@ -46,7 +50,11 @@ export function isPublicPath(pathname: string): boolean {
 }
 
 export function isAuthPath(pathname: string): boolean {
-  return pathname === AUTH_ROUTES.login || pathname === AUTH_ROUTES.signup;
+  return (
+    pathname === AUTH_ROUTES.login ||
+    pathname === AUTH_ROUTES.signup ||
+    pathname === AUTH_ROUTES.forgotPassword
+  );
 }
 
 export function isCandidatePath(pathname: string): boolean {

@@ -120,6 +120,26 @@ export const fr: Messages = {
       "Votre compte a été suspendu. Contactez le support si vous pensez qu'il s'agit d'une erreur.",
     contactSupport: "Contacter le support",
     premiumTagline: "Recrutement transfrontalier premium",
+    forgotPasswordTitle: "Réinitialiser votre mot de passe",
+    forgotPasswordSubtitle:
+      "Entrez votre e-mail et nous vous enverrons un lien pour définir un nouveau mot de passe.",
+    forgotPasswordGoogleHint:
+      "Inscrit avec Google ? Utilisez Se connecter avec Google sur la page de connexion — aucun mot de passe requis.",
+    forgotPasswordSend: "Envoyer le lien",
+    forgotPasswordSending: "Envoi du lien…",
+    forgotPasswordSuccess:
+      "Si un compte existe pour cet e-mail, nous avons envoyé un lien. Vérifiez votre boîte de réception et les spams.",
+    forgotPasswordEmailRequired: "Entrez votre adresse e-mail.",
+    backToSignIn: "Retour à la connexion",
+    resetPasswordTitle: "Choisir un nouveau mot de passe",
+    resetPasswordSubtitle:
+      "Entrez un mot de passe sécurisé pour votre compte CrossTalent.",
+    resetPasswordSessionExpired:
+      "Ce lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.",
+    resetPasswordSuccess: "Votre mot de passe a été mis à jour.",
+    resetPasswordSubmit: "Mettre à jour le mot de passe",
+    resetPasswordUpdating: "Mise à jour du mot de passe…",
+    requestNewLink: "Demander un nouveau lien",
   },
   landing: {
     heroTitle: "De vrais talents.",

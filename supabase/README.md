@@ -109,6 +109,12 @@ For local development without email confirmation, disable **Confirm email** unde
 
 Users can **Sign in with Google** on `/login` or **Sign up with Google** on `/signup` (after choosing candidate or employer).
 
+### Password reset
+
+Forgot-password emails use the same **Redirect URLs** as Google/email signup (`/auth/callback`). No extra URL is required. Users land on `/reset-password` after clicking the email link.
+
+Customize the reset email under **Authentication → Email templates → Reset password** (optional).
+
 ## 4. What the migration creates
 
 - `profiles` table linked to `auth.users`

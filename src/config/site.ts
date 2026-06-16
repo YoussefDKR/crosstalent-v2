@@ -8,6 +8,7 @@ export const siteConfig = {
   links: {
     login: "/login",
     signup: "/signup",
+    forgotPassword: "/forgot-password",
     candidateSignup: "/signup?role=candidate",
     employerSignup: "/signup?role=employer",
     jobs: "/jobs",

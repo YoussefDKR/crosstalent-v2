@@ -116,6 +116,25 @@ export const en = {
       "Your account has been suspended. Contact support if you believe this is a mistake.",
     contactSupport: "Contact support",
     premiumTagline: "Premium cross-border hiring",
+    forgotPasswordTitle: "Reset your password",
+    forgotPasswordSubtitle:
+      "Enter your email and we'll send you a link to set a new password.",
+    forgotPasswordGoogleHint:
+      "Signed up with Google? Use Sign in with Google on the login page — no password needed.",
+    forgotPasswordSend: "Send reset link",
+    forgotPasswordSending: "Sending reset link…",
+    forgotPasswordSuccess:
+      "If an account exists for that email, we sent a reset link. Check your inbox and spam folder.",
+    forgotPasswordEmailRequired: "Enter your email address.",
+    backToSignIn: "Back to sign in",
+    resetPasswordTitle: "Choose a new password",
+    resetPasswordSubtitle: "Enter a strong password for your CrossTalent account.",
+    resetPasswordSessionExpired:
+      "This reset link is invalid or has expired. Request a new one.",
+    resetPasswordSuccess: "Your password has been updated.",
+    resetPasswordSubmit: "Update password",
+    resetPasswordUpdating: "Updating password…",
+    requestNewLink: "Request a new reset link",
   },
   landing: {
     heroTitle: "Real talent.",

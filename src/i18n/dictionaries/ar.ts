@@ -116,6 +116,25 @@ export const ar: Messages = {
       "تم تعليق حسابك. تواصل مع الدعم إذا كنت تعتقد أن هذا خطأ.",
     contactSupport: "تواصل مع الدعم",
     premiumTagline: "توظيف عابر للحدود بمستوى متميز",
+    forgotPasswordTitle: "إعادة تعيين كلمة المرور",
+    forgotPasswordSubtitle:
+      "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لتعيين كلمة مرور جديدة.",
+    forgotPasswordGoogleHint:
+      "سجّلت عبر Google؟ استخدم تسجيل الدخول مع Google — لا حاجة لكلمة مرور.",
+    forgotPasswordSend: "إرسال رابط إعادة التعيين",
+    forgotPasswordSending: "جارٍ إرسال الرابط…",
+    forgotPasswordSuccess:
+      "إذا وُجد حساب لهذا البريد، أرسلنا رابطاً. تحقق من البريد والبريد المزعج.",
+    forgotPasswordEmailRequired: "أدخل بريدك الإلكتروني.",
+    backToSignIn: "العودة لتسجيل الدخول",
+    resetPasswordTitle: "اختر كلمة مرور جديدة",
+    resetPasswordSubtitle: "أدخل كلمة مرور قوية لحساب CrossTalent.",
+    resetPasswordSessionExpired:
+      "رابط إعادة التعيين غير صالح أو منتهي. اطلب رابطاً جديداً.",
+    resetPasswordSuccess: "تم تحديث كلمة المرور.",
+    resetPasswordSubmit: "تحديث كلمة المرور",
+    resetPasswordUpdating: "جارٍ تحديث كلمة المرور…",
+    requestNewLink: "طلب رابط جديد",
   },
   landing: {
     heroTitle: "مواهب حقيقية.",

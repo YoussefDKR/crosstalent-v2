@@ -82,7 +82,15 @@ export function LoginForm({ redirectTo, authError }: LoginFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">{t("auth.password")}</Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="password">{t("auth.password")}</Label>
+            <Link
+              href={siteConfig.links.forgotPassword}
+              className="text-sm font-medium text-[#2563EB] hover:underline"
+            >
+              {t("auth.forgotPassword")}
+            </Link>
+          </div>
           <PasswordInput
             id="password"
             name="password"
